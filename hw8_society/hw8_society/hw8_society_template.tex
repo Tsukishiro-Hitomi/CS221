@@ -1,0 +1,519 @@
+\documentclass{article}
+
+% Page format
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+
+% Math and utilities
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{0.9}
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\noindent{[\textbf{NOTE:} #1]}}
+\newcommand{\hint}[1]{\noindent{[\textbf{HINT:} #1]}}
+\newcommand{\recall}[1]{\noindent{[\textbf{RECALL:} #1]}}
+\newcommand{\expect}[1]{\noindent{[\textbf{What we expect:} #1]}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+
+\title{\textbf{CS221 -- Artificial Intelligence: \\Principles and Techniques}\\Homework 8: Society\\Autumn 2025}
+\date{}
+
+\chead{Society}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare that all of this is my own work.} \\
+
+\textbf{Before you get started, please read the Homeworks section on the course website thoroughly}. This \LaTeX\ template serves as a convenient template for the written parts of the assignment. The questions mirror those in the HTML page; if there are any typos, follow the HTML and let us know in your answers.
+
+\begin{framed}
+\noindent \textbf{Note: DO NOT} embed hyperlinks in your PDF writeup, as they aren't viewable via Gradescope. Paste the links instead.
+\end{framed}
+
+\section*{Part 1: Preparation}
+
+\textbf{In this part:} You will choose a modern AI product to analyze throughout the homework and gain initial access to it.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} Later in this homework, you'll conduct hands-on research and testing, so selecting an accessible product that you can actually use is essential for completing the rest of the assignment.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item The product's official website and onboarding/getting started pages
+  \item Privacy policy, Terms of Service, Acceptable Use Policy
+  \item App store listings, GitHub documentation or READMEs (if open-source or developer-targeted)
+  \item Recent news coverage (e.g., TechCrunch, The Verge, Wired, NYT technology section)
+  \item Reddit communities, Hacker News, or user forums for first impressions and experiences
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Choose Your AI Product:}
+  \begin{itemize}
+    \item Pick an AI-powered product or tool (not just a raw LLM chatbot) that is accessible to you. Good candidates include: Cursor, Nano Banana, ElevenLabs, Perplexity, Claude Code, etc. Free trials or student-accessible tools are recommended.
+    \item List both the product name and the company behind it. (Example: ``Cursor by Cursor Technologies Inc.'')
+    \item Create an account or obtain access, so you can explore and use it during the rest of this assignment.
+  \end{itemize}
+
+  \expect{State the name of your chosen AI product and its developer/company. In 1--2 sentences, explicitly confirm that you have successfully created an account or otherwise gained access and are able to explore the product.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 2: Basic Information}
+
+\textbf{In this part:} You will develop a foundational understanding of your chosen product by exploring its purpose, recent developments, mission alignment, and pricing structure.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} Understanding these basics provides the context needed to analyze deeper issues like safety, fairness, and societal impact in later parts.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Official product documentation and feature pages
+  \item Investor or official product blog posts announcing updates
+  \item News coverage from the last 1--2 months
+  \item Company mission statement (``About Us'' page, etc.)
+  \item Product pricing and feature comparison pages
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Product Purpose and Usage:}
+  \begin{itemize}
+    \item Use your chosen product for at least 20 minutes.
+    \item Include at least two \textbf{screenshots} showing your interactions with the product. These should highlight its key purposes, typical task flows, and the core problems it addresses for users. Paste your screenshots into your \textbf{PDF writeup for this part}.
+    \item Based on your hands-on use and official resources, describe what the product is designed to do in 4--6 sentences. Identify at least two use cases and provide concrete examples (with screenshots in your PDF) where appropriate.
+  \end{itemize}
+
+  \expect{Submit a brief description (4--6 sentences) of the product's purpose and at least two concrete example user tasks. Include relevant screenshots in your PDF writeup.}
+  \mysolution{ }
+
+  \item \textbf{Recent News and Developments:}
+  \begin{itemize}
+    \item Find and read 3+ recent news articles, official announcements, or blog updates about the product and/or its parent company. These articles need to be published within the last 1-2 months. Summarize your findings in 4--6 sentences, focusing on major new features, company developments, or relevant controversies.
+  \end{itemize}
+
+  \expect{Include a 3-5 sentence well-sourced summary (with links/citations) of the latest news and notable developments regarding this product or its parent company.}
+  \mysolution{ }
+
+  \item \textbf{Company \& Product Mission Alignment:}
+  \begin{itemize}
+    \item What is the company's stated mission (quote from their website/official pages)?
+    \item What is the specific goal or intended impact of this particular product?
+    \item How does this product fit (or not fit) into the company's stated mission?
+    \item Consider the concept of \textbf{alignment}: how to make AI do what we want. Does the product behave consistently with its stated goals, or have you observed instances where it might ``reward hack'' (optimize for the wrong objective) or produce outputs misaligned with user intentions? How does the company address the challenge of ensuring the AI system's behavior matches its intended purpose?
+  \end{itemize}
+
+  \expect{Briefly state the company's official mission and the product's stated goal. Analyze, in your own words (2-3 sentences), the relationship between the two---if you notice any tension, mismatch, or ``mission drift,'' flag and explain it. Additionally, reflect on alignment challenges: whether the product consistently behaves as intended, and how the company addresses potential misalignment issues.}
+  \mysolution{ }
+
+  \item \textbf{Product Pricing and Access:}
+  \begin{itemize}
+    \item What are the pricing details for this product (list the main plans/tiers and their costs)?
+    \item Does the pricing follow an equitable or tiered-access model (e.g., discounts for college students)?
+    \item Beyond financial cost, are there \textbf{non-financial barriers} to accessing or using the product (such as device requirements, region restrictions, or mandatory integrations)?
+    \item Suggest at least one alternative pricing model. Reflect on potential pros and cons for both the company and its user base.
+    \item Consider the \textbf{ecosystem view} of AI: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). What can you determine about the computational resources required to run this product? Does the company disclose information about the \textbf{environmental impact} of training or operating the system (e.g., energy consumption, carbon footprint)? How might environmental costs relate to pricing and access?
+  \end{itemize}
+
+  \expect{In 3-4 sentences, list and describe the core pricing model, note any access barriers (financial or otherwise), and discuss at least one alternative pricing approach with a brief pros/cons analysis. Additionally, discuss what you can determine about the computational and environmental costs of the product, and how these relate to pricing and access.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 3: Usage, Audience, and Safety}
+
+\textbf{In this part:} You will investigate who uses the product, how it's intended to be used, and what safeguards exist against misuse.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} Understanding the gap between intended and actual use, as well as potential safety risks, helps identify where AI systems can cause harm despite good intentions.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Company ``About,'' ``Press,'' or ``Investors'' pages for user numbers
+  \item Third-party analytics sites (e.g., SimilarWeb, Statista) for user data
+  \item Case studies or testimonials published by the company
+  \item Safety guidelines or misuse policies
+  \item Blog posts about misuse mitigation
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Product User Base and Demographics:}
+  \begin{itemize}
+    \item Research and report any available data on the product's users: total number of users, historical growth, and demographic breakdowns such as user type, geography, and age group. Cite your sources (e.g., company ``About,'' ``Press,'' or ``Investors'' pages, third-party analytics sites).
+  \end{itemize}
+
+  \expect{Provide a 2-3 sentence summary of the product's user numbers and user composition, with cited sources.}
+  \mysolution{ }
+
+  \item \textbf{Intended Use Cases and Audience:}
+  \begin{itemize}
+    \item Summarize what you learn about the intended use cases for this product. Who are the primary target users? Reference product documentation, official resources, or company case studies/testimonials as appropriate.
+  \end{itemize}
+
+  \expect{In 2-3 sentences, identify and concisely describe the main intended uses and user groups for the product.}
+  \mysolution{ }
+
+  \item \textbf{Market Share and Competitors:}
+  \begin{itemize}
+    \item Determine the current market share of this product compared to key competitors. If exact figures are unavailable, provide best available estimates or relevant data/quotes from news or analytics sources.
+  \end{itemize}
+
+  \expect{In 3-4 sentences, include a comparative overview of the product's market position, citing sources or providing reasonable estimates.}
+  \mysolution{ }
+
+  \item \textbf{Misuse Risks and Company Safeguards:}
+  \begin{itemize}
+    \item Discuss at least one way the product could be misused. What steps, if any, does the company take to safeguard against this misuse? Reference any published safety guidelines, usage policies, or blog posts about misuse mitigation.
+    \item Consider the concept of \textbf{dual use technology}: AI systems can be used for both beneficial and harmful purposes, making governance challenging. How does your chosen product exemplify this dual-use nature? Can you identify both a beneficial use case and a potential harmful misuse of the same underlying technology?
+  \end{itemize}
+
+  \expect{In 4-6 sentences, identify a realistic misuse scenario and summarize the company's corresponding safety policies or interventions. Additionally, discuss how the product demonstrates dual-use characteristics, providing examples of both beneficial and potentially harmful applications.}
+  \mysolution{ }
+
+  \item \textbf{Gaps and Unintended Use Cases:}
+  \begin{itemize}
+    \item Are there any aspects of user information or misuse that appear \textbf{not} to be safeguarded against---based on what you can find published by the company or in trusted third-party reports? Briefly discuss.
+    \item Provide at least one example of an unintended use case of the product---something the company likely did \textbf{not} intend, but that users or communities have pursued anyway. Cite examples if you find them.
+  \end{itemize}
+
+  \expect{In 2-3 sentences, briefly discuss gaps in company safeguards and highlight at least one notable unintended use case, with references to sources.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 4: Documentation, Marketing, and Customer Support}
+
+\textbf{In this part:} You will examine how the company communicates with users through marketing, documentation, and support channels.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} The gap between marketing promises and actual capabilities, as well as the quality of user support, directly impacts user trust and the product's real-world effectiveness.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Company marketing pages, ads, YouTube demos
+  \item Social media promotions (LinkedIn, TikTok, Instagram, X)
+  \item Reddit, StackOverflow, Discord, or unofficial user communities
+  \item Product FAQ, Help Center
+  \item Customer service emails/chat logs you submit
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Marketing Channels and Discovery:}
+  \begin{itemize}
+  \item How is the product marketed and how do users discover it? Describe the channels and messaging the company uses.
+  \end{itemize}
+
+  \expect{In 4-6 sentences, provide a summary of the main marketing channels and discovery avenues for the product, with links, cited examples, and/or screenshots.}
+  \mysolution{ }
+
+  \item \textbf{Marketing Strategy and Mission Alignment:}
+  \begin{itemize}
+    \item Summarize what you believe the company's \textbf{core mission} is, based on official statements (About page, press releases, etc.).
+    \item Discuss whether the product's marketing strategy and messaging \textbf{align or conflict with the company's mission}. In your view, does the marketing sensationalize or misrepresent what the product can do, or is it fair and accurate? Provide rationale and cite examples (ads, taglines, posts, etc.).
+  \end{itemize}
+
+  \expect{In 4-6 sentences, clearly articulate whether the company's marketing supports, contradicts, or sensationalizes its stated mission and product capabilities, providing specific evidence.}
+  \mysolution{ }
+
+  \item \textbf{Feedback, Help, and Customer Support:}
+  \begin{itemize}
+  \item How can users contact the company or get support? Describe the official support channels, any community-based help resources, and your overall impression of how easy it is to get assistance.
+\end{itemize}
+
+  \expect{In 2-3 sentences, summarize the avenues available for support and community help, and comment on the effectiveness of official and unofficial documentation resources.}
+  \mysolution{ }
+
+  \item \textbf{Submitting Customer Support Queries:}
+  \begin{itemize}
+    \item Submit \textbf{two customer support queries} based on your personal experience using the product. These should reflect genuine questions or typical issues you encountered. List those queries here and reflect in 1-2 sentences how customer support responded to and handled your queries.
+  \end{itemize}
+
+  \expect{Include two well-constructed sample support emails or chat messages, each clearly stating a question, problem, or request for help and, for each query, 1-2 sentences reflecting on how the company handled that query.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 5: Benchmarking}
+
+\textbf{In this part:} You will design and run systematic tests to evaluate whether the product performs differently across different user groups or attributes.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} This hands-on testing reveals real-world disparities that might not be apparent from company claims, helping you understand how AI systems can perpetuate or amplify inequality.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Product documentation explaining input/output constraints
+  \item Academic papers or benchmarks relating to the model (if available)
+  \item Online bias test suites for inspiration (e.g., AIF360, HolisticBias) or research papers
+  \item Safety or evaluation pages published by the company
+  \item Reddit or GitHub issues where users report model failures or problematic outputs
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Constructing Contrastive Input Sets:}
+  \begin{itemize}
+    \item Design at least \textbf{5} pairs or sets of inputs that differ by a single key attribute (e.g., Western bias, gender bias, racial bias, name-based bias, dialect bias, cultural bias, etc.). For each set, specify which attribute you are testing and briefly explain why you chose it.
+  \end{itemize}
+
+  \expect{Submit at least five contrastive sets of inputs, each with 1--2 sentences about the attribute being examined. You may draw inspiration from published bias benchmarks or input suites.}
+  \mysolution{ }
+
+  \item \textbf{Running and Documenting Results:}
+  \begin{itemize}
+    \item Run all your contrastive inputs through the AI product.
+    \item Carefully document the outputs (include representative examples in your PDF writeup) and note any differences, disparities, or recurring error types you observe. Summarize overall patterns in 2--3 sentences.
+  \end{itemize}
+
+  \expect{In 2-3 sentences, include output examples for each input set (in your PDF), and a brief written summary of disparities or patterns discovered.}
+  \mysolution{ }
+
+  \item \textbf{Analyzing Disparities and Practical Impacts:}
+  \begin{itemize}
+  \item Did you observe any patterns of bias or disparities in the tool’s behavior? Explain what you found and reflect on who might be affected and why it matters.
+\end{itemize}
+
+  \expect{In 4-6 sentences, provide a thoughtful analysis of any detected patterns or biases, and discuss their significance and possible user impact. Additionally, identify which demographic or user groups might be disproportionately affected, and propose what monitoring and auditing mechanisms would be needed to address inequality in the product's performance.}
+  \mysolution{ }
+
+  \item \textbf{User Rights, Feedback, and Fairness:}
+  \begin{itemize}
+    \item What rights or standards of service should users expect when receiving results from generative models, especially if they observe systematic differences?
+    \item Discuss what mechanisms or feedback channels should be available for users to report issues, and how responsive companies should be in addressing these concerns (2--4 sentences).
+  \end{itemize}
+
+  \expect{In 2-3 sentences, propose at least one user rights standard or feedback guideline, commenting on platform responsibilities.}
+  \mysolution{ }
+
+  \item \textbf{Follow-Up Testing or Deeper Analysis:}
+  \begin{itemize}
+    \item Suggest additional tests or analyses that could strengthen or challenge your findings. What else would you examine (or how would you expand your test suite) to more robustly assess product fairness and reliability?
+  \end{itemize}
+
+  \expect{In 2-3 sentences, propose at least one follow-up experiment or extension to your benchmarking approach, justifying its value.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 6: Policies}
+
+\textbf{In this part:} You will analyze the company's policies around data collection, transparency, copyright, and user rights.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} These policies determine how user data is used, what transparency exists around the AI system, and what legal and ethical frameworks govern the product's operation.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Terms of Service and Privacy Policy
+  \item Data usage pages (e.g., ``How we use your data'')
+  \item Security or compliance documentation (GDPR, CCPA statements)
+  \item Company blog posts about transparency, trust, and safety
+  \item Public reports of harms or incidents (news articles, watchdog groups)
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Data Collection and Use Policies:}
+  \begin{itemize}
+    \item Browse the company's website (including Terms of Service, privacy FAQ, help center) to locate their explicit policies on user data.
+    \item What are the company's policies for collection of user data? Do they save your data? Can they use it to train models? Can it be sold or shared with third parties?
+    \item Comment on how easy it was to locate the exact company policies governing user data and privacy.
+    \item Does the official privacy policy align with or contradict what you expected based on the product's marketing? (E.g., does the privacy policy permit more data collection than marketing claims suggest?)
+    \item Consider the \textbf{ecosystem view} of AI: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). What can you determine about the upstream data sources used to train this product? What policies govern how training data was collected, and how does this relate to the product's downstream impacts?
+  \end{itemize}
+
+  \expect{Summarize the company's policies on data collection (storage, model training, data sales/sharing) in 3--5 sentences. Note the ease or difficulty of finding clear policy documentation. Highlight any differences between the product's privacy messaging and the legally binding privacy terms. Additionally, discuss what you can determine about upstream data sources and how data collection policies relate to downstream impacts.}
+  \mysolution{ }
+
+  \item \textbf{Transparency and Trust Analysis:}
+  \begin{itemize}
+    \item After reviewing company documentation (terms of service, privacy policies, safety pages), identify any aspects of their data transparency specifically intended to build user trust (e.g., plain-language explanations, user-accessible logs, opt-out features).
+    \item Similarly, identify any practices that might undermine user trust (e.g., vague or shifting policies, difficult opt-out procedures, nontransparent data resale practices). Provide examples if possible.
+    \item If you did not find transparency measures, propose at least one realistic feature or policy that would increase user trust for this product.
+    \item Consider the concept of \textbf{openness \& transparency}: transparency is often seen as a prerequisite for safety, and there's a spectrum of openness (from fully closed proprietary systems to fully open-source). Where does this product fall on the openness spectrum? Does the company publish model cards, data sheets, or other transparency documentation? How does the level of transparency (or lack thereof) relate to safety and accountability?
+  \end{itemize}
+
+  \expect{Provide concrete examples (if any) of transparency and trust-building measures, and at least one element that could undermine user trust. If measures are lacking, suggest an actionable improvement. Additionally, in 2-3 sentences, analyze where the product falls on the openness spectrum and discuss how transparency (or its absence) relates to safety and accountability.}
+  \mysolution{ }
+
+  \item \textbf{Fairness, Transparency, and Accountability in Practice:}
+  \begin{itemize}
+    \item Choose one \textbf{concrete definition} or example each for fairness, transparency, and accountability (e.g., fairness as demographic parity, transparency as publishing model cards, accountability as user appeals of automated decisions).
+    \item How (if at all) does the company implement these concepts? Do they publish technical documentation (model cards, data sheets, safety reports), disclose model/data sources, allow users to contest or appeal outputs, or host public feedback forums?
+    \item Identify any alternatives they could implement, or propose new ideas to improve any of these areas for this product.
+  \end{itemize}
+
+  \expect{For each of fairness, transparency, and accountability, briefly (in 1-2 sentences) state your chosen definition/example and analyze the company's real-world implementation. Suggest at least one improvement or alternative measure for any area where they appear lacking.}
+  \mysolution{ }
+
+  \item \textbf{User Empowerment and Accountability Tools:}
+  \begin{itemize}
+    \item What tools are available to regular users to help hold the company accountable for its promises (e.g., user data export, data deletion requests, public transparency dashboards, reporting forms)?
+    \item If you cannot find such tools, propose one (realistic and actionable) that the company could add to give users more power over---or insight into---their data and product interactions.
+  \end{itemize}
+
+  \expect{List any accountability tools actually implemented by the company. If lacking, describe one practical tool or feature users could be given, with 1--2 sentences explaining its value.}
+  \mysolution{ }
+
+  \item \textbf{Copyright and Fair Use:}
+  \begin{itemize}
+    \item Research whether the company has disclosed information about the training data used for this product. Have there been any lawsuits, controversies, or public discussions about copyright, fair use, or data licensing related to this product or similar AI systems?
+    \item Clearly distinguish between \textbf{memorization} and \textbf{extraction} in AI models: \textbf{memorization} occurs when the model outputs exact copies of training data (for example, an unaltered paragraph or image from its training set), while \textbf{extraction} is when the model generates outputs that closely resemble or reconstruct substantial portions of copyrighted content—even if not copied word-for-word—due to patterns it learned during training. Based on your use of the product, have you encountered any outputs that appear to result from either memorization (exact reproduction) or extraction (near-verbatim or substantial portions) of copyrighted material, and would these raise copyright concerns?
+    \item How does the company address copyright and fair use in their terms of service or documentation? What policies govern how users can use outputs that might contain copyrighted material?
+  \end{itemize}
+
+  \expect{Summarize any copyright-related controversies, lawsuits, or policies you found related to this product in 4-6 sentences. Discuss the company's approach to fair use, data licensing, and user rights regarding potentially copyrighted outputs. If you observed any outputs that might raise copyright concerns, describe them briefly.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 7: Economics}
+
+\textbf{In this part:} You will examine the economic and labor impacts of the product, including job displacement, augmentation, and effects on societal inequality.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} AI systems can reshape labor markets and either reduce or exacerbate existing economic disparities.
+
+\vspace{2mm}
+
+\textbf{Suggested resources:}
+\begin{itemize}
+  \item Industry reports (e.g., McKinsey, PwC, U.S. Bureau of Labor Statistics) on job displacement trends
+  \item Blog posts by the company about use cases or productivity gains
+  \item Academic articles analyzing the impacts of automation
+  \item Tech policy think tanks (Brookings, AI Now Institute, etc.)
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Job Tasks and Potential for Displacement:}
+  \begin{itemize}
+    \item Identify and describe what kinds of tasks or jobs this product is most useful for.
+    \item Refer to at least one resource (industry report, company blog, or academic article) that discusses these types of tasks or jobs, and summarize any projections or claims about automation or productivity within this context.
+    \item Consider the \textbf{ecosystem view}: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). Beyond job displacement, what are the upstream labor implications? What kinds of human labor (e.g., data labeling, content moderation, model training) were required to build and maintain this product?
+  \end{itemize}
+
+  \expect{In 4-6 sentences, list and discuss the primary tasks or job roles relevant to this product. Support your answer with at least one citation to an external source when possible. Additionally, discuss the upstream labor required to build and maintain the product, considering the full ecosystem of work involved.}
+  \mysolution{ }
+
+  \item \textbf{Job Displacement vs. Augmentation:}
+  \begin{itemize}
+    \item Discuss whether this product is more likely to directly replace existing jobs or to augment (assist/support) workers in those jobs. Explain your reasoning based on product features and cited resources, if possible.
+    \item Analyze the potential consequences and risks if the product replaces or augments jobs incorrectly or incompetently. What could go wrong for both workers and employers?
+  \end{itemize}
+
+  \expect{In 4-6 sentences, provide a thoughtful analysis of job displacement versus augmentation, including at least one risk or downside for workers. Support your conclusions with observations about the product or external evidence.}
+  \mysolution{ }
+
+  \item \textbf{Societal Inequalities:}
+  \begin{itemize}
+    \item Analyze how the adoption of this tool might either exacerbate or mitigate existing societal inequalities (e.g., digital divide, socioeconomic, class, racial, or geographic divides).
+    \item Consider which demographics of users benefit most versus least from this technology. Would increased access to the product help close such divides, or does it risk deepening them?
+    \item Building on the concept of \textbf{inequality} in AI systems: beyond access, consider how the product's performance might vary across different user groups. How might differences in performance (not just access) contribute to inequality? What metrics should be monitored to ensure equitable outcomes?
+  \end{itemize}
+
+  \expect{Identify at least one way the product could impact societal inequalities, and discuss specific groups of users who would be most and least likely to benefit. Additionally, in 2-3 sentences, analyze how performance disparities (not just access barriers) might contribute to inequality, and suggest metrics for monitoring equitable outcomes.}
+  \mysolution{ }
+
+  \item \textbf{Strategies and Mitigation Measures:}
+  \begin{itemize}
+    \item Propose at least one concrete strategy for deploying or regulating this technology to lessen negative effects (such as job loss or deepening inequality). Possibilities include ``human-in-the-loop'' mechanisms, reskilling or retraining programs, oversight requirements, or policy interventions.
+    \item Discuss how much power or oversight humans should have over the system's predictions and decisions in these mitigation approaches.
+  \end{itemize}
+
+  \expect{In 4-6 sentences, describe a pragmatic mitigation strategy and briefly explain how it would help reduce negative economic or social outcomes. Address the role of human oversight or intervention as part of the solution.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Part 8: Rebuilding}
+
+\textbf{In this part:} You will synthesize your findings to design an improved version of the product and reflect on who should have power and responsibility in building AI systems.
+
+\vspace{2mm}
+
+\textbf{Why it's important:} This synthesis helps you think critically about how to build better AI systems and who should be accountable for their impacts, shifting from theory to implementation.
+
+\vspace{2mm}
+
+\textbf{Suggested Resources:}
+\begin{itemize}
+  \item Responsible AI guidelines (\href{https://www.oecd.org/en/topics/sub-issues/ai-principles.html}{OECD}, \href{https://www.nist.gov/itl/ai-risk-management-framework}{NIST AI Risk Management Framework})
+  \item Other tools in the same product category for comparison
+  \item Human-Computer Interaction (HCI) or User Experience (UX) design guidelines
+  \item Ethical AI frameworks discussed in class and previous assignments
+\end{itemize}
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Summarize and Improve Your Product:}
+  \begin{itemize}
+    \item Based on the research you've done in this homework, summarize your chosen product's key features, strengths, and weaknesses in 1 paragraph.
+    \item Write a 1-2 paragraph summary of actionable improvements you would make to the product to address the weaknesses you identified.
+  \end{itemize}
+
+  \expect{In 2-3 paragraphs, provide a thoughtful summary of your research on your chosen product and actionable improvements you would make to the product to address the weaknesses you identified.}
+  \mysolution{ }
+
+  \item \textbf{Power and Responsibility in Building AI:}
+  \begin{itemize}
+    \item Who currently has the power to make meaningful changes to products like this: engineers, designers, executives, policymakers, users, or someone else? Who do you think \emph{should} hold the power and responsibility for building better AI-powered tools, and why?
+    \item Reflect on any tensions between who currently drives change and who ought to be responsible from a societal perspective. Propose one recommendation for shifting power or responsibility if there's a misalignment.
+  \end{itemize}
+
+  \expect{In 4-6 sentences, discuss who builds and steers AI products like the one you selected, and who should be responsible for their positive and negative impacts, supporting your recommendations with evidence or reasoning.}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Submission}
+Submission is done on Gradescope. \\
+
+\textbf{Written:} When submitting the written parts, make sure to select \textbf{all} the pages that contain part of your answer for that problem, or else you will not receive credit. To double-check after submission, you can click on each problem link on the right side, and it should show the pages that are selected for that problem. \\
+
+More details can be found in the Submission section on the course website.
+
+\end{document}

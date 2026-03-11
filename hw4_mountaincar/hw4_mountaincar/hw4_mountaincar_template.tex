@@ -1,0 +1,377 @@
+\documentclass{article}
+
+%Page format
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+
+%Math packages and custom commands
+
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{ textcomp }
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{mathtools,amsthm,mathrsfs}
+\usepackage{enumitem,amssymb}
+\usepackage{listings}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\definecolor{shadecolor}{gray}{0.9}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+
+\newcommand{\note}[1]{\noindent{[\textbf{NOTE:} #1]}}
+\newcommand{\hint}[1]{\noindent{\textit{HINT: #1}}}
+\newcommand{\recall}[1]{\noindent{\textit{RECALL: #1}}}
+\newcommand{\expect}[1]{\noindent{\fbox{\parbox{0.95 \textwidth}{\textbf{What we expect:} #1}}}}
+
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+
+\title{\textbf{CS 221: Artificial Intelligence:\\ Principles and Techniques} \\Assignment 4: Controlling MountainCar}
+
+\chead{Homework 4: Controlling MountainCar}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS 221: Artificial Intelligence: Principles and Techniques --- Autumn 2025}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\newtheorem*{lemma}{Lemma}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.} \\
+% uncomment one of the below lines to make the text larger
+\fontsize{12pt}{16pt}\selectfont
+% \fontsize{14pt}{18pt}\selectfont
+\textbf{Before you get started, please read the Assignments section on the course website thoroughly}.
+\newline
+\newline
+Markov decision processes (MDPs) can be used to model situations with uncertainty
+(which is most of the time in the real world).
+In this assignment, you will implement algorithms to find the optimal policy,
+both when you know the transitions and rewards (value iteration)
+and when you don't (reinforcement learning).
+You will use these algorithms on Mountain Car, a classic control environment
+where the goal is to control a car to go up a mountain.
+
+\newpage
+\section*{Problem 1: Value Iteration}
+
+In this problem, you will perform the value iteration updates manually on a basic game to build your intuitions about solving MDPs.
+The set of possible states in this game is $\text{States} = \{-2, -1, 0, +1, +2\}$ and the set of possible actions is $\text{Actions}(s) = \{a_1, a_2\}$.
+The starting state is $0$ and there are two end states, $-2$ and $+2$. Recall that the transition function $T: \text{States} \times \text{Actions} \rightarrow \Delta(\text{States})$
+encodes the probability of transitioning to a next state $s'$ after being in state $s$ and taking action $a$ as $T(s'|s,a)$.
+In this MDP, the transition dynamics are given as follows:
+\newline
+
+$\forall i \in \{-1, 0, 1\} \subseteq \text{States}$,
+\begin{itemize}
+    \item  $T(i-1 | i, a_1) = 0.8$ and $T(i+1 | i, a_1) = 0.2$
+    \item  $T(i-1 | i, a_2) = 0.7$ and $T(i+1 | i, a_2) = 0.3$
+\end{itemize}
+
+Think of this MDP as a chain formed by states $\{-2,-1,0,+1,+2\}$. In words, action $a_1$ has an 80\% chance of moving the agent backwards in the chain and a 20\% chance of moving the agent forward. Similarly, action $a_2$ has a 70\% chance of sending the agent backwards and a 30\% chance of moving the agent forward. We will use a discount factor $\gamma=1$. \newline
+
+The reward function for this MDP is $\text{Reward}(s,a,s') = \begin{cases} 10 & s' = -2 \\ 50 & s' = +2 \\ -5 & \text{otherwise} \end{cases}$.
+
+\begin{enumerate}
+\item [a.]
+[3 points] What is the value of $V^\star_i(s)$ for each $s \in \text{States}$ after each iteration $i = \{1, 2\}$
+of value iteration? Please write down the values from all iterations. Recall that $\forall s \in \text{States}$,
+$V^\star_0(s) = 0$ and, for any end state $s_\text{end}$, $V^\star_i(s_\text{end}) = 0$.
+
+  \expect{The $V^\star_i(s)$ of all 5 states after each iteration. In total, 10 values should be reported. Show your work briefly.}
+
+  \begin{figure}[h]
+  \begin{shaded}
+  % your solution goes here %
+\textbf{Your Solution:}
+
+\end{shaded}
+\end{figure}
+\newpage
+
+\item [b.]
+  [1 point] Using $V^\star_2(\cdot)$, what is the corresponding optimal policy $\pi^\star$ for all non-end states?
+
+  \expect{Optimal policy $\pi^\star(s)$ for each non-end state. Show your work briefly.}
+
+\begin{shaded}
+% your solution goes here %
+\textbf{Your Solution:}
+
+\end{shaded}
+\end{enumerate}
+ \newpage
+
+\section*{Problem 2: Transforming MDPs}
+
+In computer science, the idea of a reduction is very powerful:
+say you can solve problems of type A,
+and you want to solve problems of type B.
+If you can convert (reduce) any problem of type B to type A,
+then you automatically have a way of solving problems of type B
+potentially without doing much work!
+We saw an example of this for search problems when we reduce A* to UCS.
+Now let's do it for solving MDPs.
+
+\begin{enumerate}
+    \item [a.] [4 points] Suppose we have an MDP with states $\text{States}$ and a discount factor $\gamma<1$,
+    but we have an MDP solver that can only solve MDPs with discount factor of $1$. How can we leverage
+    this restricted MDP solver to solve the original MDP?
+
+    Let us define a new MDP with states $\text{States}' = \text{States} \cup \{ o \}$, where $o$ is a new state.
+    Let's use the same actions $\text{Actions}'(s) = \text{Actions}(s)$ but keep the discount $\gamma' = 1$.
+    Your job is to define new transition probabilities $T'(s' | s, a)$ and rewards $\text{Reward}'(s, a, s')$
+    in terms of the original MDP such that the optimal values $V_\text{opt}(s)$ for all $s \in \text{States}$ are equal
+    under the original MDP and the new MDP.
+
+    \hint{What recurrence must the optimal values for each MDP satisfy? You can show that the optimal values for each MDP are the same if these recurrences are equivalent. If you're not sure how to approach this problem, see the MDP lecture slides on convergence.}
+
+    \expect{ Transition probabilities ($T'$) and reward function ($\text{Reward}'$)
+    written in mathematical expressions,
+    followed by a short verification to show that the two optimal values are equal.
+    Use consistent notation from the question. Show your work briefly. }
+
+    \begin{shaded}
+% your solution goes here %
+    \textbf{Your Solution:}
+
+    \end{shaded}
+\end{enumerate}
+
+\newpage
+
+\section*{Problem 3: Value Iteration on Mountain Car}
+
+Now that we have gotten a bit of practice with general-purpose MDP algorithms, let's use them for some control problems.
+Mountain Car is a classic example in robot control where you try to get a car to the goal located on the top of a steep hill by accelerating left or right.
+We will use the implementation provided by The Farama Foundation's Gymnasium, formerly OpenAI Gym.
+
+The state of the environment is provided as a pair (position, velocity).
+The starting position is randomized within a small range at the bottom of the hill. At each step, the actions are either to accelerate to the left, to the right, or do nothing, and the transitions are
+determined directly from the physics of a frictionless car on a hill. Every step produces a reward based on the car's distance from the goal and velocity.
+
+\textbf{Note: We are using Python 3.12 for this assignment.} To get the feel for the environment, test with an untrained agent which takes a random action at each step:
+\\
+\\
+\verb|uv run mountaincar.py --agent naive|
+\\
+\\
+You will see the agent struggling, not able to complete the task within the time limit.
+In this assignment, you will train this agent with different reinforcement learning algorithms so that it can learn to climb the hill.
+As the first step, we have designed two MDPs for this task. The first uses the car's continuous (position, velocity) state as is, and the second discretizes
+the position and velocity into bins and uses indicator vectors.
+
+Carefully examine \texttt{ContinuousGymMDP} and \texttt{DiscreteGymMDP} classes in \texttt{util.py} and make sure you understand.
+
+If we want to apply value iteration to the \texttt{DiscreteGymMDP} (think about why we can't apply it to \texttt{ContinuousGymMDP}),
+we require the transition probabilities $T(s, a, s')$ and rewards $R(s, a, s')$ to be known. But oftentimes in the real world, $T$ and $R$ are unknown,
+and the gym environments are set up in this way as well, only interfacing through the \texttt{.step()} function. One method
+to still determine the optimal policy is model-based value iteration, which runs Monte Carlo simulations to estimate $\hat{T}$ and $\hat{R}$, and then runs value iteration.
+This is an example of model-based RL. Examine \texttt{RLAlgorithm} in \texttt{util.py} to understand the \texttt{get\_action} and \texttt{incorporate\_feedback} interface
+and peek into the \texttt{simulate} function to see how they are called repeatedly when training over episodes.
+
+\begin{enumerate}
+  \item [a.] [5 points] As a warm up, implement \texttt{value\_iteration} as you learned in lectures, and run it on the number line MDP from Problem 1.
+  The inputs are dense NumPy tensors for transition probabilities and rewards of shape \texttt{(num\_states, num\_actions, num\_states)} with an optional mask of valid actions. Return a NumPy array of optimal action identifiers per state (use \texttt{None} when no action is available).
+
+  \expect{An implementation of \texttt{value\_iteration} in \texttt{submission.py}.}
+
+  \item [b.] [10 points]
+  In \texttt{submission.py}, implement \texttt{ModelBasedMonteCarlo}, which runs \texttt{value\_iteration} every \texttt{calc\_val\_iter\_every} steps.
+  Maintain NumPy arrays for transition counts, accumulated rewards, and a boolean mask of visited actions. Use MDP helpers (e.g., \texttt{state\_to\_index}) to map between raw states and indices. Implement \texttt{get\_action} and \texttt{incorporate\_feedback}.
+
+  \expect{An implementation of \texttt{ModelBasedMonteCarlo} in \texttt{submission.py}.}
+
+  \item [c.] [2 points] Run
+  \texttt{uv run train.py --agent value-iteration} to train the agent and view reward-per-episode plots (three trials).
+  Comment on the plots and discuss when model-based value iteration could perform poorly. You can also run
+  \texttt{uv run mountaincar.py --agent value-iteration} to visualize performance.
+
+  \expect{Plots of rewards and 2--3 sentences describing the plots and when model-based value iteration may fail.}
+
+  \begin{shaded}
+  % your solution goes here %
+  \textbf{Your Solution:}
+
+  \end{shaded}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Problem 4: Q-Learning Mountain Car}
+
+In the previous question, we've seen how value iteration can take an MDP which describes the full dynamics of the game
+and return an optimal policy, and we've also seen how model-based value iteration with Monte Carlo simulation can estimate MDP dynamics if unknown at first
+and then learn the respective optimal policy. But suppose you are trying to control a complex system in the real world where trying to explicitly model
+all possible transitions and rewards is intractable. We will see how model-free reinforcement learning can nevertheless find the optimal policy.
+
+\begin{enumerate}
+    \item [a.]
+    [10 points] For a discretized MDP, we have a finite set of \texttt{(state, action)} pairs. We learn the Q-value for each pair using
+    the Q-learning update. In \texttt{TabularQLearning}, the Q-table is a NumPy array of shape \texttt{(num\_states, num\_actions)}. Implement \texttt{get\_action} (epsilon-greedy using \texttt{exploration\_prob}) and \texttt{incorporate\_feedback} (update the appropriate entry using the provided indices; no Python dictionaries).
+
+    \expect{Implementations of \texttt{get\_action} and \texttt{incorporate\_feedback} in \texttt{TabularQLearning}.}
+
+    \item [b.]
+    [5 points] For Q-learning in continuous states, we use function approximation. We will use a Fourier feature extractor.
+    For state $s=(s_1,\dots,s_k)$, maximum coefficient $m$, and optional per-dimension \texttt{scale}, the feature extractor returns
+    all terms of the form $\cos\!\big(\pi \sum_{i=1}^k c_i \, d_i s_i\big)$ for $c_i\in\{0,\dots,m\}$ and scaling $d_i$.
+    Concretely for $k=2$ and $m=2$, this corresponds to the ``outer-sum'' grid of combinations before applying $\cos(\pi\cdot)$.
+
+    Implement \texttt{fourier\_feature\_extractor} in \texttt{submission.py}. (Looking at \texttt{util.polynomial\_feature\_extractor} may help with NumPy broadcasting.)
+
+    \expect{An implementation of \texttt{fourier\_feature\_extractor} in \texttt{submission.py}.}
+
+    \item [c.]
+    [10 points] With function approximation, Q-values are computed as a dot product of features and learned weights.
+    Using \texttt{fourier\_feature\_extractor} from (b), complete \texttt{FunctionApproxQLearning}.
+
+    \expect{An implementation of \texttt{FunctionApproxQLearning} using \texttt{fourier\_feature\_extractor}.}
+
+    \item [d.]
+    [2 points]
+    Run \texttt{uv run train.py --agent tabular} and \texttt{uv run train.py --agent function-approximation} to see reward plots (three trials each) and comment on the results. If none of your plots are improving, double-check \texttt{incorporate\_feedback}. You can also run
+    \texttt{uv run mountaincar.py --agent tabular} and \texttt{uv run mountaincar.py --agent function-approximation} to visualize.
+
+    \expect{Plots and 2--3 sentences comparing \texttt{TabularQLearning} and \texttt{FunctionApproxQLearning}; discuss possible reasons.}
+
+    \begin{shaded}
+    % your solution goes here %
+    \textbf{Your Solution:}
+
+    \end{shaded}
+
+    \item [e.]
+    [2 points] Despite sometimes worse performance here, why can function-approximation Q-learning outperform tabular Q-learning in other environments? Consider limited exploration, very high-dimensional state spaces, and/or space constraints.
+
+    \expect{2--3 sentences discussing why \texttt{FunctionApproxQLearning} can be better in various scenarios.}
+
+    \begin{shaded}
+    % your solution goes here %
+    \textbf{Your Solution:}
+
+    \end{shaded}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Problem 5: Safe Exploration}
+
+We learned about different state exploration policies for RL in order to get information about \texttt{(s,a)}.
+The method implemented in our MDP code is epsilon-greedy exploration, which balances both exploitation (choosing the action $a$ that
+maximizes $\hat{Q}_{\text{opt}}(s, a)$) and exploration (choosing the action $a$ randomly):
+$$\pi_{\text{act}}(s) = \begin{cases} \arg\max_{a \in \text{Actions}}\hat{Q}_{\text{opt}}(s,a) & \text{probability } 1 - \epsilon \\
+\text{random from Actions}(s) & \text{probability } \epsilon \end{cases}$$
+
+In real-life scenarios when safety is a concern, there might be constraints set during state exploration.
+Safe exploration in RL is a critical research question in AI safety and human–AI interaction.
+
+Assume there are harmful consequences for the driver of the Mountain Car if the car exceeds a certain velocity.
+One simple approach is to restrict the set of potential actions at each step to avoid unsafe speeds.
+
+\begin{enumerate}
+  \item [a.]
+  [2 points] The Mountain Car MDP includes velocity constraints via a \texttt{self.max\_speed} parameter.
+  Read OpenAI Gym's Mountain Car implementation and explain how \texttt{self.max\_speed} is used.
+
+  \expect{One sentence on how \texttt{self.max\_speed} is used in \texttt{mountain\_car.py}.}
+  \begin{shaded}
+  % your solution goes here %
+  \textbf{Your Solution:}
+
+  \end{shaded}
+
+  \item [b.]
+  [1 point] Run Function Approximation Q-Learning without the \texttt{max\_speed} constraint:
+  \texttt{uv run train.py --agent function-approximation --max\_speed=100000}. We approximate removing the constraint by setting a very large value.
+  Ignoring reward scale differences (rewards scale with \texttt{max\_speed}), notice the learned behavior may not change much. Explain in 1--2 sentences why.
+
+  \expect{1--2 sentences explaining why the Q-Learning result doesn't necessarily change.}
+
+  \begin{shaded}
+  % your solution goes here %
+  \textbf{Your Solution:}
+
+  \end{shaded}
+
+  \item [c.]
+  [2 points] Constrain the action set directly. In \texttt{ConstrainedQLearning}, implement action constraints so that
+  \texttt{velocity\_(t+1) < velocity\_threshold}. If no actions are valid, return \texttt{None}.
+  Mountain Car updates velocity as:
+  $$\text{velocity}_{t+1} = \text{velocity}_t + (\text{action} - 1) * \text{force} - \cos(3 * \text{position}_t) * \text{gravity}.$$
+  Treat $0.065$ as unsafe. After implementing the constraint, run:
+  \texttt{uv run grader.py 5c-helper} to compare policies for two continuous MDPs (one with \texttt{max\_speed} $=0.065$ and one very large). Explain in 1--2 sentences why the output policies differ now.
+
+  \expect{Complete \texttt{ConstrainedQLearning} in \texttt{submission.py}, then run \texttt{uv run grader.py 5c-helper}. Include 1--2 sentences explaining the difference.}
+
+  \begin{shaded}
+  % your solution goes here %
+  \textbf{Your Solution:}
+
+  \end{shaded}
+
+  \item [d.]
+  [2 points] \textbf{Designing safe exploration in the real world.}
+  Consider autonomous vehicles trained with RL on public roads in residential neighborhoods.
+  Design two MDPs and exploration strategies:
+
+  \begin{itemize}
+    \item \textbf{MDP A (unsafe):} Define $\text{States}$, $\text{Actions}(s)$, and $\text{Reward}(s,a,s')$ and an exploration policy where the vehicle could cause harm (e.g., endangering pedestrians, breaking traffic laws).
+    \item \textbf{MDP B (safer):} Modify MDP A to reduce or avoid the identified harms (e.g., constraints, penalties, restricted exploration).
+  \end{itemize}
+
+  For each MDP, include $\text{States}$, $\text{Actions}(s)$, $\text{Reward}(s,a,s')$, the exploration policy, and a brief (1--2 sentence) ethical explanation of how the design could cause or mitigate harm.
+
+  \expect{Definitions of two MDPs (states, actions, rewards), their exploration policies, and 1--2 sentence explanations of how their design could cause or mitigate harm.}
+
+  \begin{shaded}
+    % your solution goes here %
+  \textbf{Your Solution:}
+  \end{shaded}
+
+\end{enumerate}
+
+\end{document}

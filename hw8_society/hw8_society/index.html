@@ -1,0 +1,542 @@
+<head>
+    <title>Society</title>
+    <script src="plugins/main.js"></script>
+    <script src="grader_all.js"></script>
+</head>
+
+<body style="margin: auto" onload="onLoad('hw8_society', '<a href=mailto:badlani@stanford.edu>Adi Badlani</a>', '11/24/2025', 'https://edstem.org/')">
+
+<div id="assignmentHeader"></div>
+
+<div style="border: 5px solid red; padding: 10px; margin-bottom: 10px;">
+<strong>Note: DO NOT</strong> embed hyperlinks in your PDF writeup, as they aren't viewable via Gradescope. Paste the links instead.
+</div>
+
+<h2 class="problemTitle">Part 1: Preparation</h2>
+
+<p>
+    <strong>In this part:</strong> You will choose a modern AI product to analyze throughout the homework and gain initial access to it.
+</p>
+<p>
+    <strong>Why it's important:</strong> Later in this homework, you'll conduct hands-on research and testing, so selecting an accessible product that you can actually use is essential for completing the rest of the assignment.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>The product's official website and onboarding/getting started pages</li>
+    <li>Privacy policy, Terms of Service, Acceptable Use Policy</li>
+    <li>App store listings, GitHub documentation or READMEs (if open-source or developer-targeted)</li>
+    <li>Recent news coverage (e.g., TechCrunch, The Verge, Wired, NYT technology section)</li>
+    <li>Reddit communities, Hacker News, or user forums for first impressions and experiences</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="1a">
+        <strong>Choose Your AI Product:</strong>
+        <ul>
+            <li>Pick an AI-powered product or tool that is accessible to you. Some good candidates: Cursor, Nano Banana, ElevenLabs, Perplexity, Claude Code, etc. 
+                Free trials or student-accessible tools are recommended. Note that AI assistants (like ChatGPT or Google Gemini)
+                are <strong>not acceptable</strong> products for this assignment.</li>
+            <li>List both the product name and the company behind it. (Example: “Cursor by Cursor Technologies Inc.”)</li>
+            <li>Create an account or obtain access for yourself, so you can explore and use it during the rest of this assignment.</li>
+        </ul>
+        <div class="expected">
+            State the name of your chosen AI product and its developer/company. In 1–2 sentences, confirm that you have successfully created an account or gained access and can explore the product.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 2: Basic Information</h2>
+
+<p>
+    <strong>In this part:</strong> You will develop a foundational understanding of your chosen product by exploring its purpose, recent developments, mission alignment, and pricing structure.
+</p>
+<p>
+    <strong>Why it's important:</strong> Understanding these basics provides the context needed to analyze deeper issues like safety, fairness, and societal impact in later parts.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Official product documentation and feature pages</li>
+    <li>Investor or official product blog posts announcing updates</li>
+    <li>News coverage from the last 1–2 months</li>
+    <li>Company mission statement ("About Us" page, etc.)</li>
+    <li>Product pricing and feature comparison pages</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="2a">
+        <strong>Product Purpose and Usage:</strong>
+        <ul>
+            <li>Use your chosen product for at least 20 minutes.</li>
+            <li>Include at least two <b>screenshots</b> showing your interactions with the product. These should highlight its key purposes, typical task flows, and the core problems it addresses for users. Paste your screenshots into your <b>PDF writeup for this part</b>.</li>
+            <li>Based on your hands-on use and official resources, describe what the product is designed to do in 4–6 sentences. Identify at least two use cases and provide concrete examples (with screenshots in your PDF) where appropriate.</li>
+        </ul>
+        <div class="expected">
+            Submit a brief description (4–6 sentences) of the product's purpose and at least two concrete example user tasks. Include relevant screenshots in your PDF writeup.
+        </div>
+    </li>
+
+    <li class="writeup" id="2b">
+        <strong>Recent News and Developments:</strong>
+        <ul>
+            <li>Find and read 3+ recent news articles, official announcements, or blog updates about the product and/or its parent company. 
+                These articles need to be published within the last 1-2 months. Summarize your findings in 4–6 sentences, focusing on major new features, company developments, or relevant controversies.</li>
+        </ul>
+        <div class="expected">
+            Include a 3-5 sentence well-sourced summary (with links/citations) of the latest news and notable developments regarding this product or its parent company.
+        </div>
+    </li>
+
+    <li class="writeup" id="2c">
+        <strong>Company & Product Mission Alignment:</strong>
+        <ul>
+            <li>What is the company's stated mission? Include some quotes from their website.</li>
+            <li>What is the specific goal or intended impact of this particular product?</li>
+            <li>How does this product fit (or not fit) into the company's stated mission?</li>
+            <li>Consider the concept of <b>alignment</b>: how to make AI behave according to human needs and values. Does the product behave consistently 
+                with its stated goals, or have you observed instances where it might "reward hack" (optimized for the wrong objective) or produce outputs 
+                misaligned with user intentions? How does the company address the challenge of ensuring the AI system's behavior matches its intended purpose?</li>
+        </ul>
+        <div class="expected">
+            Briefly state the company's official mission and the product's stated goal. Analyze, in your own words (2-3 sentences), the relationship between the two—if you notice any tension, mismatch, or "mission drift," flag and explain it. Additionally, reflect on alignment challenges: whether the product consistently behaves as intended, and how the company addresses potential misalignment issues.
+        </div>
+    </li>
+
+    <li class="writeup" id="2d">
+        <strong>Product Pricing and Access:</strong>
+        <ul>
+            <li>What are the pricing details for this product? List the available plans/tiers and their costs.</li>
+            <li>Does the pricing follow an equitable or tiered-access model (e.g., discounts for college students)?</li>
+            <li>Beyond financial cost, are there <b>non-financial barriers</b> to accessing or using the product (such as device requirements, region restrictions, or mandatory integrations)?</li>
+            <li>Suggest at least one alternative pricing model. Reflect on potential pros and cons for both the company and its user base.</li>
+            <li>Consider the <b>ecosystem view</b> of AI: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). What can you determine about the computational resources required to run this product? Does the company disclose information about the <b>environmental impact</b> of training or operating the system (e.g., energy consumption, carbon footprint)? How might environmental costs relate to pricing and access?</li>
+        </ul>
+        <div class="expected">
+            In 3-4 sentences, list and describe the core pricing model, note any access barriers (financial or otherwise), and discuss at least one alternative pricing approach with a brief pros/cons analysis. Additionally, discuss what you can determine about the computational and environmental costs of the product, and how these relate to pricing and access.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 3: Usage, Audience, and Safety</h2>
+
+<p>
+    <strong>In this part:</strong> You will investigate who uses the product, how it's intended to be used, and what safeguards exist against misuse.
+</p>
+<p>
+    <strong>Why it's important:</strong> Understanding the gap between intended and actual use, as well as potential safety risks, helps identify where AI systems can cause harm despite good intentions.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Company "About," "News," or "Investors" pages for usage numbers</li>
+    <li>Third-party analytics sites (e.g., SimilarWeb, Statista) for user data</li>
+    <li>Case studies or testimonials published by the company</li>
+    <li>Safety guidelines or misuse policies</li>
+    <li>Blog posts about misuse mitigation</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="3a">
+        <strong>Product User Base and Demographics:</strong>
+        <ul>
+            <li>Do some research and report any available data on the product's users: 
+                total number of users, historical growth, and demographic breakdowns 
+                (such as user type, geography, and age group). Cite your sources (e.g., company "About," "Press," or "Investors" pages, third-party analytics sites).</li>
+        </ul>
+        <div class="expected">
+            Provide a 2-3 sentence summary of the product's user numbers and user composition, with cited sources.
+        </div>
+    </li>
+
+    <li class="writeup" id="3b">
+        <strong>Intended Use Cases and Audience:</strong>
+        <ul>
+            <li>Summarize what you learn about the intended use cases for this product. Who are the primary target users? Reference product documentation, official resources, or company case studies/testimonials as appropriate.</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, identify and concisely describe the main intended uses and user groups for the product.
+        </div>
+    </li>
+
+    <li class="writeup" id="3c">
+        <strong>Market Share and Competitors:</strong>
+        <ul>
+            <li>Determine the current market share of this product compared to key competitors. If exact figures are unavailable, provide best available estimates or relevant data/quotes from news or analytics sources.</li>
+        </ul>
+        <div class="expected">
+            In 3-4 sentences, include a comparative overview of the product's market position, citing sources or providing reasonable estimates.
+        </div>
+    </li>
+
+    <li class="writeup" id="3d">
+        <strong>Misuse Risks and Company Safeguards:</strong>
+        <ul>
+            <li>Discuss at least one way the product could be misused. What steps, if any, does the company take to safeguard against this misuse? Reference any published safety guidelines, usage policies, or blog posts about misuse mitigation.</li>
+            <li>Consider the concept of <b>dual use technology</b>: AI systems can be used for both beneficial and harmful purposes, making governance challenging. How does your chosen product exemplify this dual-use nature? Can you identify both a beneficial use case and a potential harmful misuse of the same underlying technology?</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, identify a realistic misuse scenario and summarize the company's corresponding safety policies or interventions. Additionally, discuss how the product demonstrates dual-use characteristics, providing examples of both beneficial and potentially harmful applications.
+        </div>
+    </li>
+
+    <li class="writeup" id="3e">
+        <strong>Gaps and Unintended Use Cases:</strong>
+        <ul>
+            <li>Are there any aspects of user information or misuse that appear <b>not</b> to be safeguarded against—based on what you can find published by the company or in trusted third-party reports? Briefly discuss.</li>
+            <li>Provide at least one example of an unintended use case of the product—something the company likely did <b>not</b> intend, but that users or communities have pursued anyway. Cite examples if you find them.</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, briefly discuss gaps in company safeguards and highlight at least one notable unintended use case, with references to sources.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 4: Documentation, Marketing, and Customer Support</h2>
+
+<p>
+    <strong>In this part:</strong> You will examine how the company communicates with users through marketing, documentation, and support channels.
+</p>
+<p>
+    <strong>Why it's important:</strong> The gap between marketing promises and actual capabilities, as well as the quality of user support, directly impacts user trust and the product's real-world effectiveness.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Company marketing pages, ads, YouTube demos</li>
+    <li>Social media promotions (LinkedIn, TikTok, Instagram, X)</li>
+    <li>Reddit, StackOverflow, Discord, or unofficial user communities</li>
+    <li>Product FAQ, Help Center</li>
+    <li>Customer service emails/chat logs you submit</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="4a">
+        <strong>Marketing Channels and Discovery:</strong>
+        <ul>
+            <li>Explore and describe <b>how the product is marketed</b> and how users discover it. Investigate the company's website, official marketing pages, ads, YouTube demos, and social media promotions (LinkedIn, TikTok, Instagram, X/Twitter).</li>
+            <li>Check for presence on unofficial channels—such as Reddit, Discord, or StackOverflow communities. Are there demos, influencer reviews, or sponsored posts?</li>
+            <li>Include or link to representative screenshots or examples where possible.</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, provide a summary of the main marketing channels and discovery avenues for the product, with links, cited examples, and/or screenshots.
+        </div>
+    </li>
+
+    <li class="writeup" id="4b">
+        <strong>Marketing Strategy and Mission Alignment:</strong>
+        <ul>
+            <li>Summarize what you believe the company's <b>core mission</b> is, based on official statements (About page, press releases, etc.).</li>
+            <li>Discuss whether the product's marketing strategy and messaging <b>align or conflict with the company's mission</b>. In your view, does the marketing <a href="https://www.smartinsights.com/internet-advertising/internet-advertising-strategy/emotionally-fueled-mass-communication-can-affect-advertising/" target="_blank">sensationalize</a> or misrepresent what the product can do, or is it fair and accurate? Provide rationale and cite examples (ads, taglines, posts, etc.).</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, clearly articulate whether the company's marketing supports, contradicts, or sensationalizes its stated mission and product capabilities, providing specific evidence.
+        </div>
+    </li>
+
+    <li class="writeup" id="4c">
+        <strong>Feedback, Help, and Customer Support:</strong>
+        <ul>
+            <li>Describe the official channels for users to <b>contact the company</b> with feedback, problems, or questions. Are there published support email addresses, chatbots, help desks, or feedback forms?</li>
+            <li>Identify and briefly assess any unofficial community support (e.g., Reddit, StackOverflow, Discord)—are these active and useful?</li>
+            <li>Evaluate any available help resources (product FAQ, Help Center, WikiHow guides, etc.). If there is an FAQ, how informative or thorough is it? Cite one or two example questions and answers from the FAQ if possible.</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, summarize the avenues available for support and community help, and comment on the effectiveness of official and unofficial documentation resources.
+        </div>
+    </li>
+
+    <li class="writeup" id="4d">
+        <strong>Submitting Customer Support Queries:</strong>
+        <ul>
+            <li>Submit <b>two customer support queries</b> based on your personal experience using the product. These should reflect genuine questions or typical issues you encountered. List those queries here and reflect in 1-2 sentences how customer support responded to and handled your queries.</li>
+        </ul>
+        <div class="expected">
+            Include two well-constructed sample support emails or chat messages, each clearly stating a question, problem, or request for help and, for each query, 1-2 sentences reflecting on how the company handled that query. 
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 5: Benchmarking</h2>
+
+<p>
+    <strong>In this part:</strong> You will design and run systematic tests to evaluate whether the product performs differently across different user groups or attributes.
+</p>
+<p>
+    <strong>Why it's important:</strong> This hands-on testing reveals real-world disparities that might not be apparent from company claims, helping you understand how AI systems can perpetuate or amplify inequality.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Product documentation explaining input/output constraints</li>
+    <li>Academic papers or benchmarks relating to the model (if available)</li>
+    <li>Online bias test suites for inspiration (e.g., AIF360, HolisticBias) or research papers</li>
+    <li>Safety or evaluation pages published by the company</li>
+    <li>Reddit or GitHub issues where users report model failures or problematic outputs</li>
+</ul>
+
+<ol class="problem">
+
+    <li class="writeup" id="5a">
+        <strong>Constructing Contrastive Input Sets:</strong>
+        <ul>
+            <li>Design at least <b>5</b> pairs or sets of inputs that differ by a single key attribute (e.g., <a href="https://arxiv.org/abs/2408.02237" target="_blank">Western bias</a>, <a href="https://doi.org/10.48550/arXiv.2305.10566" target="_blank">gender bias</a>, <a href="https://www.nature.com/articles/s41591-025-03626-6" target="_blank">racial bias</a>, <a href="https://arxiv.org/abs/2402.14875" target="_blank">name-based bias</a>, <a href="https://doi.org/10.1038/s41586-024-07856-5" target="_blank">dialect bias</a>, <a href="https://aclanthology.org/2024.acl-long.862.pdf" target="_blank">cultural bias</a>, etc.). For each set, specify which attribute you are testing and briefly explain why you chose it.</li>
+        </ul>
+        <div class="expected">
+            Submit at least five contrastive sets of inputs, each with 1–2 sentences about the attribute being examined. You may draw inspiration from published bias benchmarks or input suites.
+        </div>
+    </li>
+
+    <li class="writeup" id="5b">
+        <strong>Running and Documenting Results:</strong>
+        <ul>
+            <li>Run all your contrastive inputs through the AI product.</li>
+            <li>Carefully document the outputs (include representative examples in your PDF writeup) and note any differences, disparities, or recurring error types you observe. Summarize overall patterns in 2–3 sentences.</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, include output examples for each input set (in your PDF), and a brief written summary of disparities or patterns discovered.
+        </div>
+    </li>
+
+    <li class="writeup" id="5c">
+        <strong>Analyzing Disparities and Practical Impacts:</strong>
+        <ul>
+            <li>Analyze whether you observed systematic biases or disparities. Did output representations differ according to the attribute you changed? What categories of error or bias appeared repeatedly?</li>
+            <li>Reflect in 4–6 sentences on the potential real-world impact of these differences for actual users. Who might be affected, and how?</li>
+            <li>Consider the concept of <b>inequality</b> in AI systems: AI systems often perform differently across demographic and global groups, requiring monitoring of multiple metrics and auditing. Based on your testing, which groups might be disproportionately affected by the disparities you observed? What would effective monitoring and auditing look like for this product?</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, provide a thoughtful analysis of any detected patterns or biases, and discuss their significance and possible user impact. Additionally, identify which demographic or user groups might be disproportionately affected, and propose what monitoring and auditing mechanisms would be needed to address inequality in the product's performance.
+        </div>
+    </li>
+
+    <li class="writeup" id="5d">
+        <strong>User Rights, Feedback, and Fairness:</strong>
+        <ul>
+            <li>What rights or standards of service should users expect when receiving results from generative models, especially if they observe systematic differences?</li>
+            <li>Discuss what mechanisms or feedback channels should be available for users to report issues, and how responsive companies should be in addressing these concerns (2–4 sentences).</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, propose at least one user rights standard or feedback guideline, commenting on platform responsibilities.
+        </div>
+    </li>
+
+    <li class="writeup" id="5e">
+        <strong>Follow-Up Testing or Deeper Analysis:</strong>
+        <ul>
+            <li>Suggest additional tests or analyses that could strengthen or challenge your findings. What else would you examine (or how would you expand your test suite) to more robustly assess product fairness and reliability?</li>
+        </ul>
+        <div class="expected">
+            In 2-3 sentences, propose at least one follow-up experiment or extension to your benchmarking approach, justifying its value.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 6: Policies</h2>
+
+<p>
+    <strong>In this part:</strong> You will analyze the company's policies around data collection, transparency, copyright, and user rights.
+</p>
+<p>
+    <strong>Why it's important:</strong> These policies determine how user data is used, what transparency exists around the AI system, and what legal and ethical frameworks govern the product's operation.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Terms of Service and Privacy Policy</li>
+    <li>Data usage pages (e.g., "How we use your data")</li>
+    <li>Security or compliance documentation (GDPR, CCPA statements)</li>
+    <li>Company blog posts about transparency, trust, and safety</li>
+    <li>Public reports of harms or incidents (news articles, watchdog groups)</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="6a">
+        <strong>Data Collection and Use Policies:</strong>
+        <ul>
+            <li>Browse the company's website (including Terms of Service, privacy FAQ, help center) to locate their explicit policies on user data.</li>
+            <li>What are the company's policies for collection of user data? Do they save your data? Can they use it to train models? Can it be sold or shared with third parties?</li>
+            <li>Comment on how easy it was to locate the exact company policies governing user data and privacy.</li>
+            <li>Does the official privacy policy align with or contradict what you expected based on the product's marketing? (E.g., does the privacy policy permit more data collection than marketing claims suggest?)</li>
+            <li>Consider the <b>ecosystem view</b> of AI: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). What can you determine about the upstream data sources used to train this product? What policies govern how training data was collected, and how does this relate to the product's downstream impacts?</li>
+        </ul>
+        <div class="expected">
+            Summarize the company's policies on data collection (storage, model training, data sales/sharing) in 3–5 sentences. Note the ease or difficulty of finding clear policy documentation. Highlight any differences between the product's privacy messaging and the legally binding privacy terms. Additionally, discuss what you can determine about upstream data sources and how data collection policies relate to downstream impacts.
+        </div>
+    </li>
+
+    <li class="writeup" id="6b">
+        <strong>Transparency and Trust Analysis:</strong>
+        <ul>
+            <li>After reviewing company documentation (terms of service, privacy policies, safety pages), identify any aspects of their data transparency specifically intended to build user trust (e.g., plain-language explanations, user-accessible logs, opt-out features).</li>
+            <li>Similarly, identify any practices that might undermine user trust (e.g., vague or shifting policies, difficult opt-out procedures, nontransparent data resale practices). Provide examples if possible.</li>
+            <li>If you did not find transparency measures, propose at least one realistic feature or policy that would increase user trust for this product.</li>
+            <li>Consider the concept of <b>openness & transparency</b>: transparency is often seen as a prerequisite for safety, and there's a spectrum of openness (from fully closed proprietary systems to fully open-source). Where does this product fall on the openness spectrum? Does the company publish model cards, data sheets, or other transparency documentation? How does the level of transparency (or lack thereof) relate to safety and accountability?</li>
+        </ul>
+        <div class="expected">
+            Provide concrete examples (if any) of transparency and trust-building measures, and at least one element that could undermine user trust. If measures are lacking, suggest an actionable improvement. Additionally, in 2-3 sentences, analyze where the product falls on the openness spectrum and discuss how transparency (or its absence) relates to safety and accountability.
+        </div>
+    </li>
+
+    <li class="writeup" id="6c">
+        <strong>Fairness, Transparency, and Accountability in Practice:</strong>
+        <ul>
+            <li>Choose one <b>concrete definition</b> or example each for fairness, transparency, and accountability (e.g., fairness as demographic parity, transparency as publishing model cards, accountability as user appeals of automated decisions).</li>
+            <li>Discuss: How (if at all) does the company implement these concepts? Do they publish technical documentation (model cards, data sheets, safety reports), disclose model/data sources, allow users to contest or appeal outputs, or host public feedback forums?</li>
+            <li>Identify any alternatives they could implement, or propose new ideas to improve any of these areas for this product.</li>
+        </ul>
+        <div class="expected">
+            For each of fairness, transparency, and accountability, briefly (in 1-2 sentences) state your chosen definition/example and analyze the company's real-world implementation. Suggest at least one improvement or alternative measure for any area where they appear lacking.
+        </div>
+    </li>
+
+    <li class="writeup" id="6d">
+        <strong>User Empowerment and Accountability Tools:</strong>
+        <ul>
+            <li>What tools are available to regular users to help hold the company accountable for its promises (e.g., user data export, data deletion requests, public transparency dashboards, reporting forms)?</li>
+            <li>If you cannot find such tools, propose one (realistic and actionable) that the company could add to give users more power over—or insight into—their data and product interactions.</li>
+        </ul>
+        <div class="expected">
+            List any accountability tools actually implemented by the company. If lacking, describe one practical tool or feature users could be given, with 1–2 sentences explaining its value.
+        </div>
+    </li>
+
+    <li class="writeup" id="6e">
+        <strong>Copyright and Fair Use:</strong>
+        <ul>
+            <li>Research whether the company has disclosed information about the training data used for this product. Have there been any lawsuits, controversies, or public discussions about copyright, fair use, or data licensing related to this product or similar AI systems?</li>
+            <li>Clearly distinguish between <b>memorization</b> and <b>extraction</b> in AI models: <b>memorization</b> occurs when the model outputs exact copies of training data (for example, an unaltered paragraph or image from its training set), while <b>extraction</b> is when the model generates outputs that closely resemble or reconstruct substantial portions of copyrighted content—even if not copied word-for-word—due to patterns it learned during training. Based on your use of the product, have you encountered any outputs that appear to result from either memorization (exact reproduction) or extraction (near-verbatim or substantial portions) of copyrighted material, and would these raise copyright concerns?</li>
+            <li>How does the company address copyright and fair use in their terms of service or documentation? What policies govern how users can use outputs that might contain copyrighted material?</li>
+        </ul>
+        <div class="expected">
+            Summarize any copyright-related controversies, lawsuits, or policies you found related to this product in 4-6 sentences. Discuss the company's approach to fair use, data licensing, and user rights regarding potentially copyrighted outputs. If you observed any outputs that might raise copyright concerns, describe them briefly.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 7: Economics</h2>
+
+<p>
+    <strong>In this part:</strong> You will examine the economic and labor impacts of the product, including job displacement, augmentation, and effects on societal inequality.
+</p>
+<p>
+    <strong>Why it's important:</strong> AI systems can reshape labor markets and either reduce or exacerbate existing economic disparities.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Industry reports (e.g., McKinsey, PwC, U.S. Bureau of Labor Statistics) on job displacement trends</li>
+    <li>Blog posts by the company about use cases or productivity gains</li>
+    <li>Academic articles analyzing the impacts of automation</li>
+    <li>Tech policy think tanks (Brookings, AI Now Institute, etc.)</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="7a">
+        <strong>Job Tasks and Potential for Displacement:</strong>
+        <ul>
+            <li>Identify and describe what kinds of tasks or jobs this product is most useful for.</li>
+            <li>Refer to at least one resource (industry report, company blog, or academic article) that discusses these types of tasks or jobs, and summarize any projections or claims about automation or productivity within this context.</li>
+            <li>Consider the <b>ecosystem view</b>: AI's impact depends on upstream factors (data, compute, labor, environment) and downstream factors (users, deployment, harm). Beyond job displacement, what are the upstream labor implications? What kinds of human labor (e.g., data labeling, content moderation, model training) were required to build and maintain this product?</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, list and discuss the primary tasks or job roles relevant to this product. Support your answer with at least one citation to an external source when possible. Additionally, discuss the upstream labor required to build and maintain the product, considering the full ecosystem of work involved.
+        </div>
+    </li>
+
+    <li class="writeup" id="7b">
+        <strong>Job Displacement vs. Augmentation:</strong>
+        <ul>
+            <li>Discuss whether this product is more likely to directly replace existing jobs or to augment (assist/support) workers in those jobs. Explain your reasoning based on product features and cited resources, if possible.</li>
+            <li>Analyze the potential consequences and risks if the product replaces or augments jobs incorrectly or incompetently. What could go wrong for both workers and employers?</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, provide a thoughtful analysis of job displacement versus augmentation, including at least one risk or downside for workers. Support your conclusions with observations about the product or external evidence.
+        </div>
+    </li>
+
+    <li class="writeup" id="7c">
+        <strong>Societal Inequalities:</strong>
+        <ul>
+            <li>Analyze how the adoption of this tool might either exacerbate or mitigate existing societal inequalities (e.g., digital divide, socioeconomic, class, racial, or geographic divides).</li>
+            <li>Consider which demographics of users benefit most versus least from this technology. Would increased access to the product help close such divides, or does it risk deepening them?</li>
+            <li>Building on the concept of <b>inequality</b> in AI systems: beyond access, consider how the product's performance might vary across different user groups. How might differences in performance (not just access) contribute to inequality? What metrics should be monitored to ensure equitable outcomes?</li>
+        </ul>
+        <div class="expected">
+            Identify at least one way the product could impact societal inequalities, and discuss specific groups of users who would be most and least likely to benefit. Additionally, in 2-3 sentences, analyze how performance disparities (not just access barriers) might contribute to inequality, and suggest metrics for monitoring equitable outcomes.
+        </div>
+    </li>
+
+    <li class="writeup" id="7d">
+        <strong>Strategies and Mitigation Measures:</strong>
+        <ul>
+            <li>Propose at least one concrete strategy for deploying or regulating this technology to lessen negative effects (such as job loss or deepening inequality). Possibilities include "human-in-the-loop" mechanisms, reskilling or retraining programs, oversight requirements, or policy interventions.</li>
+            <li>Discuss how much power or oversight humans should have over the system's predictions and decisions in these mitigation approaches.</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, describe a pragmatic mitigation strategy and briefly explain how it would help reduce negative economic or social outcomes. Address the role of human oversight or intervention as part of the solution.
+        </div>
+    </li>
+</ol>
+
+<h2 class="problemTitle">Part 8: Rebuilding</h2>
+
+<p>
+    <strong>In this part:</strong> You will synthesize your findings to design an improved version of the product and reflect on who should have power and responsibility in building AI systems.
+</p>
+<p>
+    <strong>Why it's important:</strong> This synthesis helps you think critically about how to build better AI systems and who should be accountable for their impacts, shifting from theory to implementation.
+</p>
+
+<strong>Suggested Resources:</strong>
+<ul>
+    <li>Responsible AI guidelines (<a href="https://www.oecd.org/en/topics/sub-issues/ai-principles.html" target="_blank">OECD</a>, <a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank">NIST AI Risk Management Framework</a>)</li>
+    <li>Other tools in the same product category for comparison</li>
+    <li>Human-Computer Interaction (HCI) or User Experience (UX) design guidelines</li>
+    <li>Ethical AI frameworks discussed in class and previous assignments</li>
+</ul>
+
+<ol class="problem">
+    <li class="writeup" id="8a">
+        <strong>Summarize and Improve Your Product:</strong>
+        <ul>
+            <li>Based on the research you've done in this homework, summarize your chosen product's key features, strengths, and weaknesses in 1 paragraph.</li>
+            <li>Write a 1-2 paragraph summary of actionable improvements you would make to the product to address the weaknesses you identified.</li>
+        </ul>
+        <div class="expected">
+            In 2-3 paragraphs, provide a thoughtful summary of your research on your chosen product and actionable improvements you would make to the product to address the weaknesses you identified.
+        </div>
+    </li>
+
+    <li class="writeup" id="8b">
+        <strong>Power and Responsibility in Building AI:</strong>
+        <ul>
+            <li>Who currently has the power to make meaningful changes to products like this: engineers, designers, executives, policymakers, users, or someone else? Who do you think <em>should</em> hold the power and responsibility for building better AI-powered tools, and why?</li>
+            <li>Reflect on any tensions between who currently drives change and who ought to be responsible from a societal perspective. Propose one recommendation for shifting power or responsibility if there's a misalignment.</li>
+        </ul>
+        <div class="expected">
+            In 4-6 sentences, discuss who builds and steers AI products like the one you selected, and who should be responsible for their positive and negative impacts, supporting your recommendations with evidence or reasoning.
+        </div>
+    </li>
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Submission</h2>
+
+<p>
+    Submission is done on Gradescope.
+
+    <br>
+    <br>
+    <b>Written:</b> When submitting the written parts, make sure to select <b>all</b> the pages
+    that contain part of your answer for that problem, or else you will not receive credit.
+    To double-check after submission, you can click on each problem link on the right side, and it should show
+    the pages that are selected for that problem.
+    <br>
+    <br>
+    More details can be found in the Submission section on the course website.
+</p>
+
+<!------------------------------------------------------------>
+
+</body>

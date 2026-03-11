@@ -1,0 +1,201 @@
+\documentclass{article}
+
+%Page format
+\usepackage[table]{xcolor}
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+\usepackage{tabularx}
+%Math packages and custom commands
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\definecolor{Gray}{gray}{0.9}
+\usepackage{wrapfig}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\usepackage{amsmath}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\definecolor{shadecolor}{gray}{0.9}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\medskip \noindent{\textbf{NOTE:} #1}}
+\newcommand{\hint}[1]{\medskip \noindent{\textit{HINT:} #1}}
+\newcommand{\recall}[1]{\medskip{[\textbf{RECALL:} #1]}}
+\newcommand{\motivation}[1]{\medskip \noindent{\textbf{MOTIVATION:} #1}}
+\newcommand{\expect}[1]{\medskip \noindent{\fbox{\parbox{0.95 \textwidth}{\medskip \textbf{What we expect:} #1}}}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+% use below to modify the size of equations
+% usage is as follows: {fontsize}{math text size}{subscript size}{subsubscript size}
+% if you wish to change the math font size, modify {math text size}{subscript size}{subsubscript size} for your chosen global font size {fontsize} which is declared at the beginning of the document
+\DeclareMathSizes{10}{13}{13}{13}
+\DeclareMathSizes{14}{17}{17}{17}
+\DeclareMathSizes{12}{15}{15}{15}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+% \graphicspath{  }
+
+\title{\textbf{CS221 Autumn 2025: Artificial Intelligence:\\ Principles and Techniques} \\Homework 7: From Language to Logic}
+\date{}
+
+\chead{Logic}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques --- Autumn 2025}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [Your SUNet] \\
+Name: & [Your Name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.} \\
+% uncomment one of the below lines to make the text larger
+\fontsize{12pt}{16pt}\selectfont
+% \fontsize{14pt}{18pt}\selectfont
+\newline
+
+In this assignment, you will get some hands-on experience with logic. You'll see how logic can be used to represent the meaning of natural language sentences, and how it can be used to solve puzzles and prove theorems. Most of this assignment will be translating English into logical formulas, but in Problem 4, we will delve into the mechanics of logical inference. In Problem 6 and 7, you will consider the ethical implications of logic-based systems.\\
+
+\textbf{Before you get started, please read the Assignments section on the course website thoroughly}.
+
+\newpage
+\section*{Problem 6: Explainability of Logic-Based Systems}
+
+The notion that AI systems should be explainable and their decisions interpretable has gained traction. For instance, \href{https://gdpr-text.com/read/article-15/#related_gdpr-a-15_1h}{GDPR's Article 15} requires that individuals be provided \href{https://academic.oup.com/idpl/article/7/4/233/4762325}{``meaningful information''} about the logic of automated decisions. Independently of legal considerations, explainable AI protects the interests of both end users (the people employing AI to make or inform decisions) and to stakeholders (individuals affected by automated decisions). These are some of the considerations cited in the literature:
+
+\begin{enumerate}
+\item \textbf{Respect:} when decisions that affect you are made intelligible to you, this is considered an expression of respect for your status as a human being whose interests are worthy of consideration.
+\item \textbf{Assessing fairness of rules:} knowing what rules are applied to reach a decision, we have the ability to evaluate whether the rules are fair and whether they are fairly applied to us.
+\item \textbf{Contesting and correcting decisions:} understanding a decision we disagree with, allows us to contest it.
+\item \textbf{Ability to change user behavior:} understanding a decision that has a negative impact on us allows us to adapt our behavior in order to obtain different results in the future.
+\end{enumerate}
+
+Explainability has many different meanings (see this paper by \href{https://ir.lawnet.fordham.edu/cgi/viewcontent.cgi?article=5569&context=flr}{Andrew Selbst and Solon Barocas}, this paper by \href{https://arxiv.org/pdf/1702.08608.pdf}{Finale Doshi Velez and Been Kim}, and the \href{https://drive.google.com/file/d/10_VksMdeu8TywR6x3CAqXYO2V3DeFf0W/view?usp=sharing}{AI Explainability and Interpretability module}). Intuitively, logic-based systems should have more explainability power than machine learning-based ``black-box'' systems. In this problem, let us explore what kind of explainability logic-based systems might provide and which human interests are protected.
+
+\medskip
+
+Consider the Liar's Puzzle from Problem 3. Here, the first-order logic system takes in a set of facts and reasons over them to produce a conclusion. In this case, the conclusion judges the truthfulness of each person, which could carry with it real-world consequences. For example, someone might be fired if they are found guilty of crashing the server, whether they did it or not (AI is used widely for the allocation of healthcare resources, credit scoring, insurance, and content moderation, among other consequential domains).
+
+\begin{enumerate}
+    \item[a.]
+    [2 points] In the context of a general first-order logic system, like the one used in Problem 3's Liar Puzzle, what does the system return (besides the final answer) that could be considered an explanation?
+
+    \expect{1-2 sentences answering the question.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+
+    \item[b.]
+    [2 points] Why might this explanation not be adequate?
+
+    \hint{Think about model misspecification or framing of the question posed to the logic-based system.}
+
+    \expect{1-2 sentences answering the question.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+
+    \item[c.]
+    [2 points] Now, reflect on the four explainability considerations defined in this problem. Are any of these met by the explanations produced by a logic-based system?
+
+    \expect{2-4 sentences answering the question.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+\end{enumerate}
+
+\newpage
+\section*{Problem 7: Applications of Soundness and Completeness in AI Systems}
+
+Two important properties in logic-based systems are soundness and completeness. A system is sound if everything that is provable (derivable) is in fact true whereas a system is complete if everything that is true has a proof (derivation).
+
+\begin{itemize}
+  \item \textbf{Definition of Soundness:} A set of inference rules $Rules$ is sound if: $\{f: KB \vdash f\} \subseteq \{f: KB \vDash f\}$
+  \item \textbf{Definition of Completeness:} A set of inference rules $Rules$ is complete if: $\{f: KB \vdash f\} \supseteq \{f: KB \vDash f\}$
+\end{itemize}
+
+\begin{enumerate}
+    \item[a.]
+    [4 points] GPT-5 is a generative LLM pre-trained on a large corpus of diverse texts from the internet. The model can be fine-tuned to perform well on a wide array of downstream tasks. However, LLMs like GPT-5 are prone to hallucinations - or responses that are presented as fact but actually include false or misleading information\footnote{\href{https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)}{https://en.wikipedia.org/wiki/Hallucination\_(artificial\_intelligence)}}. Consider anything that's generated by the LLM to be what it derives. Applying the logic definitions of soundness and completeness, explain whether GPT-5 is sound and/or complete. Explain your reasoning by drawing on examples and the definitions above.
+
+    \expect{2-3 sentences for each definition of soundness and completeness (4-6 sentences total). You may use either natural language or mathematical notation in your answer.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+
+    \medskip
+
+    Imagine you are choosing between two proof-based systems. System A is sound but not complete. System B is complete but not sound. Assume the only difference between System A and System B is the difference between soundness and completeness.
+
+    \item[b.]
+    [2 points] You want to deploy one of these systems in a safety-critical setting, where acting on a false conclusion has severe consequences. Which system would you choose and why?
+
+    \expect{2-3 sentences explaining your choice, tying in the definitions of soundness and completeness. You may use either natural language or mathematical notation in your answer.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+
+    \item[c.]
+    [2 points] Imagine you are in a setting where you have a separate verifier system that can validate hypotheses (e.g., a human in the loop that inspects the hypotheses). You want to capture as much true information as possible in this setting. Which system would you choose and why?
+
+    \expect{2-3 sentences explaining your choice, tying in the definitions of soundness and completeness. You may use either natural language or mathematical notation in your answer.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+\end{enumerate}
+
+\end{document}
+

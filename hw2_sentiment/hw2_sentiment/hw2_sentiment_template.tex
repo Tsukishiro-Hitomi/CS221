@@ -1,0 +1,341 @@
+\documentclass{article}
+
+%Page format
+\usepackage[table]{xcolor}
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+\usepackage{tabularx}
+%Math packages and custom commands
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\definecolor{Gray}{gray}{0.9}
+\usepackage{wrapfig}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\definecolor{shadecolor}{gray}{0.9}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\medskip \noindent{\textbf{NOTE:} #1}}
+\newcommand{\hint}[1]{\medskip \noindent{\textit{HINT:} #1}}
+\newcommand{\recall}[1]{\medskip{[\textbf{RECALL:} #1]}}
+\newcommand{\motivation}[1]{\medskip \noindent{\textbf{MOTIVATION:} #1}}
+\newcommand{\expect}[1]{\medskip \noindent{\fbox{\parbox{0.95 \textwidth}{\medskip \textbf{What we expect:} #1}}}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+\newcommand{\TrainLossNew}{\text{TrainLoss}_{new}}
+\newcommand{\TrainLossAvg}{\text{TrainLoss}_{avg}}
+\newcommand{\TrainLossMax}{\text{TrainLoss}_{max}}
+\newcommand{\TrainLossMaxNew}{\text{TrainLossNew}_{max}}
+\newcommand{\TrainLossG}{\text{TrainLoss}_g}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\DeclareMathSizes{10}{13}{13}{13}
+\DeclareMathSizes{14}{17}{17}{17}
+\DeclareMathSizes{12}{15}{15}{15}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+\graphicspath{ {./images/} }
+
+\title{\textbf{CS221 Fall 2025: Artificial Intelligence:\\ Principles and Techniques} \\Homework 2: Sentiment}
+\date{}
+
+\chead{Sentiment}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques --- Fall 2025}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.} \\
+
+\fontsize{12pt}{16pt}\selectfont
+
+\section*{Problem 1: Building Intuition for Bag-of-Words Features and Linear Classification}
+
+Social media platforms like Twitter are rich sources of emotional expression. In this homework, you'll build classifiers to detect emotions in tweets using linear classification with cross-entropy loss and softmax activation. Consider the following dataset of 6 tweets, each labeled with exactly one emotion: \textbf{joy} (J), \textbf{anger} (A), or \textbf{fear} (F):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Tweet & Emotion & One-hot encoding \\
+\hline
+``amazing day" & Joy & [1, 0, 0] \\
+``scared of spiders" & Fear & [0, 0, 1] \\
+``love this" & Joy & [1, 0, 0] \\
+``so angry" & Anger & [0, 1, 0] \\
+``so so worried about tomorrow" & Fear & [0, 0, 1] \\
+``hate waiting" & Anger & [0, 1, 0] \\
+\hline
+\end{tabular}
+\end{table}
+
+Each tweet $x$ is mapped to a feature vector $f(x)$ using \textbf{bag-of-words representation} (you can think of it as word counts). Machine learning models don't directly take a string as input; instead, as you have learned, they work with matrices (like NumPy arrays and tensors). One way to convert strings to tensors is “bag-of-words” features, which treat input texts as a "bag of words" and represents them using a vector with the same length as our vocabulary. The resulting representation is a vector, where each position corresponds to a word in the vocabulary, and each value represents how many times that word appears in the input text. If we have a very large vocabulary, we would end up with a very sparse vector with many 0's.\\
+
+For this problem, let's assume our vocabulary consists of all unique words in the tweets above: \textbf{\{about, amazing, angry, day, hate, love, of, scared, so, spiders, this, tomorrow, waiting, worried\}}.\\
+
+To build our multi-class classifier, we use a weight matrix $\mathbf{W} \in \mathbb{R}^{d \times 3}$ where $d$ is the feature dimension (vocabulary size)
+and 3 is the number of classes. The model computes logits as $\mathbf{z} = \mathbf{W}^T f(x)$ and applies softmax to convert
+logits into probability values that sum to 1. Let $\mathbf{p}$ be the 3-dimensional vector of output probabilities, and $p_k$ be
+the probability that the $k$th element of $p$ has a true label of 1. The softmax probabilities are computed in the following way:
+$$p_k = \frac{e^{z_k}}{\sum_{j=1}^{3} e^{z_j}}$$
+
+Then, given the softmax probabilities, the classifier will use argmax to choose the prediction class with the highest $p_k$. \\
+
+The cross-entropy loss measures the difference between a model's predicted probabilities and the true probability distribution of the data. For a single example (with three output classes), it can be computed as follows: $$\text{Loss}_{\text{CE}}(x, \mathbf{y}, \mathbf{W}) = -\sum_{k=1}^{3} y_k \log p_k$$
+where $\mathbf{y}$ is the one-hot encoded true label vector.
+
+\subsection*{Part 1a: Feature Representation}
+
+\textbf{Question:} Using the vocabulary given above, write out the bag-of-words feature vector $f(x)$ for the tweet "so so worried about tomorrow".
+
+\expect{A feature vector corresponding to the vocabulary in alphabetical order: [about, amazing, angry, day, hate, love, of, scared, so, spiders, this, tomorrow, waiting, worried].}
+
+\mysolution{}
+
+\subsection*{Part 1b: Softmax Computation}
+
+\textbf{Question:} Given logits $\mathbf{z} = [2.0, 1.0, -1.0]$ for the three classes [Joy, Anger, Fear], compute the softmax probabilities. Show your work.
+
+\expect{The softmax probability vector $[P(\text{Joy}), P(\text{Anger}), P(\text{Fear})]$ with values rounded to 3 decimal places.}
+
+\mysolution{}
+
+\subsection*{Part 1c: Cross-entropy Loss}
+
+\textbf{Question:} For the tweet ``so angry" with true label Anger (one-hot: [0, 1, 0]), suppose your model outputs probabilities $[0.2, 0.7, 0.1]$. Calculate the cross-entropy loss for this example. Then explain what happens to the loss as the predicted probability for the correct class approaches 1.
+
+\expect{
+\begin{enumerate}
+    \item The numerical cross-entropy loss value
+    \item A brief explanation (2-3 sentences) of the loss behavior
+\end{enumerate}
+}
+
+\mysolution{}
+
+\subsection*{Part 1d: Gradient Analysis}
+
+\textbf{Question:} Derive $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$, the gradient of the cross-entropy loss with respect to the logit $z_k$. Show the mathematical steps to find $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$ and express your final answer in terms of $p_k$ and $y_k$ only. Then, explain intuitively why this expression makes sense for gradient-based learning.
+
+\expect{
+\begin{enumerate}
+    \item Mathematical derivation showing the steps to compute $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$
+    \item Final gradient expression in terms of $p_k$ and $y_k$
+    \item A brief intuitive explanation of why this gradient expression makes sense for learning (2-3 sentences)
+\end{enumerate}
+}
+
+\mysolution{}
+
+\newpage
+\section*{Problem 2: Building Intuition for Embeddings and Multilayer Perceptron}
+
+In the previous problem, we used bag-of-words features for sentiment classification. It is now an outdated method of representing texts in machine learning due to many limitations. For example, it doesn't capture word relationships (e.g., "amazing" and "wonderful" are similar but treated as completely different features) and creates very sparse, high-dimensional vectors. In this problem, we'll explore how neural networks with word embeddings can address these issues.\\
+
+We'll use the same set of tweets from Problem 1, but now represent each word with a dense 2-dimensional embedding vector. For simplicity, assume we have the following pre-trained word embeddings:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Word & Embedding \\
+\hline
+amazing & [0.8, 0.6] \\
+day & [0.2, 0.1] \\
+scared & [-0.5, -0.7] \\
+of & [0.0, 0.0] \\
+spiders & [-0.3, -0.4] \\
+love & [0.9, 0.4] \\
+this & [0.0, 0.0] \\
+so & [0.1, 0.0] \\
+angry & [-0.6, -0.8] \\
+worried & [-0.3, -0.6] \\
+about & [0.0, -0.1] \\
+tomorrow & [0.2, -0.2] \\
+hate & [-0.8, -0.5] \\
+waiting & [-0.1, -0.3] \\
+\hline
+\end{tabular}
+\end{table}
+
+For simplicity, we will focus on \textbf{binary sentiment classification (positive or negative)} instead of three-class classification for this problem only.
+
+
+\subsection*{Part 2a: Tweet Representation via Averaging}
+
+\textbf{Question:} One simple approach is to represent each tweet as the average of its word embeddings. Compute the averaged embedding representation for "so angry". Comment on one advantage and one disadvantage of this approach.
+
+\expect{
+\begin{enumerate}
+    \item A 2-dimensional averaged embedding vectors
+    \item Discuss one benefit and one limitation of creating embeddings for a text by averaging embeddings of its component words (2-3 sentences)
+\end{enumerate}
+}
+
+\mysolution{}
+
+\subsection*{Part 2b: Forward Pass}
+
+\textbf{Question:} Using the averaged representation for "so angry" from part (a), perform a forward pass step-by-step to find the predicted label $\hat{y}$. Show your intermediate calculations by filling in the table below.\\
+
+For the sake of simplicity, we'll use a 2-input, 2-hidden neuron, 1-output architecture consisting of:
+\begin{enumerate}
+    \item \textbf{Input layer:} Word embeddings $\mathbf{x}$
+    \item \textbf{Hidden layer:} 2 neurons with ReLU activation, where $\text{ReLU}(\mathbf{x}) = \max(0, \mathbf{x})$
+    \item \textbf{Output layer:} 1 neuron (binary sentiment classification) with sigmoid activation
+\end{enumerate}
+
+The forward pass equations are:
+$$\mathbf{h} = \text{ReLU}(\mathbf{W}^{(1)} \mathbf{x} + \mathbf{b}^{(1)})$$
+$$z = \mathbf{W}^{(2)} \mathbf{h} + b^{(2)}$$
+$$\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$$
+where $\mathbf{x} = [x_1, x_2]^T$ is the 2D input representation, here $\mathbf{x} = [x_1, x_2]^T$ is the 2D input representation, $\hat{y}$ is the predicted label, $\mathbf{W}^{(1)} \in \mathbb{R}^{2 \times 2}$, $\mathbf{b}^{(1)} \in \mathbb{R}^{2}$, $\mathbf{W}^{(2)} \in \mathbb{R}^{1 \times 2}$, and $b^{(2)} \in \mathbb{R}$.
+
+\textbf{Network parameters:}
+$$\mathbf{W}^{(1)} = \begin{bmatrix} 1.0 & 0.5 \\ -0.5 & 1.0 \end{bmatrix}, \quad \mathbf{b}^{(1)} = \begin{bmatrix} 0.1 \\ -0.2 \end{bmatrix}$$
+$$\mathbf{W}^{(2)} = \begin{bmatrix} 0.8 & -0.6 \end{bmatrix}, \quad b^{(2)} = 0.3$$
+
+\textbf{You should write your answers by copying and pasting the given table and filling its cells, or using bullet points to clearly state the value of each cell.}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Node/Variable & Formula/Computation & Value \\
+\hline
+$\mathbf{x}$ & NA & \\
+\hline
+$\mathbf{h}$ & & \\
+\hline
+$z$ & & \\
+\hline
+$\hat{y}$ & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\expect{Compute forward pass values at each node. Show your calculations for each step by filling in the table above.
+}
+
+\mysolution{}
+
+\subsection*{Part 2c: Backward Pass}
+
+\textbf{Question:} Using the same weights, bias and input vector as in part (b), first compute the loss value $L$. Then, perform backpropagation to compute gradients $\frac{\partial L}{\partial \mathbf{W}^{(1)}}$, $\frac{\partial L}{\partial \mathbf{b}^{(1)}}$, $\frac{\partial L}{\partial \mathbf{W}^{(2)}}$, and $\frac{\partial L}{\partial b^{(2)}}$. Assume the true label is $y_{\text{true}} = 0$ (negative sentiment) and we're using binary cross-entropy loss:
+$$L = -[y_{\text{true}} \log(\hat{y}) + (1 - y_{\text{true}}) \log(1 - \hat{y})]$$
+
+\textbf{You should write your answers by copying and pasting the tables below and filling their cells, or using bullet points to clearly state the value of each cell.}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Variable & Formula/Computation & Value \\
+\hline
+$L$ & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Gradient & Formula (Chain Rule) & Evaluated Value \\
+\hline
+$\frac{\partial L}{\partial \hat{y}}$ & & \\
+\hline
+$\frac{\partial L}{\partial z}$ & & \\
+\hline
+$\frac{\partial L}{\partial \mathbf{h}}$ & & \\
+\hline
+$\frac{\partial L}{\partial \mathbf{W}^{(2)}}$ & & \\
+\hline
+$\frac{\partial L}{\partial b^{(2)}}$ & & \\
+\hline
+$\frac{\partial L}{\partial \mathbf{W}^{(1)}}$ & & \\
+\hline
+$\frac{\partial L}{\partial \mathbf{b}^{(1)}}$ & & \\
+\hline
+\end{tabular}
+\end{table}
+
+\expect{
+\begin{enumerate}
+    \item Compute the loss value $L$
+    \item Starting from $\frac{\partial L}{\partial \hat{y}}$, compute gradients for each node working backwards and fill out the tables given above. For the formula column, you should express each partial in terms of partials above it in the table (recall backpropagation from lecture!)
+    \item Feel free to reuse values you already computed in part b
+\end{enumerate}
+}
+
+\mysolution{}
+
+\subsection*{Part 2d: Embedding Analysis}
+\textbf{Question:} Looking at the provided word embeddings, identify patterns in how positive emotion words, negative emotion words, and neutral words are positioned in the 2D embedding space. You don't have to plot anything for this problem; simply observe the patterns. What does this suggest about how word embeddings capture semantic relationships?
+
+\expect{
+\begin{enumerate}
+    \item Describe the spatial clustering of different word types (1-2 sentences)
+    \item Explain how embeddings capture semantic similarity and its advantage over bag-of-words (1-2 sentences)
+\end{enumerate}
+}
+
+\mysolution{}
+
+\newpage
+\section*{Problem 3: Linear Classification}
+
+\subsection*{Part 3h: Exploring Learning Rates}
+\textbf{Question:} If you adjust \verb|lr|, the learning rate, how do you expect loss and validation accuracy to change during training? Run the terminal command
+\\
+\verb|python submission.py --model linear --lr [your_learning_rate]|\\
+to experiment with three different learning rates. Report what they are and what training behaviors you observed. Why did the learning rate affect loss and accuracy this way?\\
+
+For example, you can run:
+\verb|python submission.py --model linear --lr 0.1|. If you don't include an \verb|--lr| argument, the default learning rate is 0.2.
+
+\expect{In 2-3 sentences, report three different learning rates you experimented with, and describe how they affected training behaviors. Explain why the learning rate affects loss and accuracy this way.
+}
+
+\mysolution{}
+
+\end{document}

@@ -1,0 +1,288 @@
+\documentclass{article}
+
+%Page format
+\usepackage[table]{xcolor}
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+\usepackage{tabularx}
+%Math packages and custom commands
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\definecolor{Gray}{gray}{0.9}
+\usepackage{wrapfig}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\usepackage{amsmath}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\definecolor{shadecolor}{gray}{0.9}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\medskip \noindent{\textbf{NOTE:} #1}}
+\newcommand{\hint}[1]{\medskip \noindent{\textit{HINT:} #1}}
+\newcommand{\recall}[1]{\medskip{[\textbf{RECALL:} #1]}}
+\newcommand{\motivation}[1]{\medskip \noindent{\textbf{MOTIVATION:} #1}}
+\newcommand{\expect}[1]{\medskip \noindent{\fbox{\parbox{0.95 \textwidth}{\medskip \textbf{What we expect:} #1}}}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+% use below to modify the size of equations
+% usage is as follows: {fontsize}{math text size}{subscript size}{subsubscript size}
+% if you wish to change the math font size, modify {math text size}{subscript size}{subsubscript size} for your chosen global font size {fontsize} which is declared at the beginning of the document
+\DeclareMathSizes{10}{13}{13}{13}
+\DeclareMathSizes{14}{17}{17}{17}
+\DeclareMathSizes{12}{15}{15}{15}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+% \graphicspath{  }
+
+\title{\textbf{CS221 Autumn 2025: Artificial Intelligence:\\ Principles and Techniques} \\Homework 5: Multi-agent Pac-Man}
+\date{}
+
+\chead{Pac-Man}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques --- Autumn 2025}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [Your SUNet] \\
+Name: & [Your Name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.} \\
+% uncomment one of the below lines to make the text larger
+\fontsize{12pt}{16pt}\selectfont
+% \fontsize{14pt}{18pt}\selectfont
+\newline
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.8]{pacman_multi_agent.png}
+\end{figure}
+
+For those of you not familiar with Pac-Man, it's a game where Pac-Man (the
+yellow circle with a mouth in the above figure) moves around in a maze and
+tries to eat as many \textit{food pellets} (the small white dots) as possible, while
+avoiding the ghosts (the other two agents with eyes in the above figure). If Pac-Man
+eats all the food in a maze, it wins. The big white dots at the top-left and
+bottom-right corner are \textit{capsules}, which give Pac-Man power to eat ghosts in a
+limited time window, but you won't be worrying about them for the required
+part of the assignment. You can get familiar with the setting by playing a few
+games of classic Pac-Man, which we come to just after this introduction.\\
+
+In this assignment, you will design agents for the classic version of Pac-Man,
+including ghosts. Along the way, you will implement both minimax and
+expectimax search. \\
+
+\textbf{Before you get started, please read the Assignments section on the course website thoroughly}.
+
+\newpage
+\section*{Problem 1: Minimax}
+\begin{enumerate}
+    \item [a.]
+    [5 points] Before you code up Pac-Man as a minimax agent, notice that instead of just one ghost, Pac-Man could have multiple ghosts as adversaries. We will extend the minimax algorithm from class, which had only one min stage for a single adversary, to the more general case of multiple adversaries. In particular, \textit{your minimax tree will have multiple min layers (one for each ghost) for every max layer.}\\
+
+    Formally, consider the limited depth tree minimax search with evaluation functions taught in class. Suppose there are $n+1$ agents on the board, $a_0, \cdots, a_n,$ where $a_0$ is Pac-Man and the rest are ghosts. Pac-Man acts as a max agent, and the ghosts act as min agents. A single \textit{depth} consists of all $n+1$ agents making a move, so depth 2 search will involve Pac-Man and each ghost moving two times. In other words, a depth of 2 corresponds to a height of $2(n+1)$ in the minimax game tree. (see diagram below).\\
+
+    \begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{minimax_depth.png}
+    \end{figure}
+
+    \textbf{Comment:} In reality, all the agents move simultaneously. In our formulation, actions at the same depth happen at the same time in the real game. To simplify things, we process Pac-Man and ghosts sequentially. You should just make sure you process all of the ghosts before decrementing the depth.
+
+    \expect{
+     Before diving into the recurrence, let's understand our notation. In the recurrence for $V_{\text{minmax}}(s,d)$, $s$ represents the current state, and $d$ represents the current depth in the game tree, with $d = d_{\text{max}}$ indicating the root of the tree (initial state) and decreasing as we go deeper into the tree.\\
+
+    Write the recurrence for $V_{\text{minmax}}(s,d)$ in math as a piecewise function. You should express your answer in terms of the following functions:
+    \begin{itemize}
+    \item $\text{IsEnd}(s),$ which tells you if $s$ is an end state.
+    \item $\text{Utility}(s),$ the utility of a state $s$.
+    \item $\text{Eval}(s),$ an evaluation function for the state $s$.
+    \item $\text{Player}(s),$ which returns the player whose turn it is in state $s$. Ensure you specify conditions like $\textrm{if}~ \text{Player}(s) = a_{0}$ clearly.
+    \item $\text{Actions}(s),$ which returns the possible actions that can be taken from state $s$.
+    \item $\text{Succ}(s,a),$ which returns the successor state resulting from taking an action $a$ at a certain state $s$.
+    \end{itemize}
+    You may also use $n$ anywhere in your solution without explicitly passing it in as an argument. You should not have $d_{\text{max}}$ in your solution. Please stick to notations and terms as described here, and avoid introducing personal variations without clear definitions. Remember, clarity is essential. You may use any relevant notation introduced in lecture.
+    }
+
+    \hint{It will be helpful to review the lecture slides about ``Depth-limited search''.}
+
+
+    % your solution goes here %
+    \mysolution{
+    }
+    \item[b.]
+    [10 points] Now fill out the \texttt{MinimaxAgent} class in \texttt{submission.py} using the above recurrence. Remember that your minimax agent (Pac-Man) should work with any number of ghosts, and your minimax tree should have multiple min layers (one for each ghost) for every max layer. \\
+
+    Your code should be able to expand the game tree to any given depth. Score the leaves of your minimax tree with the supplied \texttt{self.evaluationFunction}, which defaults to \texttt{scoreEvaluationFunction}. The class \texttt{MinimaxAgent} extends \texttt{MultiAgentSearchAgent}, which gives access to \texttt{self.depth} and \texttt{self.evaluationFunction}. Make sure your minimax code makes reference to these two variables where appropriate, as these variables are populated from the command line options. Please read more implementation hints on the assignment website.
+\end{enumerate}
+
+\newpage
+\section*{Problem 2: Alpha-beta pruning}
+\begin{enumerate}
+    \item[a.]
+    [10 points] Make a new agent that uses alpha-beta pruning to more efficiently explore the minimax tree in \texttt{AlphaBetaAgent}. Again, your algorithm will be slightly more general than the pseudo-code in the slides, so part of the challenge is to extend the alpha-beta pruning logic appropriately to multiple ghost agents. \\
+
+    You should see a speed-up: Perhaps depth 3 alpha-beta will run as fast as depth 2 minimax. Ideally, depth 3 on \texttt{mediumClassic} should run in just half a second per move or faster. To ensure your implementation does not time out, please observe the 0-point test results of your submission on Gradescope. \\
+
+    \texttt{python pacman.py -p AlphaBetaAgent -a depth=3} \\
+
+    The \texttt{AlphaBetaAgent} minimax values should be identical to the \texttt{MinimaxAgent} minimax values, although the actions it selects can vary because of different tie-breaking behavior (performance should be similar). Again, the minimax values of the initial state in the \texttt{minimaxClassic} layout are 9, 8, 7, and -492 for depths 1, 2, 3, and 4, respectively. Running the command given above this paragraph, which uses the default \texttt{mediumClassic} layout, the minimax values of the initial state should be 9, 18, 27, and 36 for depths 1, 2, 3, and 4, respectively. Again, you can verify by printing the computed minimax value of the initial state passed into \texttt{getAction}. Note when comparing the time performance of the \texttt{AlphaBetaAgent} to the \texttt{MinimaxAgent}, make sure to use the same layouts for both. You can manually set the layout by adding for example \texttt{-l minimaxClassic} to the command given above this paragraph.
+\end{enumerate}
+
+\newpage
+\section*{Problem 3: Expectimax}
+\begin{enumerate}
+    \item[a.]
+    [5 points] Random ghosts are of course not optimal minimax agents, so modeling them with minimax search is not optimal. Instead, write down the recurrence for $V_\text{exptmax}(s,d)$, which is the maximum expected utility against ghosts that each follow the random policy, which chooses a legal move uniformly at random.
+
+    \expect{Your recurrence should resemble that of problem 1a, which means that you should write it in terms of the same functions that were specified in problem 1a.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+}
+
+    \item[b.]
+    [10 points] Fill in \texttt{ExpectimaxAgent}, where your Pac-Man agent no longer assumes ghost agents take actions that minimize Pac-Man's utility. Instead, Pac-Man tries to maximize its expected utility and assumes it is playing against multiple \texttt{RandomGhost}s, each of which chooses from \texttt{getLegalActions} uniformly at random.\\
+
+    You should now observe a more cavalier approach to close quarters with ghosts. In particular, if Pac-Man perceives that it could be trapped but might escape to grab a few more pieces of food, it will at least try.\\
+
+    \texttt{python pacman.py -p ExpectimaxAgent -l trapped_classic -a depth=3}
+
+     You may have to run this scenario a few times to see Pac-Man's gamble pay off. Pac-Man would win half the time on average, and for this particular command, the final score would be -502 if Pac-Man loses and 532 or 531 (depending on your tiebreaking method and the particular trial) if it wins. \textbf{You can use these numbers to validate your implementation.}\\
+
+     Why does Pac-Man's behavior as an expectimax agent differ from its behavior as a minimax agent (i.e., why doesn't it head directly for the ghosts)? We'll ask you for your thoughts in Problem 5.
+\end{enumerate}
+
+\newpage
+\section*{Problem 4: Evaluation function (extra credit)}
+  \textbf{Some notes on problem 4:}
+  \begin{itemize}
+      \item \textbf{If you would like to participate in the extra credit, please submit the same submission.py to both the HW5 Programming and HW5 Programming (extra credit) assignments on Gradescope.}
+      \item On Gradescope, your programming assignment will be graded out of 30 points total (including basic and hidden tests). However, there is an opportunity to earn up to 9 extra credit points (8 programming and 1 written), as described below.
+      \item CAs will not be answering specific questions about extra credit; this part is on your own!
+  \end{itemize}
+
+\begin{enumerate}
+    \item[a.]
+    [8 points] Write a better evaluation function for Pac-Man in the provided function \texttt{betterEvaluationFunction}. The evaluation function should evaluate states rather than actions. You may use any tools at your disposal for evaluation, including any \texttt{util.py} code from the previous assignments. With depth 2 search, your evaluation function should clear the \texttt{smallClassic} layout with two random ghosts more than half the time for full (extra) credit and still run at a reasonable rate.
+
+    \texttt{python pacman.py -l smallClassic -p ExpectimaxAgent -a evalFn=better -q -n 20}
+
+For this question, we will run your Pac-Man agent 20 times with a time limit of 10 seconds and your implementations of questions 1-3. We will calculate the average score you obtained in the winning games if you win more than half of the 20 games. You obtain 1 extra point per 100 point increase above 1200 in your average winning score, \textbf{for a maximum of 4 points.} In \texttt{grader.py}, you can see how extra credit is awarded. For example, you get 2 points if your average winning score is between 1400 and 1500. \textbf{In addition}, the top 3 people in the class will get additional points of extra credit: 4 for the winner, 3 for the runner-up, and 1 for third place.  Note that late days can only be used for non-leaderboard extra credit. If you want to get extra credit from the leaderboard, please submit before the normal deadline.
+
+    \item[b.]
+    [1 points] Clearly describe your evaluation function. What is the high-level motivation? Also talk about what else you tried, what worked, and what didn't. If you score in the top 3 in the leaderboard, we hope to share your solution with your classmates after grades are released so everyone can learn from the best strategies, but ONLY if you consent to it.
+    In your answer, please indicate if you grant consent for us to share your solution if you make the top 3! Please write your thoughts here, not in code comments. Note that you can attempt this question only if you have implemented a different evaluation function in part (a) above.
+
+    \expect{A short paragraph answering the questions above.}
+
+\end{enumerate}
+     % your solution goes here %
+    \mysolution{
+
+
+    }
+
+
+\newpage
+\section*{Problem 5: AI (Mis)Alignment and Reward Hacking}
+Before diving into the problem, it would be beneficial to refer to the AI alignment module to gain deeper insights and context:
+\begin{enumerate}
+    \item \href{https://www.youtube.com/watch?v=5WHObJWE1FE&t=5s}{Video}
+    \item \href{https://stanford-cs221.github.io/autumn2024-extra/modules/games/ai-alignment-problem.pdf}{PDF}
+\end{enumerate}
+In this problem we'll revisit the differences between our minimax and expectimax agents, and reflect upon the broader consequences of \textbf{AI misalignment}: when our agents don't do what we want them to do, or technically do, but cause unintended consequences along the way. Going back to Problem 3, consider the following runs of the minimax and expectimax agents on the small \texttt{trapped_classic} environment:
+
+\begin{verbatim}
+python pacman.py -p MinimaxAgent -l trapped_classic -a depth=3
+python pacman.py -p ExpectimaxAgent -l trapped_classic -a depth=3
+\end{verbatim}
+
+\textbf{Be sure to run each command a few times}, as there is some randomness in the environment and the agents' behaviors, and pay attention, as the episode lengths can be quite short. You can always add \texttt{--frameTime 1} to the command line so the game pauses after every frame. What you should see is that the minimax agent will always rush towards the closest ghost (instead of the further ghost), while the expectimax agent will occasionally be able to pick up all of the pellets and win the episode. (If you don't see this behavior, your implementations could be incorrect!) Then answer the following questions:
+
+\begin{enumerate}
+    \item[a.]
+    [2 points] Describe why the behavior of the minimax and expectimax agents differ. In particular, why does the minimax agent, seemingly counterintuitively, always rush the closest ghost (instead of the further ghost), while the expectimax agent (occasionally) doesn't?
+
+    \expect{One sentence why the minimax agent always rushes the closest ghost and not the further ghost, and one sentence why the expectimax agent doesn't. Specifically, please state the assumptions made by minimax because of which this phenomenon occurs.}
+
+    % your solution goes here %
+    \mysolution{
+
+    }
+    \item[b.]
+    [1 point] We might say that the Minimax agent suffers from an \textbf{alignment} problem: the agent optimizes an objective that we have designed (our state evaluation function), but in some scenarios leads to suboptimal or unintended behavior (e.g.\ dying instantly). Often the burden is on the designer/programmer to design an objective that more accurately captures the behavior we want from the agent across scenarios. Suggest one potential change to the default state evaluation function $\text{Eval}(s)$ (i.e.\ \texttt{scoreEvaluationFunction}) and/or the default utility function $\text{Utility}(s)$ (i.e. the final game score) that would prevent the minimax agent from dying instantly in the \texttt{trapped_classic} environment, and behave more closely to that of the expectimax agent.
+
+    \expect{1-2 sentences describing a change in the state evaluation/utility function(s) and why it would work. No need to code anything up, verify that the suggested change is actually accessible in the \texttt{GameState} object, or give concrete numbers; just describe the hypothetical change in the evaluation function. An answer which suggests changes to how the game score is computed itself (which both $\text{Eval}(s)$ and $\text{Utility}(s)$ depend upon) will also be accepted.}
+
+    % your solution goes here %
+    \mysolution{
+
+
+    }
+
+    \item[c.]
+    [2 points] Pacman's behavior above is an example of one \href{https://arxiv.org/abs/1606.06565}{concrete problem in AI alignment} called
+    \textbf{reward hacking}, which occurs when an agent satisfies some objective but may not
+    actually fulfill the designer's intended goals, due e.g.\ to an imprecise definition of the
+    objective function. As another example, a cleaning robot rewarded for minimizing the number of
+    messes in a given space could optimize its reward function by hiding the messes under the rug.
+    In this case, the agent finds a shortcut to optimize the reward, but the shortcut fails to
+    attain the designer’s goals. (See \footnote{For more examples of reward hacking (or "specification gaming"), see this \href{https://www.deepmind.com/blog/specification-gaming-the-flip-side-of-ai-ingenuity}{article from DeepMind} and \href{http://tinyurl.com/specification-gaming}{this list} of concrete examples of reward hacking observed in the AI literature.} for more examples).
+
+    Even if the agent \emph{does} satisfy the designer's goals, another problem can arise (again see \href{https://arxiv.org/abs/1606.06565}{this paper}): the
+    agent's behavior might cause \textbf{negative side effects} that come in conflict with broader values held by society or other stakeholders. For instance, a social media content recommendation system might aim to maximize user engagement, but in doing so, spread disinformation and conspiracy theories (since such posts get the most engagement), which is at odds with societal values.
+
+    Can you think of another example of either of these problems?
+
+    \expect{In 2-5 sentences describe another realistic scenario (outside Pacman) in which a
+        designer might specify an objective, but the objective is either susceptible to reward
+        hacking, or the resulting agent/model causes negative side effects. Please state if your example is an
+    instance of reward hacking or negative side effects (or both) along with a brief justification to receive full credit.}
+
+    % your solution goes here %
+    \mysolution {
+
+    }
+
+\end{enumerate}
+
+\end{document}

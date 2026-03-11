@@ -1,0 +1,500 @@
+<head>
+    <title>Bayesian Networks</title>
+    <script src="plugins/main.js"></script>
+    <script src="grader_all.js"></script>
+  </head>
+
+  <body style="margin: auto" onload="onLoad('hw6_bayesian', '<a href=mailto:aryamana@stanford.edu>Aryaman Arora<a>', '10/28/2025', 'https://edstem.org/us/courses/77249/discussion/6522510')">
+
+
+
+  <div id="assignmentHeader"></div>
+  <p>
+    We've created a LaTeX template <a href="https://stanford-cs221.github.io/autumn2025/assignments/hw6_bayesian/hw6_bayesian_template.tex" target="_blank">here</a> for you to use that contains the prompts for each question.
+  </p>
+
+  <div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px;">
+
+     <h2>Installation Guide for Homework Environment</h2>
+
+      <h3>Using uv (Recommended Python Package Manager):</h3>
+      <p>Like previous assignments, we will use <code>uv</code> to setup the homework environment quickly.</p>
+
+      <h4>Installing uv:</h4>
+      <p>Please refer to the <a href="https://docs.astral.sh/uv/#installation" target="_blank">official uv installation documentation</a> for the most up-to-date installation instructions for your platform.</p>
+
+      <h3>Setting Up the Homework Environment with uv:</h3>
+      <p>Create and activate a virtual environment with the required dependencies:</p>
+
+      <h4>macOS/Linux:</h4>
+      <pre># Install uv once
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Optional: `uv` binary by default goes to `$HOME/.local/bin` on Linux/macOS,
+# so you may need to add it to your PATH (uv may have done this for you):
+export PATH="$HOME/.local/bin:$PATH"
+  </pre>
+
+      <h4>Windows:</h4>
+      <pre># Install uv once
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  </pre>
+
+      <h4>All platforms:</h4>
+      <pre># Download the homework zip and unzip into a folder
+# In your hw directory
+uv init .                            # Initialize project (creates pyproject.toml)
+uv python pin 3.12                   # Pin Python version
+uv venv                              # Create default virtual environment
+uv pip install -r requirements.txt   # Add dependencies
+uv run grader.py                     # Run the local grader (using the default venv)
+
+# To use the `python` command inside this project,
+# activate the (default) virtual environment:
+source .venv/bin/activate
+
+  </pre>
+      <h3>Running on Stanford FarmShare (Optional)</h3>
+      <p>If you cannot run the assignment on your laptop or need additional computing resources, Stanford provides FarmShare, a community computing environment for coursework and unsponsored research. Please follow the instructions at <a href="https://docs.farmshare.stanford.edu/" target="_blank">https://docs.farmshare.stanford.edu/</a> to get started with the computing environment.</p>
+    </div>
+    <br>
+
+
+   </div>
+   <br>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 1: Basic Bayes</h2>
+
+<p>Let's consider a simple scenario which we can model using a Bayesian network. You are walking to CS221 lecture and, on the way, you notice the grass on the Stanford Oval is wet. You reason that this could be because either it rained (rare in beautiful and sunny Palo Alto), or the sprinklers were on. Letting your mind wander from the lecture, you decide to sit down and figure out what happened here by applying your knowledge of Bayesian networks.
+</p>
+
+<ol class="problem">
+
+<li class="writeup" id="1a">
+List the edges in the Bayesian network that is a causal model for why the grass on the Oval is wet. Use the variables $\text{Rain}$, $\text{Sprinkler}$, and $\text{WetGrass}$.
+<div class="expected">
+    A list of edges in the Bayesian network, in the format of $\text{variable1} \rightarrow \text{variable2}$.
+</div>
+</li>
+
+<li class="writeup" id="1b">
+Express the joint probability $\mathbb{P}(\text{Rain}, \text{Sprinkler}, \text{WetGrass})$ in terms of local conditional probabilities.
+<div class="expected">
+    The simplified joint probability expression, in terms of the local conditional probabilities (not a numerical value).
+</div>
+</li>
+
+<li class="writeup" id="1c">
+Express $\mathbb{P}(\text{WetGrass})$ in terms of local conditional probabilities.
+<div class="expected">
+    The simplified marginal probability expression, in terms of the local conditional probabilities (not a numerical value).
+</div>
+</li>
+
+<li class="writeup" id="1d">
+Assume $p(\text{Rain}) = 0.2$, $p(\text{Sprinkler}) = 0.5$, and the following table of local conditional probabilities for $p(\text{WetGrass} \mid \text{Rain}, \text{Sprinkler})$ holds.
+<table>
+<thead>
+<tr>
+    <td>$\text{Rain}$</td>
+    <td>$\text{Sprinkler}$</td>
+    <td>$p(\text{WetGrass} \mid \text{Rain}, \text{Sprinkler})$</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>True</td>
+    <td>True</td>
+    <td>$0.9$</td>
+</tr>
+<tr>
+    <td>True</td>
+    <td>False</td>
+    <td>$0.8$</td>
+</tr>
+<tr>
+    <td>False</td>
+    <td>True</td>
+    <td>$0.7$</td>
+</tr>
+<tr>
+    <td>False</td>
+    <td>False</td>
+    <td>$0.0$</td>
+</tr>
+</tbody>
+</table>
+What is the probability that it rained, the sprinklers are on, but the grass is not wet?
+<div class="expected">
+    A numerical answer with brief calculations shown.
+</div>
+</li>
+
+<li class="writeup" id="1e">
+Mark the following claims about this Bayesian network as true or false:
+<ol>
+    <li>$\text{Rain}$ and $\text{Sprinkler}$ are independent.</li>
+    <li>$\text{Rain}$ and $\text{Sprinkler}$ are conditionally independent given $\text{WetGrass}$.</li>
+    <li>$\mathbb{P}(\text{Rain} \mid \text{WetGrass}) > \mathbb{P}(\text{Rain} \mid \text{WetGrass}, \text{Sprinkler})$.</li>
+</ol>
+<div class="expected">T/F for each subpart. No justification needed.</div>
+</li>
+
+</ol>
+
+<h2 class="problemTitle">Problem 2: Sampling</h2>
+
+<p>
+<img class="float-right" src="dna.png" style="width:260px;margin-left:10px"/>
+</p>
+
+<p>You got distracted while examining that luscious green grass in the Stanford Oval, and you somehow wandered into the Gilbert Biological Sciences Building. As you realize where you are, you overhear some biologists discussing the genome of a new species they've discovered, provisionally given the scientific name <em>Kenius bayus</em>.</p>
+
+<p>(As you remember from high school biology, the genome of a living thing is encoded in DNA, which is a long chain of nucleotides. Each nucleotide can be one of four organic molecules: <em>A</em>, <em>C</em>, <em>T</em>, or <em>G</em>.)</p>
+
+<p>Assume a simplified model of biology where each descendant mutates the gene of its ancestor with a probability of <code>mutation_rate</code>, with a uniform distribution over the other three nucleotides when mutating. The mutation process is independent for each nucleotide.</p>
+
+<p>For example, if we set <code>mutation_rate = 0.1</code>, then the local conditional probability table for $p(\text{HumblusStudentus} \mid \text{ThomasBayus})$ would be:</p>
+
+<table>
+<thead>
+<tr>
+    <td>$\text{ThomasBayus}$</td>
+    <td>$p(\text{HS} = \text{A} \mid \text{TB})$</td>
+    <td>$p(\text{HS} = \text{C} \mid \text{TB})$</td>
+    <td>$p(\text{HS} = \text{T} \mid \text{TB})$</td>
+    <td>$p(\text{HS} = \text{G} \mid \text{TB})$</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>$\text{A}$</td>
+    <td>$0.9$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+</tr>
+<tr>
+    <td>$\text{C}$</td>
+    <td>$0.03333$</td>
+    <td>$0.9$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+</tr>
+<tr>
+    <td>$\text{T}$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+    <td>$0.9$</td>
+    <td>$0.03333$</td>
+</tr>
+<tr>
+    <td>$\text{G}$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+    <td>$0.03333$</td>
+    <td>$0.9$</td>
+</tr>
+</tbody>
+</table>
+
+<p>The biologists are trying to figure out the probability of <em>Kenius bayus</em>'s genome resulting from a series of mutations from its ancestor, <em>Thomas bayus</em>. You realise you could help these poor biologists, who never took CS 221, by modelling the mutation process with Bayesian networks!</p>
+
+<ol class="problem">
+
+<li class="code" id="2a">
+Let's first get familiar with the provided interface for Bayesian networks. Convert the provided phylogenetic tree into a Bayesian network using the <code>BayesianNetwork</code> class and the <code>BayesianNode</code> class defined in <code>util.py</code>.
+<div class="expected">
+<p>An implementation of the <code>initialize_phylogenetic_tree</code> function in <code>submission.py</code>, which takes in a <code>mutation_rate</code> and returns a <code>BayesianNetwork</code> object representing the phylogenetic tree with the conditional probability tables being determined by the mutation rate.</p>
+<p>We provide code for varying the <code>genome_length</code> parameter; you only need to define each node and its domain, parents, and conditional probability table.</p>
+<div style="border: 5px solid red; padding: 10px; margin-bottom: 10px;">
+<p><strong>Understanding the shape of the conditional probability table (CPT):</strong> When you create a <code>BayesianNode</code>, the last dimension of its conditional probability table will correspond to that node's domain, and every preceding dimension will match the size of each parent's domain (in parent order). For example, a node with two parents whose domains are length 4 and a child domain of length 4 needs a CPT of shape <code>(4, 4, 4)</code>.</p>
+<p>By default, the <code>BayesianNode</code> constructor will create a uniform distribution over the domain, but for some problems you may need to set the CPTs to a different distribution.</p>
+<p><strong>For later problems:</strong> Remember to read and understand the member functions of the <code>BayesianNode</code> class in <code>util.py</code>, particularly <code>get_probability</code>, <code>parent_assignment_indices</code>, and <code>iter_parent_assignments</code>.</p>
+<p>Also, each <code>BayesianNetwork</code> has a <code>batch_size</code> parameter, which sets the size of a special batch axis for the nodes without parents. Your code may have to handle such nodes as a special case. This batch axis is used to sample sequences of independent observations (e.g. perhaps a DNA sequence...). By default, the <code>batch_size</code> is 1, but for some problems you may need to set it to a different value.</p>
+</div>
+</div>
+</li>
+
+<li class="code" id="2b">
+You will need to implement some initial scaffolding to enable sampling from Bayesian networks in the code.
+Extend the <code>BayesianNetwork</code> class and implement the function <code>forward_sampling</code>. This function should sample a single observation from the joint probability distribution of the given Bayesian network.
+<div class="expected">
+An implementation of the <code>forward_sampling</code> function in <code>submission.py</code>. You should use the given ordering of variables in <code>self.order</code> and sample from each one in order, using its conditional probability distribution and the values of its parents (which you should have already sampled). Each variable is represented by a <code>BayesianNode</code> object. Your solution should explicitly handle varying sequence lengths by using the <code>network.batch_size</code> parameter.
+</div>
+</li>
+
+<li class="code" id="2c">
+Implement <code>compute_joint_probability</code>, which computes the joint probability of a given set of assignments to the variables in the Bayesian network.
+<div class="expected">
+An implementation of the <code>compute_joint_probability</code> function in <code>submission.py</code>. Your solution should explicitly handle varying sequence lengths by using the <code>network.batch_size</code> parameter.
+</div>
+</li>
+
+<li class="writeup" id="2d">
+Implement <code>test_forward_sampling</code>, which will initialize the network with <code>mutation_rate = 0.1</code> and <code>genome_length = 10</code>, and then run the <code>forward_sampling</code> function once on this network.
+Fill out the table below with the complete genomes you observed for each species.
+<div class="expected">
+A completed table showing the sampled values for each variable in the phylogenetic tree.
+</div>
+
+<table>
+<thead>
+<tr>
+    <td><strong>Species</strong></td>
+    <td><strong>Genome</strong></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Thomas bayus</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Humblus studentus</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Aryamus bayus</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Kenius bayus</td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</li>
+
+<li class="code" id="2e">
+Now we will use <strong>rejection sampling</strong> to estimate the following posterior probability: $\mathbb{P}(\text{ThomasBayus} = \text{AAAC} \mid \text{KeniusBayus} = \text{AAAA})$.
+
+Implement the function <code>rejection_sampling</code>, which takes in a setting for <em>Kenius bayus</em>'s gene (as a list of nucleotide strings, e.g. <code>['A', 'A', 'A', 'A']</code>) along with the number of samples as an argument.
+<div class="expected">
+An implementation of the <code>rejection_sampling</code> function in <code>submission.py</code>. Your implementation should directly call the <code>forward_sampling</code> function you implemented in part (b). As before, your solution should explicitly handle the sequence length dimension by using the <code>network.batch_size</code> parameter.
+</div>
+</li>
+
+<li class="code" id="2f">
+We will now implement <strong>Gibbs sampling</strong> because these biologists are getting impatient. Complete the implementation of the iteration loop in the <code>gibbs_sampling</code> function, which takes in a dictionary with settings for the evidence variables along with number of iterations. We have implemented the initial assignment for you.
+<div class="expected">
+An implementation of the iteration loop in the <code>gibbs_sampling</code> function in <code>submission.py</code>.
+</div>
+</li>
+
+<li class="writeup" id="2g">
+Using your implementations of <code>rejection_sampling</code> and <code>gibbs_sampling</code>, estimate $\mathbb{P}(\text{ThomasBayus} = \text{AAAC} \mid \text{KeniusBayus} = \text{AAAA})$, using the provided benchmarking function <code>test_gibbs_vs_rejection</code>. Fill out the table below with the results.
+<div class="expected">
+A table showing the posterior probability estimates for each method.
+</div>
+<table>
+<thead>
+<tr>
+    <td><strong>Method</strong></td>
+    <td><strong>Steps/Iterations</strong></td>
+    <td><strong>Estimated Posterior</strong></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Rejection sampling</td>
+    <td>100</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Rejection sampling</td>
+    <td>10,000</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Gibbs sampling</td>
+    <td>100</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Gibbs sampling</td>
+    <td>10,000</td>
+    <td></td>
+</tr>
+<tr>
+    <td>Exact</td>
+    <td>&mdash;</td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ol>
+
+<h2 class="problemTitle">Problem 3: Learning</h2>
+
+<p>Later in life, you're a data engineer managing a team of human annotators. Your data consists of labels indicating whether a given conversation between an LLM and a human was <strong>good</strong> or <strong>bad</strong>.</p>
+
+<p>But you've run into a problem: your annotators can't seem to perfectly agree on their ratings, no matter how careful you are in your instructions! You vaguely remember something about Bayesian networks from CS221, so you decide to use them to help you assess annotator quality.
+</p>
+
+<p>For this problem, we'll assume you have ground-truth labels for each data point. (In the real world, this will not be the case!)</p>
+
+<ol class="problem">
+<li class="writeup" id="3a">
+Let's assume you have a single data point and three annotators who assign labels to this data point. List the edges in the Bayesian network for this scenario using the random variables $Y$ (the prior over ground-truth labels of this data point), $A_1$, $A_2$, and $A_3$ (the distribution over the annotators' claimed labels conditioned on the ground-truth label of the data point).
+<div class="expected">
+A list of edges in the Bayesian network, in the format of $\text{variable1} \rightarrow \text{variable2}$.
+</div>
+</li>
+
+<li class="writeup" id="3b">
+Fill out the following table with the local conditional probability distribution of a perfect annotator.
+<div class="expected">
+A table showing the conditional probability distribution.
+</div>
+<table>
+<thead>
+<tr>
+    <td>$Y$</td>
+    <td>$p(A_1 = \text{good} \mid Y)$</td>
+    <td>$p(A_1 = \text{bad} \mid Y)$</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>$\text{good}$</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>$\text{bad}$</td>
+    <td></td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</li>
+
+<li class="writeup" id="3c">
+Fill out the following table with the local conditional probability distribution of an annotator who guesses uniformly at random.
+<div class="expected">
+A table showing the conditional probability distribution.
+</div>
+<table>
+<thead>
+<tr>
+    <td>$Y$</td>
+    <td>$p(A_1 = \text{good} \mid Y)$</td>
+    <td>$p(A_1 = \text{bad} \mid Y)$</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>$\text{good}$</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>$\text{bad}$</td>
+    <td></td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</li>
+
+<li class="code" id="3d">
+Implement <code>bayesian_network_for_annotators(num_annotators, dataset_size)</code>, which returns the Bayesian network used for the remaining parts of this problem set. Your network should contain a latent <code>Y</code> node for the labels and one annotator node per annotator (e.g. <code>A_0</code>, <code>A_1</code>, <code>A_2</code>; 0-indexed), all sharing the same domain <code>['good', 'bad']</code>.
+<div class="expected">
+Describe the nodes, domains, parent relationships, and initial CPTs you use. The CPTs should encode a reasonable prior that annotators are better than chance (e.g., diagonally dominant matrices).
+</div>
+</li>
+
+<li class="code" id="3e">
+We will now implement maximum-likelihood estimation for Bayesian network parameters, which assumes every variable is observed. Implement the function <code>mle_estimate</code>, which takes in a <code>BayesianNetwork</code> and a list of observations and returns a new <code>BayesianNetwork</code> with the parameters estimated by MLE.
+<p>You will have to support Laplace smoothing using the parameter <code>lambda_param</code>.</p>
+<div class="expected">
+An implementation of the <code>mle_estimate</code> function in <code>submission.py</code>.
+<p>You should first implement the helper function <code>accumulate_assignment</code> to accumulate the counts for each assignment. You should also use the provided helper functions <code>init_zero_conditional_probability_tables</code> and <code>normalize_counts</code> where applicable; you don't need to implement them.</p>
+</div>
+</li>
+
+<li class="code" id="3f">
+We have provided a training dataset <code>annotations.csv</code> with data from 3 annotators on 100 data points. Note that this dataset contains ground-truth labels for each data point. Read in the dataset, initialise the correct <code>BayesianNetwork</code> structure for modelling this problem, and use <code>mle_estimate</code> to learn its parameters.
+<div class="expected">
+Implement <code>mle_estimate_for_annotators</code>, which takes in a list of observations and returns a new <code>BayesianNetwork</code> object with the parameters estimated by MLE.
+</div>
+</li>
+
+<li class="writeup" id="3g">
+After training the model with MLE, plot the conditional probability table for each of the annotators using the function <code>plot_annotator_cpts</code>. Which annotator seems to be the least trustworthy, and why?
+<div class="expected">
+A plot of the conditional probability tables for each annotator, along with a brief explanation of why the annotator is the least trustworthy.
+</div>
+</li>
+
+</ol>
+
+<h2 class="problemTitle">Problem 4: Learning without Labels</h2>
+
+<p>Your real dataset doesn't actually have ground-truth labels. You thus want to both model the annotator noise as well as estimate the ground-truth labels.</p>
+
+<p>You must now use the <strong>Expectation Maximization (EM)</strong> algorithm. Implement the algorithm and analyze the results on the dataset.</p>
+
+<ol class="problem">
+<li class="code" id="4a">
+Implement <code>e_step(BayesianNetwork, data)</code> which creates a dataset of fully-observed observations along with their normalized weights $q(h)$. (You should be able to use functions you implemented earlier as subroutines.)
+<div class="expected">
+An implementation of the <code>e_step</code> function in <code>submission.py</code>. We expect you to use the helper functions we've provided as well as your own implementations of <code>compute_joint_probability</code> and <code>accumulate_assignment</code>.
+
+<p>Tip: you should normalize the weights for each sample in the dataset independently, e.g. the weights for all possible labels for <code>sample0</code> should sum to $1$.</p>
+</div>
+</li>
+
+<li class="code" id="4b">
+Implement <code>m_step(BayesianNetwork, data)</code> which takes in the dataset from the <code>e_step</code> function and updates the parameters of the Bayesian network using maximum likelihood estimation.
+<div class="expected">
+An implementation of the <code>m_step</code> function in <code>submission.py</code>. Your code should use your earlier implementations of <code>accumulate_assignment</code> and the provided <code>init_zero_conditional_probability_tables</code> and <code>normalize_counts</code>.
+</div>
+</li>
+
+<li class="code" id="4c">
+Implement <code>em_learn(BayesianNetwork, data, num_iterations)</code> which runs the EM algorithm for a given number of iterations.
+<div class="expected">
+An implementation of the <code>em_learn</code> function in <code>submission.py</code>.
+</div>
+</li>
+
+<li class="writeup" id="4d">
+Use the provided function <code>test_em_learn</code> to train the model for 100 iterations. Plot the conditional probability tables for each of the annotators and the labels using the functions <code>plot_annotator_cpts</code> and <code>plot_label_cpt</code>. Show bot resulting plots.
+<div class="expected">
+Two plots of the conditional probability tables for each of the annotators and the labels.
+</div>
+</li>
+
+<li class="writeup" id="4e">
+Based on the plots, did the EM algorithm recover the true labels? How do you know?
+<div class="expected">
+A yes/no answer to the question, along with the evidence for your answer.
+</div>
+</li>
+
+<h2 class="problemTitle">Submission</h2>
+
+<p>
+    Submission is done on Gradescope.
+
+    <br>
+    <br>
+    <b>Written:</b> When submitting the written parts, make sure to select <b>all</b> the pages
+    that contain part of your answer for that problem, or else you will not get credit.
+    To double check after submission, you can click on each problem link on the right side, and it should show
+    the pages that are selected for that problem.
+    <br>
+    <br>
+    <b>Programming:</b> After you submit, the autograder will take a few minutes to run. Check back after
+    it runs to make sure that your submission succeeded. If your autograder crashes, you will receive a 0 on the
+    programming part of the assignment. Note: the only file to be submitted to Gradescope is <code>submission.py</code>.
+    <br>
+    <br>
+    More details can be found in the Submission section on the course website.
+</p>
+
+</body>

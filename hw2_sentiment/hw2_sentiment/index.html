@@ -1,0 +1,719 @@
+<head>
+  <title>Sentiment Analysis</title>
+  <script src="plugins/main.js"></script>
+  <script src="grader_all.js"></script>
+  <link rel="stylesheet" type="text/css" href="plugins/main.css" />
+</head>
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+<body style="margin: auto"
+  onload="onLoad('sentiment', '<a href=mailto:=ylinliu@stanford.edu>Linda Liu<a>', '09/29/2025', 'https://edstem.org/us/courses/81439/discussion/drafts/853613')"
+>
+  <div id="assignmentHeader"></div>
+
+    <!------------------------------------------------------------>
+<div id="assignmentHeader"></div>
+<div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px;">
+
+   <h2>Installation Guide for Homework Environment</h2>
+
+    <h3>Prerequisites:</h3>
+    <p>Ensure that you're using Python version <code>3.12</code>. Check your Python version by running:</p>
+    <pre>
+    python --version
+    </pre>
+    <p>or</p>
+    <pre>
+    python3 --version
+    </pre>
+
+    <h3>Installing uv (Recommended Python Package Manager):</h3>
+    <p>We recommend using <code>uv</code> as it's much faster than pip and conda for managing Python environments and packages.</p>
+
+    <h4>What is uv?</h4>
+    <p><code>uv</code> is a modern, Rust-based package + project manager for Python. It keeps the familiar pip workflow but re-implements the engine for speed and reliability. Concretely: it creates a venv, resolves and installs dependencies with its own fast installer, and deduplicates files via a global cache (copy-on-write on macOS, hardlinks on Linux/Windows). It can also manage Python versions per project (e.g., pin 3.12) so each assignment uses a clean, reproducible interpreter. Think "pip + virtualenv + pip-tools + pyenv/pipx".</p>
+
+    <h4>Installing uv:</h4>
+    <p>Please refer to the <a href="https://docs.astral.sh/uv/#installation" target="_blank">official uv installation documentation</a> for the most up-to-date installation instructions for your platform.</p>
+
+    <h3>Setting Up the Homework Environment with uv:</h3>
+    <p>Create and activate a virtual environment with the required dependencies:</p>
+
+    <h4>macOS/Linux:</h4>
+    <pre># Install uv once
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Optional: `uv` binary by default goes to `$HOME/.local/bin` on Linux/macOS,
+# so you may need to add it to your PATH (uv may have done this for you):
+export PATH="$HOME/.local/bin:$PATH"
+</pre>
+
+    <h4>Windows:</h4>
+    <pre># Install uv once
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+</pre>
+
+    <h4>All platforms:</h4>
+    <pre># Download the homework zip and unzip into `hw2_sentiment/`
+# In your hw directory
+uv init .                     # Initialize project (creates pyproject.toml)
+uv python pin 3.12            # Pin Python version
+uv add numpy einops torch     # Add dependencies
+uv run python grader.py       # Run the local grader
+</pre>
+    <h3>Running on Stanford FarmShare (Optional)</h3>
+    <p>If you cannot run the assignment on your laptop or need additional computing resources, Stanford provides FarmShare, a community computing environment for coursework and unsponsored research. Please follow the instructions at <a href="https://docs.farmshare.stanford.edu/" target="_blank">https://docs.farmshare.stanford.edu/</a> to get started with the computing environment.</p>
+  </div>
+  <br>
+
+  <!------------------------------------------------------------>
+
+  <div class="problemTitle">Advice for this homework:</div>
+  <ol class="problem">
+    <li>
+      Words are simply strings separated by whitespace.
+    </li>
+    <li>
+      You might find some useful functions in <code>util.py</code>. Have a look
+      around in there before you start coding.
+    </li>
+  </ol>
+
+  <p>
+  We've created a LaTeX template <a href="../../with-prompt-templates/hw2-sentiment-template.zip">here</a> for you to use that contains the prompts for each question.
+</p>
+
+  <div class="problemTitle">Problem 1: Building Intuition for Bag-of-Words Features and Linear Classification</div>
+
+<p>
+    Social media platforms like Twitter are rich sources of emotional expression. In this homework, you'll build classifiers to detect emotions in tweets using linear classification with cross-entropy loss and softmax activation. Consider the following dataset of 6 tweets, each labeled with exactly one emotion: <strong>joy</strong> (J), <strong>anger</strong> (A), or <strong>fear</strong> (F):
+</p>
+
+<table class="sentiment_table">
+    <tr>
+        <th>Tweet</th>
+        <th>Emotion</th>
+        <th>One-hot encoding</th>
+    </tr>
+    <tr>
+        <td>"amazing day"</td>
+        <td>Joy</td>
+        <td>[1, 0, 0]</td>
+    </tr>
+    <tr>
+        <td>"scared of spiders"</td>
+        <td>Fear</td>
+        <td>[0, 0, 1]</td>
+    </tr>
+    <tr>
+        <td>"love this"</td>
+        <td>Joy</td>
+        <td>[1, 0, 0]</td>
+    </tr>
+    <tr>
+        <td>"so angry"</td>
+        <td>Anger</td>
+        <td>[0, 1, 0]</td>
+    </tr>
+    <tr>
+        <td>"so so worried about tomorrow"</td>
+        <td>Fear</td>
+        <td>[0, 0, 1]</td>
+    </tr>
+    <tr>
+        <td>"hate waiting"</td>
+        <td>Anger</td>
+        <td>[0, 1, 0]</td>
+    </tr>
+</table>
+
+<p>
+    Each tweet $x$ is mapped to a feature vector $f(x)$ using <strong>bag-of-words representation</strong> (you can think of it as word counts).
+     Machine learning models don't directly take a string as input; instead, as you have learned, they work with tensors (e.g. expressed in NumPy or PyTorch).
+     One way to convert strings to tensors is “bag-of-words” features, which treat input texts as a "bag of words" and
+     represents them using a vector with the same length as our vocabulary. The resulting representation is a vector, where each position corresponds to a word in the vocabulary,
+       and each value represents how many times that word appears in the input text. If we have a very large vocabulary, we would end up with a very sparse vector with many 0's.
+</p>
+
+<p>
+    For this problem, let's assume our vocabulary consists of all unique words in the tweets above:
+    <strong>{about, amazing, angry, day, hate, love, of, scared, so, spiders, this, tomorrow, waiting, worried}</strong>.
+</p>
+
+<p>
+    To build our multi-class classifier, we use a weight matrix $\mathbf{W} \in \mathbb{R}^{d \times 3}$ where $d$ is the feature dimension (vocabulary size)
+    and 3 is the number of classes. The model computes logits as $\mathbf{z} = \mathbf{W}^T f(x)$ and applies softmax to convert
+    logits into probability values that sum to 1. Let $\mathbf{p}$ be the 3-dimensional vector of output probabilities, and $p_k$ be
+    the probability that the input belongs to class $k$. The softmax probabilities are computed in the following way:
+    $$p_k = \frac{e^{z_k}}{\sum_{j=1}^{3} e^{z_j}}$$
+</p>
+
+<p>
+  Then, given the softmax probabilities, the classifier will use argmax to choose the prediction class with the highest $p_k$.
+</p>
+
+<p>
+    The cross-entropy loss measures the difference between a model's predicted probabilities and
+    the true probability distribution of the data. For a single example (with three output classes), it can be computed as follows:
+    $$\text{Loss}_{\text{CE}}(x, \mathbf{y}, \mathbf{W}) = -\sum_{k=1}^{3} y_k \log p_k$$
+    where $\mathbf{y}$ is the one-hot encoded true label vector.
+</p>
+
+<ol class="problem">
+    <li class="writeup" id="1a">
+        <strong>Feature representation:</strong> Using the vocabulary given above, write out the bag-of-words feature vector $f(x)$ for the tweet "so so worried about tomorrow".
+
+        <div class="expected">
+            A feature vector corresponding to the vocabulary: {about, amazing, angry, day, hate, love, of, scared, so, spiders, this, tomorrow, waiting, worried}.
+        </div>
+    </li>
+
+    <li class="writeup" id="1b">
+        <strong>Softmax computation:</strong> Given logits $\mathbf{z} = [2.0, 1.0, -1.0]$ for the three classes [Joy, Anger, Fear], compute the softmax probabilities. Show your work.
+
+        <div class="expected">
+            The softmax probability vector $[P(\text{Joy}), P(\text{Anger}), P(\text{Fear})]$ with values rounded to 3 decimal places.
+        </div>
+    </li>
+
+    <li class="writeup" id="1c">
+        <strong>Cross-entropy Loss:</strong> For the tweet "so angry" with true label Anger (one-hot: [0, 1, 0]), suppose your model outputs probabilities $[0.2, 0.7, 0.1]$. Calculate the cross-entropy loss for this example. Then explain what happens to the loss as the predicted probability for the correct class approaches 1.
+
+        <div class="expected">
+            <ol>
+                <li>The numerical cross-entropy loss value</li>
+                <li>A brief explanation (2-3 sentences) of the loss behavior</li>
+            </ol>
+        </div>
+    </li>
+
+  <li class="writeup" id="1d">
+      <strong>Gradient analysis:</strong> Derive $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$, the gradient of the cross-entropy loss with respect to the logit $z_k$.
+      Show the mathematical steps to find $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$ and
+      express your final answer in terms of $p_k$ and $y_k$ only. Then, explain intuitively why this expression makes sense for gradient-based learning.
+
+      <div class="expected">
+          <ol>
+              <li>Mathematical derivation showing the steps to compute $\frac{\partial \text{Loss}_{\text{CE}}}{\partial z_k}$. (Hint: you may need to use the chain rule.)</li>
+              <li>Final gradient expression in terms of $p_k$ and $y_k$</li>
+              <li>A brief intuitive explanation of why this gradient expression makes sense for learning (2-3 sentences)</li>
+          </ol>
+      </div>
+  </li>
+</ol>
+
+  <!------------------------------------------------------------>
+
+  <div class="problemTitle">Problem 2: Building Intuition for Embeddings and Multilayer Perceptron</div>
+
+  <p>
+      In the previous problem, we used bag-of-words features for sentiment classification. It is now an outdated method of representing texts in
+      machine learning due to many limitations. For example, it doesn't capture word relationships (e.g., "amazing" and "wonderful" are similar
+      but treated as completely different features) and creates very sparse, high-dimensional vectors. In this problem, we'll explore how neural
+      networks with word embeddings can address these issues.
+  </p>
+
+  <p>
+      We'll use the same set of tweets from Problem 1, but now represent each word with a dense 2-dimensional embedding vector.
+      For simplicity, assume we have the following pre-trained word embeddings:
+  </p>
+
+<table class="sentiment_table">
+  <tr>
+    <th>Word</th>
+    <th>Embedding</th>
+  </tr>
+  <tr>
+    <td>amazing</td>
+    <td>[0.8, 0.6]</td>
+  </tr>
+  <tr>
+    <td>day</td>
+    <td>[0.2, 0.1]</td>
+  </tr>
+  <tr>
+    <td>scared</td>
+    <td>[-0.5, -0.7]</td>
+  </tr>
+  <tr>
+    <td>of</td>
+    <td>[0.0, 0.0]</td>
+  </tr>
+  <tr>
+    <td>spiders</td>
+    <td>[-0.3, -0.4]</td>
+  </tr>
+  <tr>
+    <td>love</td>
+    <td>[0.9, 0.4]</td>
+  </tr>
+  <tr>
+    <td>this</td>
+    <td>[0.0, 0.0]</td>
+  </tr>
+  <tr>
+    <td>so</td>
+    <td>[0.1, 0.0]</td>
+  </tr>
+  <tr>
+    <td>angry</td>
+    <td>[-0.6, -0.8]</td>
+  </tr>
+  <tr>
+    <td>worried</td>
+    <td>[-0.3, -0.6]</td>
+  </tr>
+  <tr>
+    <td>about</td>
+    <td>[0.0, -0.1]</td>
+  </tr>
+  <tr>
+    <td>tomorrow</td>
+    <td>[0.2, -0.2]</td>
+  </tr>
+  <tr>
+    <td>hate</td>
+    <td>[-0.8, -0.5]</td>
+  </tr>
+  <tr>
+    <td>waiting</td>
+    <td>[-0.1, -0.3]</td>
+  </tr>
+</table>
+
+<p>
+  For simplicity, we will focus on <strong>binary sentiment classification (positive or negative)</strong> instead of three-class classification for this problem only.
+</p>
+
+  <ol class="problem">
+      <li class="writeup" id="2a">
+          <strong>Embeddings via averaging:</strong> One simple approach is to represent each tweet
+          as the average of its word embeddings. Compute the averaged embedding representation
+          for "so angry". Comment on one advantage and one disadvantage of this approach.
+
+          <div class="expected">
+              <ol>
+                  <li>A 2-dimensional averaged embedding vector</li>
+                  <li>Discuss one benefit and one limitations of creating embeddings for a text by averaging embeddings of its component words (2-3 sentences)</li>
+              </ol>
+          </div>
+      </li>
+
+      <li class="writeup" id="2b">
+        <strong>Forward pass:</strong> Using the averaged representation for "so angry" from part (a),
+        perform a forward pass step-by-step to find the predicted label $\hat{y}$. Show your intermediate calculations by filling in the table below.
+
+      <p>
+        For the sake of simplicity, we'll use a 2-input, 2-hidden neuron,
+        1-output architecture consisting of:
+        <ol>
+            <li><strong>Input layer:</strong> Word embeddings $\mathbf{x}$</li>
+            <li><strong>Hidden layer:</strong> 2 neurons with ReLU activation, where $\text{ReLU}(\mathbf{x}) = \max(0, \mathbf{x})$</li>
+            <li><strong>Output layer:</strong> 1 neuron (binary sentiment classification) with sigmoid activation</li>
+        </ol>
+      </p>
+      <p>
+          The forward pass equations are:
+          $$\mathbf{h} = \text{ReLU}(\mathbf{W}^{(1)} \mathbf{x} + \mathbf{b}^{(1)})$$
+          $$z = \mathbf{W}^{(2)} \mathbf{h} + b^{(2)}$$
+          $$\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$$
+          where $\mathbf{x} = [x_1, x_2]^T$ is the 2D input representation, $\hat{y}$ is the predicted label, $\mathbf{W}^{(1)} \in \mathbb{R}^{2 \times 2}$, $\mathbf{b}^{(1)} \in \mathbb{R}^{2}$, $\mathbf{W}^{(2)} \in \mathbb{R}^{1 \times 2}$, and $b^{(2)} \in \mathbb{R}$.
+      </p>
+
+      <p>
+          <strong>Network parameters:</strong><br>
+          $$\mathbf{W}^{(1)} = \begin{bmatrix} 1.0 & 0.5 \\ -0.5 & 1.0 \end{bmatrix}, \quad \mathbf{b}^{(1)} = \begin{bmatrix} 0.1 \\ -0.2 \end{bmatrix}$$
+          $$\mathbf{W}^{(2)} = \begin{bmatrix} 0.8 & -0.6 \end{bmatrix}, \quad b^{(2)} = 0.3$$
+      </p>
+
+      <p>
+          <strong>You should write your answers by copy and pasting the table below and filling its cells, or using bullet points to clearly state the value of each cell.</strong>
+      </p>
+
+      <table class="sentiment_table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Node/Variable</th>
+                        <th style="width: 45%;">Formula/Computation</th>
+                        <th style="width: 35%;">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>$x$</td>
+                        <td>NA</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>$\mathbf{h}$</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>$z$</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>$\hat{y}$</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+      <div class="expected">
+          <ol>
+              <li>Compute forward pass values at each node. Show your calculations for each step by filling in the table above</li>
+          </ol>
+      </div>
+  </li>
+
+      <li class="writeup" id="2c">
+          <strong>Backpropagation:</strong> Using the same weights, bias and input vector as in part (b), first compute the loss value $L$.
+          Then, perform backpropagation to compute gradients $\frac{\partial L}{\partial \mathbf{W}^{(1)}}$, $\frac{\partial L}{\partial \mathbf{b}^{(1)}}$, $\frac{\partial L}{\partial \mathbf{W}^{(2)}}$, and $\frac{\partial L}{\partial b^{(2)}}$.
+          Assume the true label is $y_{\text{true}} = 0$ (negative sentiment)
+          and we're using binary cross-entropy loss:
+          $$L = -[y_{\text{true}} \log(\hat{y}) + (1 - y_{\text{true}}) \log(1 - \hat{y})]$$
+
+          <p>
+            <strong>You should write your answers by copy and pasting the table below and filling its cells, or using bullet points to clearly state the value of each cell.</strong>
+          </p>
+          <table class="sentiment_table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Variable</th>
+                    <th style="width: 45%;">Formula/Computation</th>
+                    <th style="width: 35%;">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$L$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="sentiment_table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Gradient</th>
+                    <th style="width: 45%;">Formula (Chain Rule)</th>
+                    <th style="width: 35%;">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$\frac{\partial L}{\partial \hat{y}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial z}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial \mathbf{h}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial \mathbf{W}^{(2)}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial b^{(2)}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial \mathbf{W}^{(1)}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$\frac{\partial L}{\partial \mathbf{b}^{(1)}}$</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+          <div class="expected">
+              <ol>
+                  <li>Compute the loss value $L$</li>
+                  <li>Starting from $\frac{\partial L}{\partial \hat{y}}$, compute gradients for each node working backwards and fill out the table given above.
+                    For the formula column, you should express each partial in terms of partials above it in the table (recall <a href="https://stanford-cs221.github.io/autumn2025-lectures/?trace=backpropagation">backpropagation</a> from lecture!)
+                  </li>
+                  <li>Feel free to reuse values you already computed in part b</li>
+              </ol>
+          </div>
+      </li>
+
+    <li class="writeup" id="2d">
+        <strong>Embedding analysis:</strong> Looking at the provided word embeddings, identify
+        patterns in how positive emotion words (amazing, love), negative emotion words
+        (scared, hate, angry), and neutral words (this, about, of) are positioned in the 2D
+        embedding space. You don't have to plot anything for this problem; simply observe the
+        patterns. What does this suggest about how word embeddings capture
+        semantic relationships? Explain why embeddings might be more meaningful than the
+        bag-of-words approach for capturing semantic relationships.
+
+
+        <div class="expected">
+            <ol>
+                <li>Describe the spatial clustering of different word types (1-2 sentences)</li>
+                <li>Explain how embeddings capture semantic similarity and its advantage over the bag-of-words approach (1-2 sentences)</li>
+            </ol>
+        </div>
+    </li>
+
+</ol>
+
+  <!------------------------------------------------------------>
+  <div class="problemTitle">Problem 3: Linear Classifier</div>
+
+  <p>
+    <img src="sentiment.jpg" />
+  </p>
+
+  <p>
+    Now, we will implement the first classifier that can classify tweet sentiments.
+    Recall that in our data, each tweet is labeled with one of three emotions (<strong>joy</strong>, <strong>anger</strong>, or <strong>fear</strong>) in one-hot encoding. For example:
+  </p>
+
+  <table class="sentiment_table">
+    <tr>
+      <th>text</th>
+      <th>one-hot label</th>
+    </tr>
+    <tr>
+      <td>i feel very happy and excited since i learned so many things</td>
+      <td>[1,0,0]</td>
+    </tr>
+    <tr>
+      <td>i feel angered and firey</td>
+      <td>[0,1,0]</td>
+    </tr>
+    <tr>
+      <td>i remember feeling acutely distressed for a few days</td>
+      <td>[0,0,1]</td>
+    </tr>
+  </table>
+
+  <ol class="problem">
+    <li class="code" id="3a">
+      <strong>Build vocabulary:</strong> Implement <code>build_vocabulary(examples)</code>, which builds a vocabulary using
+      words seen in the training examples. Your implementation should populate the <code>Vocabulary</code> class provided in <code>util.py</code>, which will
+      be used in part b to build a sparse feature representation for any input text.
+      <div class="expected">
+        Implement <code>build_vocabulary(examples)</code> using the Vocabulary class from <code>util.py</code>.
+      </div>
+    </li>
+
+    <li class="code" id="3b">
+      <strong>Text to features:</strong> Implement <code>text_to_features(text, vocab)</code>, which converts a text string into a sparse feature vector.
+      Reference 1a if you want to revisit the steps for this process.
+    </li>
+
+    <li class="code" id="3c">
+      <strong>NumPy softmax:</strong> Implement <code>numpy_softmax(logits)</code> using <code>einops</code> and <code>NumPy</code> library functions only.
+      </div>
+    </li>
+
+    <li class="code" id="3d">
+      <strong>NumPy cross-entropy loss:</strong> Implement <code>numpy_cross_entropy_loss(predictions, targets, epsilon)</code>,
+      which returns a floating point number measuring how far the predicted probabilities are from the true one-hot labels,
+      on average.
+      <br/><br/>
+    </li>
+
+    <li class="code" id="3e">
+      <strong>NumPy gradient computation:</strong> Implement <code>numpy_compute_gradients(features, predictions, targets)</code>,
+      which returns the gradients for weight and bias, respectively. This is later used to update model weights using
+      backpropagation.
+      <br/><br/>
+    </li>
+
+    <li class="code" id="3f">
+      <strong>Linear classifier predictor:</strong> Implement <code>predict_linear_classifier(features, labels, weights, bias)</code>,
+      which makes predictions on input features using trained weights and bias, and computes the accuracy of the predictions.
+      <br/><br/>
+      Your implementation should:
+      <ol>
+        <li>Compute logits by multiplying features with weights and adding bias</li>
+        <li>Apply softmax to convert logits to probabilities</li>
+        <li>Get predicted class labels by taking the argmax of probabilities</li>
+        <li>Compare with true labels to compute accuracy</li>
+      </ol>
+    </li>
+
+    <li class="code" id="3g">
+      <strong>Train linear classifier:</strong> Implement <code>train_linear_classifier(...)</code>,
+      which integrates all previous components into a complete training loop.
+      <br/><br/>
+      Your implementation should:
+      <ol>
+        <li>Initialize weights randomly and bias as a 0-vector</li>
+        <li>For each epoch: compute forward pass, calculate loss, compute gradients, and update parameters correspondingly.
+          At the end of the epoch, print out the training loss and validation accuracy
+        </li>
+        <li>Use your implemented softmax, cross-entropy loss, gradient, and predictor functions</li>
+        <li>You should train the model on training data only; <strong>do not</strong> train the model on validation data.</li>
+      </ol>
+      Finally, run <code>python submission.py --model linear</code>. The autograder requires that you achieve at least a 0.4 accuracy using default hyperparameters.
+    </li>
+
+    <li class="writeup" id="3h">
+      If you adjust <code>lr</code>, the learning rate, how do you expect loss and validation accuracy to change
+      during training? Run the terminal command <code>python submission.py --model linear --lr [your_learning_rate]</code>
+      to experiment with three different learning rates. Report what they are and what training behaviors
+      you observed. Why did the learning rate affect loss and accuracy this way?
+      <br/><br/>
+      For example, you can run:
+      <code>python submission.py --model linear --lr 0.1</code>. If you don't include an <code>--lr</code>
+      argument, the default learning rate is 0.2.
+      <div class="expected">
+        In 2-3 sentences, report three different <code>lr</code>'s you experimented with, and describe how they affected training behaviors.
+        Explain why the learning rate affects loss and accuracy this way.
+      </div>
+    </li>
+
+  </ol>
+
+  <!------------------------------------------------------------>
+  <div class="problemTitle">Problem 4: Multilayer Perceptron and Embeddings</div>
+
+  <p>
+    Linear classification was a simple attempt at detecting tweet sentiments. In class, we learned that word embeddings
+    and neural networks are powerful tools in natural language processing, and we will now implement them.
+  </p>
+
+  <p>
+    To build embeddings, we convert each word into a small,
+    dense "embedding" vector (such as a 32-dimensional array of numbers) that captures the word's meaning.
+    To obtain the embedding for each text, we simply average all the word embeddings to get one fixed-size vector per document -
+    so a 500-word document and a 10-word document both become the same size vector, making them perfect
+    inputs for your multilayer perceptron classifier while preserving much more semantic information than word counts alone.
+  </p>
+
+  <p>
+    We will implement a simple <strong>2-layer neural network</strong> consisting of:
+
+      <ol>
+        <li>An input layer that takes averaged embeddings of size embedding_dim</li>
+        <li>A hidden layer that uses ReLU activation</li>
+        <li>An output layer that produces raw scores (logits) for each sentiment class</li>
+      </ol>
+
+    <em>Note that this is different from the architecture described in problem 2.</em>
+  </p>
+
+<ol class="problem">
+  <li class="code" id="4a">
+    <strong>Text to average embedding:</strong> Implement <code>text_to_average_embedding(text, vocab, embedding_layer)</code>,
+    which converts a text string into a single embedding vector by averaging word embeddings. This creates a fixed-size representation
+    for variable-length tweets.
+    <br/><br/>
+    Your implementation should:
+    <ol>
+      <li>Create a list of indices, with each position corresponding to the vocabulary index of the words in the input text.</li>
+      <li>Create a PyTorch tensor from the list of indices (hint: use <code>dtype=torch.long</code>).</li>
+      <li>Pass the tensor of indices through the embedding layer to get word embeddings</li>
+      <li>Average the embeddings across the word dimension to get a single vector (hint: use <code>einops</code>)</li>
+      <li>Return the averaged embedding as a tensor</li>
+    </ol>
+  </li>
+
+  <li class="code" id="4b">
+    <strong>Extract averaged features:</strong> Implement <code>extract_averaged_features(texts, vocab, embedding_layer)</code>,
+    which processes a list of text strings and converts them all into a single tensor of averaged embeddings. This function
+    builds on your <code>text_to_average_embedding</code> implementation to handle entire datasets at once.
+    <br/><br/>
+    Your implementation should:
+    <ol>
+      <li>Initialize an empty list to collect the embedding vectors</li>
+      <li>Loop through each text string in the input list</li>
+      <li>For each text, call your <code>text_to_average_embedding</code> function to get its averaged embedding</li>
+      <li>Append each averaged embedding to your collection list</li>
+      <li>Combine all individual embeddings into a single tensor</li>
+      <li>Return a tensor of shape <code>(num_texts, embedding_dim)</code> where each row is one text's embedding</li>
+    </ol>
+
+    <strong>Hint:</strong> This function essentially applies your single-text embedding function to every text in a batch,
+    then organizes the results into the matrix format that your MLP classifier expects.
+  </li>
+
+    <li class="code" id="4c">
+      <strong>MLP classifier:</strong> Complete the <code>MLPClassifier</code> class.
+    </li>
+
+    <li class="code" id="4d">
+      <strong>Utility functions:</strong> Implement the helper functions tailored to our three-class prediction task.
+      <ul>
+        <li><code>torch_softmax(logits)</code>: Convert logits to probabilities</li>
+        <li><code>torch_cross_entropy_loss(predictions, targets)</code>: A custom function that computes the average cross entropy loss of each training batch</li>
+        <li><code>update_parameter(param, grad, lr)</code>: Manual gradient descent update</li>
+      </ul>
+    </li>
+
+    <li class="code" id="4e">
+      <strong>MLP predictor function:</strong> Implement <code>predict_mlp(texts, labels, classifier, embedding_layer, vocab)</code>, which
+      evaluates a trained model on new text data.
+      <br/><br/>
+      Your implementation should:
+      <ol>
+        <li>Set models to evaluation mode (no training)</li>
+        <li>Extract averaged embeddings for the input texts</li>
+        <li>Pass embeddings through the classifier to get predictions</li>
+        <li>Compare predictions with true labels to compute accuracy</li>
+      </ol>
+    </li>
+
+    <li class="code" id="4f">
+      <strong>Train MLP classifier:</strong> Implement <code>train_mlp_classifier(...)</code>.
+      <br/><br/>
+      This is the main training function that integrates everything together.
+      Your implementation should:
+      <ol>
+        <li>Build vocabulary from training texts</li>
+        <li>Create and initialize embedding layer and MLP classifier</li>
+        <li>Set up training loop with batch processing</li>
+        <li>For each epoch: extract features, forward pass, compute loss, backpropagation, update parameters.
+          At the start of each epoch, you should shuffle training data before processing them in batches.
+          At the end of the epoch, print out the training loss and validation accuracy</li>
+        <li>Use stochastic gradient descent to update all parameters; <strong>do not</strong> use optimizers (if you don't know what they are, that's perfectly fine!)</li>
+        <li>You should train the model on training data only; <strong>do not</strong> train the model on validation data.</li>
+      </ol>
+      You can test your implementation with this terminal command: <code>python submission.py --model mlp</code>.
+      The autograder requires that you achieve at least a 0.55 accuracy using default hyperparameters.
+    </li>
+  </ol>
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Submission</h2>
+
+<p>
+    Submission is done on Gradescope.
+
+    <br>
+    <br>
+    <b>Written:</b> When submitting the written parts, make sure to select <b>all</b> the pages
+    that contain part of your answer for that problem, or else you will not get credit.
+    To double check after submission, you can click on each problem link on the right side, and it should show
+    the pages that are selected for that problem.
+    <br>
+    <br>
+    <b>Programming:</b> After you submit, the autograder will take a few minutes to run. Check back after
+    it runs to make sure that your submission succeeded. If your autograder crashes, you will receive a 0 on the
+    programming part of the assignment. Note: the only file to be submitted to Gradescope is <code>submission.py</code>.
+    <br>
+    <br>
+    More details can be found in the Submission section on the course website.
+</p>

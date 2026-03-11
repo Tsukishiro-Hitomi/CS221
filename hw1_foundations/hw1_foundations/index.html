@@ -1,0 +1,428 @@
+<head>
+    <title>Foundations</title>
+    <script src="plugins/main.js"></script>
+    <script src="grader_all.js"></script>
+</head>
+
+<body style="margin: auto" onload="onLoad('foundations', '<a href=mailto:kzliu@stanford.edu>Ken Liu</a>', '09/21/2025', 'https://edstem.org/')">
+<!-- TODO: add ed post link -->
+
+<div id="assignmentHeader"></div>
+<div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px;">
+
+   <h2>Installation Guide for Homework Environment</h2>
+
+    <h3>Prerequisites:</h3>
+    <p>Ensure that you're using Python version <code>3.12</code>. Check your Python version by running:</p>
+    <pre>
+    python --version
+    </pre>
+    <p>or</p>
+    <pre>
+    python3 --version
+    </pre>
+
+    <h3>Installing uv (Recommended Python Package Manager):</h3>
+    <p>We recommend using <code>uv</code> as it's much faster than pip and conda for managing Python environments and packages.</p>
+
+    <h4>What is uv?</h4>
+    <p><code>uv</code> is a modern, Rust-based package + project manager for Python. It keeps the familiar pip workflow but re-implements the engine for speed and reliability. Concretely: it creates a venv, resolves and installs dependencies with its own fast installer, and deduplicates files via a global cache (copy-on-write on macOS, hardlinks on Linux/Windows). It can also manage Python versions per project (e.g., pin 3.12) so each assignment uses a clean, reproducible interpreter. Think "pip + virtualenv + pip-tools + pyenv/pipx".</p>
+
+    <h4>Installing uv:</h4>
+    <p>Please refer to the <a href="https://docs.astral.sh/uv/#installation" target="_blank">official uv installation documentation</a> for the most up-to-date installation instructions for your platform.</p>
+
+    <h3>Setting Up the Homework Environment with uv:</h3>
+    <p>Create and activate a virtual environment with the required dependencies:</p>
+
+    <h4>macOS/Linux:</h4>
+    <pre># Install uv once
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Optional: `uv` binary by default goes to `$HOME/.local/bin` on Linux/macOS,
+# so you may need to add it to your PATH (uv may have done this for you):
+export PATH="$HOME/.local/bin:$PATH"
+</pre>
+
+    <h4>Windows:</h4>
+    <pre># Install uv once
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+</pre>
+
+    <h4>All platforms:</h4>
+    <pre># Download the homework zip and unzip into `hw1_foundations/`
+# In your hw directory
+uv init .                 # Initialize project (creates pyproject.toml)
+uv python pin 3.12        # Pin Python version
+uv add numpy einops       # Add dependencies
+uv run python grader.py   # Run the local grader
+</pre>
+    <h3>Running on Stanford FarmShare (Optional)</h3>
+    <p>If you cannot run the assignment on your laptop or need additional computing resources, Stanford provides FarmShare, a community computing environment for coursework and unsponsored research. Please follow the instructions at <a href="https://docs.farmshare.stanford.edu/" target="_blank">https://docs.farmshare.stanford.edu/</a> to get started with the computing environment.</p>
+  </div>
+  <br>
+  <p>
+    Welcome to your first CS221 assignment!
+    The goal of this assignment is to sharpen your math, programming, and ethical analysis skills
+    needed for this class. If you meet the prerequisites, you should find these
+    problems relatively innocuous. Some of these problems will occur again
+    as subproblems of later homeworks, so make sure you know how to do them.
+    If you're unsure about them or need a refresher,
+    we recommend going through our prerequisites module or other resources on the Internet,
+    or coming to office hours.
+    <br>
+    <br>
+    <b>Before you get started, please read the Homeworks section on the course website thoroughly</b>.
+    <br>
+
+</p>
+
+<p>
+  We've created a <a href="https://stanford-cs221.github.io/autumn2025/assignments/hw1_foundations/hw1_foundations_template.tex" target="_blank">LaTeX template</a> (<code>hw1_foundations_template.tex</code> in the same folder as this homework) for you to use that contains the prompts for each question.
+</p>
+
+<!------------------------------------------------------------>
+
+
+<h2 class="problemTitle">Problem 1: Linear Algebra</h2>
+
+<p>
+    Linear algebra forms the foundation of modern AI and machine learning. In this problem, you'll work with vectors and matrices using NumPy, which is the standard library for numerical computing in Python and provides efficient implementations of vector and matrix operations that are essential for AI. Understanding these operations is crucial for implementing neural networks, optimization algorithms, and data processing pipelines. For example, the bulk of modern LLMs are just dense matrix multiplications, and NumPy is the first step towards being able to manipulate these matrices. You'll practice basic operations like dot products, matrix multiplication, and distance calculations that appear everywhere in machine learning algorithms.
+    <br><br>
+    You'll also learn about Einstein summation notation (einsum), a powerful tool for expressing complex tensor operations concisely.
+</p>
+
+<ol class="problem">
+
+
+    <li class="writeup" id="1a">
+        <strong>Learn basic NumPy operations with an AI tutor!</strong> Use an AI chatbot (e.g., ChatGPT, Claude, Gemini, or <a href="https://aiplayground-prod2.stanford.edu" target="_blank">Stanford AI Playground</a>) to teach yourself how to do basic vector and matrix operations in NumPy (<code>import numpy as np</code>). AI tutors have become exceptionally good at creating interactive tutorials, and this year in CS221, we're testing how they can help you learn fundamentals more interactively than traditional static exercises.
+        <br><br>
+        There are many ways to do this. For example, you can simply ask the chatbot "Teach me basic NumPy operations interactively". We provide a prompt template for you to use, but feel free to use your own:
+        <br>
+        <textarea rows="10" cols="80" readonly>
+Teach me basic NumPy operations. Keep the session ~15–20 minutes and interactive.
+
+Guidelines
+- Adjust difficulty: if I miss 2 in a row → slow + simpler; if I get 2 quickly → a bit harder or add a twist.
+- Use tiny, deterministic examples (small numbers, short tables, brief ASCII diagrams, code blocks). Show actual *run-throughs* (step-by-step states) if helps.
+- Use Code if it clarifies: ≤2 Python/NumPy blocks, each ≤20 lines; ideally no imports beyond `import numpy as np`.
+- Do NOT solve graded work. If I paste any, refuse and make a similar practice item.
+- Be CONCISE. Don't make notation complicated/unnecessary. Focus on intuitions. Code blocks should be short with simple variable names.
+- I may interrupt and ask to start somewhere else. Simply adjust and adapt from there.
+
+Suggested flow (flexible; use judgment)
+1) Start by explaining the topic in a few simple, but technically accurate sentences (explain core idea (≤6 sentences): intuition + minimal notation + why it matters + one common pitfall). Use basic notations and visualizations if necessary (CS221 requires basic math/programming backgrounds). For topics about programming, OK to start with concise code blocks.
+2) Quick check-in (≤1–2 min): ask 2 short questions about prior exposure and specific goal.
+3) Exercises: use a tiny instance and show intermediate states. Give exercises that build on each other. OK to give multiple exercises at the same time.
+   - e.g., for graph search: a 4–5 node weighted graph; show the frontier/priority-queue after each of 2–3 steps and which edges relax.
+   - for DP/MDP/RL/Logic/ML, do an equivalently small, concrete step-by-step trace.
+   - If code clarifies, include one concise NumPy block.
+4) 3 quick checks: increasing difficulty; give a hint first; reveal answers only after I try or ask.
+5) Assessment and feedback: Give me feedback on my performance - what I understood well, what needs improvement, and specific concepts to review further.
+6) Session reflection: Ask me for feedback on how the tutoring session went - what worked well, what could be improved, and if the pacing/difficulty was appropriate.
+7) Recap: a 60-second summary
+        </textarea>
+
+        <div class="expected">Provide a link to the chat session transcript with the AI tutor. The session should be ~15–20 minutes and interactive!</div>
+    </li>
+
+    <li class="writeup" id="1b">
+        <strong>Linear Algebra Complexity:</strong> Suppose you have two matrices $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times p}$. What is the time complexity of computing their product $AB$ using the standard matrix multiplication algorithm? Express your answer using big-O notation and briefly justify why.
+        <div class="expected">The time complexity in big-O notation and a 1-2 sentence explanation.</div>
+    </li>
+
+
+    <li class="writeup" id="1c">
+        <strong>Learn basic Einsum operations with an AI tutor!</strong> Like before, use an AI chatbot to teach yourself Einstein summation notation (einsum) in NumPy using the <code>einops</code> library (<code>from einops import einsum, rearrange</code>).
+        <br><br>
+        <em>What is einsum and why?</em> Einsum notation allows you to express complex array/matrix/tensor operations concisely, including matrix multiplications, tensor contractions, array reshaping, and pretty much everything used in the modern AI models. <code>einops</code> is a library that allows you to implement einsum notation in Python. Understanding einsum allows you to code more readable code.
+        <br><br>
+        Feel free to use the same prompt template from problem 1a, just replace the first sentence with "Teach me how einsum works and how to use the einops library with NumPy". If you'd like more help, <a href="https://www.youtube.com/watch?v=pkVwUVEHmfI">this YouTube video</a> may be helpful.
+        <br><br>
+        <div class="expected">Provide a link to the chat session transcript with the AI tutor. The session should be ~15–20 minutes and interactive!</div>
+    </li>
+
+    <li class="writeup" id="1d">
+        <strong>Einstein Summation (Written):</strong> Given $X \in \mathbb R^{n\times d}$ and $\mathbf w \in \mathbb R^d$:
+        (i) Write an <code>einsum</code> string for $X\mathbf w$; (ii) for the pairwise dot-product matrix $XX^\top$; (iii) for $\operatorname{diag}(X^\top X)$ (column-wise squared norms). Briefly justify each.
+        <div class="expected">Provide einsum strings (e.g., <code>'n d, d m -&gt; n m'</code>).</div>
+    </li>
+
+    <!-- New NumPy/einsum coding exercises: building block operations -->
+    <li class="code" id="1e">
+        <strong>Batch Linear Projection (einsum):</strong>
+        Let $x \in \mathbb{R}^{B\times D_{in}}$ be a batch of input row-vectors, $W \in \mathbb{R}^{D_{in}\times D_{out}}$ a weight matrix, and $b \in \mathbb{R}^{D_{out}}$ a bias vector. We want to compute the following linear transformation in a batched manner:
+        $y[i] = x[i] W + b$ for each batch index $i$, returning $y \in \mathbb{R}^{B\times D_{out}}$.
+        Use <code>einsum</code> (from <code>einops</code>) without loops. for the matrix multiplication and NumPy broadcasting for the bias; do not use Python loops.
+        <div class="expected">Implement <code>linear_project(x, W, b)</code> in <code>submission.py</code> with shapes: <code>x:(B,D_in)</code>, <code>W:(D_in,D_out)</code>, <code>b:(D_out,)</code> &rarr; <code>(B,D_out)</code>.</div>
+    </li>
+
+    <li class="code" id="1f">
+        <strong>Split Last Dimension (einops.rearrange pattern string):</strong>
+        Let $x \in \mathbb{R}^{B\times D}$ and let $G$ divide $D$ evenly. We want to reshape the last axis into $G$ equal chunks, producing $y \in \mathbb{R}^{B\times G\times (D/G)}$. Write the <code>einops.rearrange</code> pattern string that performs this reshape. Do not perform the reshape yourself; just return the pattern string. It is fine to assume <code>D % G == 0</code>.
+        <div class="expected">Implement <code>split_last_dim_pattern()</code> in <code>submission.py</code> returning a rearrange pattern string (e.g., <code>'b g d -&gt; (b g d)'</code>). The autograder will apply it with the appropriate <code>g=num_groups</code>.</div>
+    </li>
+
+    <li class="code" id="1g">
+        <strong>Normalized Inner Products (einsum):</strong>
+        Let $A \in \mathbb{R}^{B\times M\times D}$ and $C \in \mathbb{R}^{B\times N\times D}$. For each batch $b$, we want the matrix $S[b,i,j] = \langle A[b,i,:], C[b,j,:] \rangle$ of all pairwise dot products, giving $S \in \mathbb{R}^{B\times M\times N}$. Use <code>einsum</code> (from <code>einops</code>) without loops. If <code>normalize=True</code>, divide the result by $\sqrt{D}$.
+        <div class="expected">Implement <code>normalized_inner_products(A, C, normalize=True)</code> in <code>submission.py</code> with shapes: <code>A:(B,M,D)</code>, <code>C:(B,N,D)</code> &rarr; <code>(B,M,N)</code>.</div>
+    </li>
+
+    <li class="code" id="1h">
+        <strong>Mask Strictly Upper Triangle:</strong>
+        Let $\text{scores} \in \mathbb{R}^{B\times L\times L}$. For each batch, set entries with column index strictly greater than the row index (i.e., the strictly upper-triangular part where $j>i$) to <code>-np.inf</code>, leaving other entries unchanged. Construct the mask using NumPy broadcasting; do not use loops.
+        <br><br>
+        For example, if $L=3$, transform:
+        $$\begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{pmatrix} \rightarrow \begin{pmatrix} 1 & -\infty & -\infty \\ 4 & 5 & -\infty \\ 7 & 8 & 9 \end{pmatrix}$$
+        <div class="expected">Implement <code>mask_strictly_upper(scores)</code> in <code>submission.py</code> for <code>scores:(B,L,L)</code>, returning a masked array of the same shape.</div>
+    </li>
+
+    <li class="code" id="1i">
+        <strong>Probability-Weighted Sum (einops.einsum pattern string):</strong>
+        Let $P \in \mathbb{R}^{B\times N}$ be batch-wise probability weights (each row sums to 1) and $V \in \mathbb{R}^{B\times N\times D}$ the corresponding value vectors. Provide only the <code>numpy.einsum</code> string that computes the weighted sums $out[b,:] = \sum_{j=1}^N P[b,j]\, V[b,j,:]$, yielding $out \in \mathbb{R}^{B\times D}$.
+        <div class="expected">Implement <code>prob_weighted_sum_einsum()</code> in <code>submission.py</code> that returns the einsum string; the autograder will apply it to <code>P</code> and <code>V</code>.</div>
+    </li>
+
+
+</ol>
+
+
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 2: Calculus and Gradients</h2>
+
+<p>
+    Gradients are essential for training machine learning models through optimization algorithms like gradient descent. In this problem, you'll practice computing gradients analytically and verify your results using numerical methods (finite differences).
+    <br><br>
+    The <a href=https://web.stanford.edu/class/math51/stanford/math51book.pdf target="_blank">textbook for MATH 51</a> may be useful for the gradient problems here, specifically the sections "Gradients, Local Approximations, and Gradient Descent" (p. 209).
+</p>
+
+<ol class="problem">
+    <li class="writeup" id="2a">
+        <strong>Gradient Warmup:</strong> Let's practice taking gradients, which is a key operation for being able to optimize continuous functions. For $f(\mathbf w)=\sum_{i=1}^d (w_i-c_i)^2$, derive $\nabla f(\mathbf w)$. Then evaluate the gradient at $\mathbf w=\mathbf 0$.
+        <div class="expected">A compact vector expression and one evaluated vector.</div>
+    </li>
+
+    <li class="code" id="2b">
+        <strong>Gradient Warmup Implementation:</strong>
+        Given a vector $\mathbf w$ and constants $\mathbf c$, compute the gradient $\nabla f(\mathbf w)$ where $f(\mathbf w)=\sum_{i=1}^d (w_i-c_i)^2$.
+        <div class="expected">Implement <code>gradient_warmup(w, c)</code> in <code>submission.py</code> that takes vectors <code>w</code> and <code>c</code> and returns the gradient vector.</div>
+    </li>
+
+    <li class="writeup" id="2c">
+        <strong>Matrix Multiplication Gradient:</strong> Consider two matrices $A$ (size $m \times n$) and $B$ (size $n \times p$) that are multiplied together to form $C = AB$, and then all entries of $C$ are summed to produce a scalar $s = \sum_{i,j} C_{i,j}$.
+
+        Let $A = \begin{pmatrix} 2 & 1 & 3 \\ 4 & 5 & 6 \end{pmatrix}$ and $B = \begin{pmatrix} 7 & 8 \\ 9 & 0 \\ 1 & 2 \end{pmatrix}$.
+
+        Compute $C = AB$ and $s = \sum_{i,j} C_{i,j}$. Then find the gradient $\frac{\partial s}{\partial A_{i,k}}$ for each entry of matrix $A$, and similarly find $\frac{\partial s}{\partial B_{k,j}}$ for each entry of matrix $B$.
+
+        <div class="expected">The computed matrices $C$ and scalar $s$, plus the gradient matrices $\frac{\partial s}{\partial A}$ and $\frac{\partial s}{\partial B}$ with numerical values for each entry.</div>
+    </li>
+
+    <li class="code" id="2d">
+        <strong>Matrix Gradient Implementation:</strong>
+        Implement a function that computes the gradients $\frac{\partial s}{\partial A}$ and $\frac{\partial s}{\partial B}$ for the scalar $s = \sum_{i,j} (AB)_{i,j}$ using NumPy operations.
+        <br><br>
+        <strong>Hint:</strong> Feel free to use the <code>np.ones</code> or <code>np.repeat</code> functions to create the gradient matrices.
+        <div class="expected">Implement <code>matrix_grad(A, B)</code> in <code>submission.py</code> that returns a tuple <code>(grad_A, grad_B)</code> where each gradient matrix has the same shape as the corresponding input matrix.</div>
+    </li>
+
+    <!-- <li class="writeup" id="2e">
+        <strong>More Gradients:</strong>
+        For $\mathbf w \in \mathbb R^d$ (represented as a column vector), and constants $\mathbf a_i, \mathbf b_j \in
+        \mathbb R^d$ (also represented as column vectors), $\lambda \in \mathbb R$, and a positive integer $n$, define
+        the scalar-valued function
+        $$f(\mathbf w) = \Bigg( \sum_{i=1}^n \sum_{j=1}^n (\mathbf a_i^\top \mathbf w - \mathbf b_j^\top \mathbf w)^2 \Bigg) + \frac{\lambda}{2}
+        \|\mathbf w\|_2^2,$$
+        where the vector is $\mathbf w = (w_1, \dots, w_d)^\top$ and $\|\mathbf w\|_2 = \sqrt{\sum_{k=1}^d w_k^2} = \sqrt{{\mathbf w}^T {\mathbf w}}$ is
+        known as the $L_2$ norm.
+        Compute the gradient $\nabla f(\mathbf w)$.
+        <br><br>Recall: the gradient is a $d$-dimensional vector of the partial derivatives with respect to each $w_i$:
+        $$\nabla f(\mathbf w) = \left(\frac{\partial f(\mathbf w)}{\partial w_1}, \dots \frac{\partial f(\mathbf
+        w)}{\partial w_d}\right)^\top.$$
+        If you're not comfortable with vector calculus, first warm up by working out this problem using scalars in
+        place of vectors and derivatives in place of gradients.
+        Not everything for scalars goes through for vectors, but the two should at least be consistent with each other
+        (when $d=1$).
+        Do not write out summations over dimensions, because that gets tedious.
+
+        <div class="expected">An expression for the gradient and the work used to derive it. (~5 lines). No need to expand out terms unnecessarily; try to write the final answer compactly.</div>
+    </li> -->
+
+    <li class="code" id="2e">
+        <strong>Finite Differences:</strong>
+        To build intuition for what gradients really are, we will implement <a href="https://en.wikipedia.org/wiki/Finite_difference" target="_blank">finite differences</a> to numerically approximate gradients. This approach helps you understand the fundamental definition of derivatives and provides a valuable debugging tool for verifying analytical gradient computations.
+        <br><br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Finite_difference_method.svg/2880px-Finite_difference_method.svg.png" alt="Finite difference method visualization" style="max-width: 300px; display: block; margin: 10px auto;">
+        <p style="text-align: center; font-size: 0.9em; color: #666; margin-top: 5px;">Image from Wikipedia</p>
+        <br>
+        The key idea is to approximate the derivative by measuring how much the function changes when we make a small perturbation along each coordinate. The central difference formula is:
+        $$\frac{\partial f}{\partial w_i} \approx \frac{f(\mathbf w + \epsilon \hat{\mathbf u}_i) - f(\mathbf w - \epsilon \hat{\mathbf u}_i)}{2\epsilon}$$
+        where $\hat{\mathbf u}_i$ is a unit vector with 1 in the $i$-th position and 0 elsewhere, and $\epsilon$ is a small step size (like $10^{-5}$).
+        <br><br>
+        Think of it like checking your speedometer: if you drive a tiny distance and time how long it takes, you can estimate your speed. Similarly, if you move a tiny amount along each coordinate axis and see how the function changes, you can estimate each component of the gradient.
+        <br><br>
+        Now, implement two functions to compute the gradient of the least-squares objective
+        $f(\mathbf w) = \tfrac12\lVert A\mathbf w - \mathbf b\rVert_2^2$:
+        one using the analytical formula and one using finite differences for verification. Use NumPy (optionally einsum) for vectorized implementation.
+        <br><br>
+        <strong>Hint:</strong> You can use the <code>np.eye(d)</code> function to create the unit vectors.
+        <div class="expected">In <code>submission.py</code>, implement <code>lsq_grad(w, A, b)</code> (analytic gradient) and <code>lsq_finite_diff_grad(w, A, b, epsilon=1e-5)</code> (central-difference gradient). The autograder will compare them on random instances.</div>
+    </li>
+
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 3: Optimization</h2>
+
+<p>
+    Optimization is central to AI - we cast many AI problems as finding the best solution in a rigorous mathematical sense. In this problem, you'll work with analytical optimization techniques and implement them using NumPy to verify your mathematical solutions computationally.
+    <br><br>
+    The programming components will help you understand how theoretical optimization translates to practical implementations. You'll implement weighted least squares optimization, explore operator precedence in optimization problems, and use gradient descent to solve quadratic optimization problems numerically.
+    <br><br>
+    The <a href=https://web.stanford.edu/class/math51/stanford/math51book.pdf target="_blank">textbook for MATH 51</a> may be useful for the optimization problems here, specifically the sections "Maxima, Minima, and Critical Points" (p. 186).
+</p>
+
+<ol class="problem">
+
+    <li class="writeup" id="3a">
+        Let $x_1, \dots, x_n$ be real numbers representing positions on a number line.
+        Let $w_1, \dots, w_n$ be positive real numbers representing the importance of each of these positions.
+        Consider the quadratic function: $f(\theta) = \sum_{i=1}^n w_i (\theta - x_i)^2$. Note that $\theta$ here is a scalar.
+        What value of $\theta$ minimizes $f(\theta)$? Show that the optimum you find is indeed a minimum. What
+        problematic issues could arise if some of the $w_i$'s are negative?
+        <br><br>Note: You can think about this problem as trying to find the point $\theta$ that's not too far
+        away from the $x_i$'s. Over time, hopefully you'll appreciate how nice quadratic functions are to minimize.
+        <div class="expected">An expression for the value of $\theta$ that minimizes $f(\theta)$ and how you got it. A short calculation/argument to show that it is a minimum. 1-2 sentences describing a problem that could arise if some of the $w_i$'s are negative.</div>
+    </li>
+
+    <li class="writeup" id="3b">
+        <strong>Learn about gradient descent with an AI tutor!</strong> Use an AI chatbot to teach yourself gradient descent optimization techniques.
+        <br><br>
+        Gradient descent is a fundamental optimization algorithm used throughout machine learning and AI. It's the backbone of training neural networks and solving many optimization problems. The key idea is that we can find the minimum of a function by repeatedly taking steps in the direction of the negative gradient (steepest descent)––like a ball rolling downhill. Ask your AI tutor to explain the intuition behind why this works, how to choose step sizes, and what can go wrong (like overshooting or getting stuck in local minima).
+        <br><br>
+        Here is the prompt template from problem 1 again:
+        <br>
+        <textarea rows="10" cols="80" readonly>
+Teach me how gradient descent works on simple and complicated functions. Keep the session ~15–20 minutes and interactive.
+
+Guidelines
+- Adjust difficulty: if I miss 2 in a row → slow + simpler; if I get 2 quickly → a bit harder or add a twist.
+- Use tiny, deterministic examples (small numbers, short tables, brief ASCII diagrams, code blocks). Show actual *run-throughs* (step-by-step states) if helps.
+- Use Code if it clarifies: ≤2 Python/NumPy blocks, each ≤20 lines; ideally no imports beyond `import numpy as np`.
+- Do NOT solve graded work. If I paste any, refuse and make a similar practice item.
+- Be CONCISE. Don't make notation complicated/unnecessary. Focus on intuitions. Code blocks should be short with simple variable names.
+- I may interrupt and ask to start somewhere else. Simply adjust and adapt from there.
+
+Suggested flow (flexible; use judgment)
+1) Start by explaining the topic in a few simple, but technically accurate sentences (explain core idea (≤6 sentences): intuition + minimal notation + why it matters + one common pitfall). Use basic notations and visualizations if necessary (CS221 requires basic math/programming backgrounds). For topics about programming, OK to start with concise code blocks.
+2) Quick check-in (≤1–2 min): ask 2 short questions about prior exposure and specific goal.
+3) Exercises: use a tiny instance and show intermediate states. Give exercises that build on each other. OK to give multiple exercises at the same time.
+    - e.g., for graph search: a 4–5 node weighted graph; show the frontier/priority-queue after each of 2–3 steps and which edges relax.
+    - for DP/MDP/RL/Logic/ML, do an equivalently small, concrete step-by-step trace.
+    - If code clarifies, include one concise NumPy block.
+4) 3 quick checks: increasing difficulty; give a hint first; reveal answers only after I try or ask.
+5) Assessment and feedback: Give me feedback on my performance - what I understood well, what needs improvement, and specific concepts to review further.
+6) Session reflection: Ask me for feedback on how the tutoring session went - what worked well, what could be improved, and if the pacing/difficulty was appropriate.
+7) Recap: a 60-second summary
+            </textarea>
+        <br>
+        <div class="expected">Provide a link to the chat session transcript with the AI tutor. The session should be ~15-20 minutes and interactive!</div>
+    </li>
+    <li class="code" id="3c">
+        <strong>Gradient Descent for a 1D Quadratic:</strong>
+        Implement <code>gradient_descent_quadratic(x, w, theta0, lr, num_steps)</code> in <code>submission.py</code> to minimize the scalar objective
+        $f(\theta) = \sum_{i=1}^n w_i (\theta - x_i)^2$, where $\theta\in\mathbb{R}$ (recall problem 3a).
+        The function should return the final scalar iterate after <code>num_steps</code> gradient steps.
+        <div class="expected">Implementation of gradient descent to minimize the quadratic function from problem 3a. Your function should perform <code>num_steps</code> iterations of gradient descent starting from <code>theta0</code> with learning rate <code>lr</code>.</div>
+    </li>
+
+</ol>
+
+
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 4: Ethical Issue Spotting</h2>
+
+<p>
+One of the goals of this course is to teach you how to tackle real-world problems with tools from AI.  But real-world problems have real-world consequences. Along with technical skills, an important skill every practitioner of AI needs to develop is an awareness of the ethical issues associated with AI. The purpose of this exercise is to practice spotting potential ethical concerns in applications of AI - even seemingly innocuous ones.
+<br>
+<br>
+In this question, you will explore the ethics of four different real-world scenarios using the ethics guidelines produced by a machine learning research venue, the NeurIPS conference. The <a href="https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers">NeurIPS Ethical Guidelines</a> list seventeen non-exhaustive concerns under General Ethical Conduct and Potential Negative Social Impacts (the numbered lists). For each scenario, you will write a potential negative impacts statement. To do so, you will first determine if the algorithm / dataset / technique could have a potential negative
+social impact or violate general ethical conduct (again, the seventeen numbered items taken from the <a href="https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers">NeurIPS Ethical Guidelines</a> page). If the scenario does violate ethical conduct or has potential negative social impacts, list one concern it violates and justify why you think that concern applies to the scenario. If you do <b>not</b> think the scenario has an ethical concern, explain how you came to that decision.
+Unlike earlier problems in the homework there are many possible good answers. If you can justify your answer, then you should feel confident that you have answered the question well.
+<br>
+<br>
+Each of the scenarios is drawn from a real AI research paper; you should think about why the researchers may have chosen for the algorithms to behave in the way as described in the scenario. The ethics of AI research closely mirror the potential real-world consequences of deploying AI, and the lessons you'll draw from this exercise will certainly be applicable to deploying AI at scale. As a note, you are <b>not</b> required to read the original papers, but we have linked to them in case they might be useful. Furthermore, you are welcome to respond to anything in the linked article that's not mentioned in the written scenario, but the scenarios as described here should provide enough detail to find at least one concern.
+<br>
+</p><div class="expected">A 2-5 sentence paragraph for each of the scenarios where you either A. identify at least one ethical concern from the <a href="https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers">NeurIPS Ethical Guidelines</a> and justify why you think it applies, or B. state that you don't think a concern exists and justify why that's the case. Chosen scenarios may have anywhere from zero to multiple concerns that match, but you are only required to pick one concern (if it exists) and justify your decision accordingly. Furthermore, copy out and <u>underline</u> the ethical checklist item to which you are referring as part of your answer (i.e.: <u>Severely damage the environment</u>). We have also included a citation in the example solution below, but you are not required to add citations to your response.
+</div>
+<br>
+<b>Example Scenario</b>:
+You work for a U.S. hospital that has recently implemented a new intervention program that enrolls at-risk patients in programs to help address their chronic medical issues proactively before the patients end up in the hospital. The intervention program automatically identifies at-risk patients by predicting patients' risk scores, which are measured in terms of healthcare costs. However, you notice that for a given risk score tier, the Black patients are considerably sicker when enrolled than white patients, even though their assigned illness risk score is identical. You manually re-assign patients' risk scores based on their current symptoms and notice that the percentage of Black patients who would be enrolled has increased from 17%  to over 45% <a href="#fn-1">[1]</a>.
+<br>
+<br>
+<b>Example Solution</b>: This algorithm has likely <u>encoded, contains, or potentially exacerbates bias against people of a certain race or ethnicity</u> since the algorithm predicts healthcare costs. Because access to medical care in the U.S. is unequal, Black patients tend to have lower healthcare costs than their white counterparts <a href="#fn-2">[2]</a>. Thus the algorithm will incorrectly predict that they are at lower risk.
+<ol class="problem">
+    <li class="writeup" id="4a">
+An investment firm develops a simple machine learning model to predict whether an individual is likely to default on a loan from a variety of factors, including location, age, credit score, and public record. After looking through their results, you find that the model predicts mainly based on location and that the model mainly accepts loans from urban centers and denies loans from rural applicants <a href="#fn-3">[3]</a>. Furthermore, looking at the gender and ethnicity of the applicants, you find that the model has a significantly higher false positive rate for Black and male applicants than for other groups. In a false positive prediction, a model misclassifies someone who does not default as likely to default.
+    </li>
+    <li class="writeup" id="4b">
+Stylometry is a way of predicting the author of contested or anonymous text by analyzing the writing patterns in the anonymous text and other texts written by the potential authors. Recently, highly accurate machine learning algorithms have been developed for this task. While these models are typically used to analyze historical documents and literature, they could be used for deanonymizing a wide range of texts, including code <a href="#fn-4">[4]</a>.
+    </li>
+    <li class="writeup" id="4c">
+A research group scraped millions of faces of celebrities off of Google images to develop facial recognition technology <a href="#fn-5">[5]</a>. The celebrities did not give permission for their images to be used in the dataset and many of the images are copyrighted. For copyrighted photos, the dataset provides URL links to the original image along with bounding boxes for the face.
+    </li>
+    <li class="writeup" id="4d">
+ Researchers have recently created a machine learning model that can predict plant species automatically directly from a single photo <a href="#fn-6">[6]</a>. The model was trained using photos uploaded to the iNaturalist app by users who consented to use of their photos for research purposes, and the model is only used within the app to help users identify plants they might come across in the wild.
+    </li>
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Submission</h2>
+
+<p>
+    Submission is done on Gradescope.
+
+    <br>
+    <br>
+    <b>Written:</b> When submitting the written parts, make sure to select <b>all</b> the pages
+    that contain part of your answer for that problem, or else you will not get credit.
+    To double check after submission, you can click on each problem link on the right side, and it should show
+    the pages that are selected for that problem.
+    <br>
+    <br>
+    <b>Programming:</b> After you submit, the autograder will take a few minutes to run. Check back after
+    it runs to make sure that your submission succeeded. If your autograder crashes, you will receive a 0 on the
+    programming part of the assignment. Note: the only file to be submitted to Gradescope is <code>submission.py</code>.
+    <br>
+    <br>
+    More details can be found in the Submission section on the course website.
+</p>
+
+<!------------------------------------------------------------>
+
+<hr/>
+<p id="fn-1"> [1]
+<a href="https://doi.org/10.1126/science.aax2342" target="_blank">Obermeyer et al. Dissecting racial bias in an algorithm used to manage the health of populations. 2019. </a>
+</p>
+<p id="fn-2"> [2]
+<a href="https://www.nap.edu/catalog/10260/unequal-treatment-confronting-racial-and-ethnic-disparities-in-health-care" target="_blank">Institue of Medicine of the National Academies. Unequal Treatment:
+Confronting Racial and Ethnic Disparities in Health Care. 2003.</a>
+</p>
+<p id="fn-3"> [3]
+<a href="https://www.kaggle.com/c/loan-default-prediction/data" target="_blank">Imperial College London. Loan Default Prediction Dataset. 2014.</a>
+</p>
+<p id="fn-4"> [4]
+<a href="https://dl.acm.org/doi/10.5555/2831143.2831160" target="_blank">Caliskan-Islam et. al. De-anonymizing programmers via code stylometry. 2015.</a>
+</p>
+<p id="fn-5"> [5]
+<a href="https://www.robots.ox.ac.uk/~vgg/data/vgg_face/" target="_blank">Parkhi et al. VGG Face Dataset. 2015.</a>
+</p>
+<p id="fn-6"> [6]
+<a href="https://www.inaturalist.org/blog/31806-a-new-vision-model" target="_blank">iNaturalist. A new vision model. 2020.</a>
+</p>
+
+
+</body>

@@ -1,0 +1,181 @@
+\documentclass{article}
+
+% Page format
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+
+% Math and utilities
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{0.9}
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\noindent{[\textbf{NOTE:} #1]}}
+\newcommand{\hint}[1]{\noindent{[\textbf{HINT:} #1]}}
+\newcommand{\recall}[1]{\noindent{[\textbf{RECALL:} #1]}}
+\newcommand{\expect}[1]{\noindent{[\textbf{What we expect:} #1]}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+
+\title{\textbf{CS221 -- Artificial Intelligence: \\Principles and Techniques}\\Homework 1: Foundations\\Autumn 2025}
+\date{}
+
+\chead{Foundations}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare that all of this is my own work.} \\
+
+\textbf{Before you get started, please read the Homeworks section on the course website thoroughly}. This \LaTeX template serves as a convenient template for the written parts of the assignment. The questions mirror those in the HTML page; if there are any typos, follow the HTML and let us know in your answers.
+
+\section*{Problem 1: Linear Algebra}
+Linear algebra forms the foundation of modern AI and machine learning. In this problem, you'll work with vectors and matrices, learn basic NumPy and einsum, and write compact expressions for common operations.
+
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Learn basic NumPy operations with an AI tutor!} Use an AI chatbot (e.g., ChatGPT, Claude, Gemini, or the Stanford AI Playground) to teach yourself basic vector and matrix operations in NumPy (\texttt{import numpy as np}). If you'd like more help, \href{https://www.youtube.com/watch?v=pkVwUVEHmfI}{this YouTube video} may be helpful.
+
+  \expect{Provide a link to the chat session transcript with the AI tutor. The session should be ~15--20 minutes and interactive.}
+  \mysolution{Link: \\
+  }
+
+  \item \textbf{Linear Algebra Complexity.} Suppose you have two matrices $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times p}$. What is the time complexity of computing their product $AB$ using the standard matrix multiplication algorithm? Express your answer using big-O notation and briefly justify why.
+
+  \expect{The time complexity in big-O notation and a 1--2 sentence explanation.}
+  \mysolution{ }
+
+  \item \textbf{Learn basic einsum with an AI tutor!} Use an AI chatbot to teach yourself Einstein summation notation (einsum) in NumPy.
+
+  \expect{Provide a link to the chat session transcript with the AI tutor. The session should be ~15--20 minutes and interactive.}
+  \mysolution{Link: \\
+  }
+
+  \item \textbf{Einstein Summation (Written).} Given $X \in \mathbb R^{n\times d}$ and $\mathbf w \in \mathbb R^d$: (i) write an \texttt{einsum} string for $X\mathbf w$; (ii) for the pairwise dot-product matrix $XX^\top$; (iii) for $\operatorname{diag}(X^\top X)$ (column-wise squared norms). Briefly justify each.
+
+  \expect{Provide einsum strings (e.g., \texttt{n d, d m -> n m}).}
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Problem 2: Calculus and Gradients}
+Gradients are essential for training machine learning models through optimization algorithms like gradient descent. In this problem, you'll practice computing gradients analytically.
+
+\begin{enumerate}[label=\alph*.]
+  \item[a.] \textbf{Gradient Warmup.} For $f(\mathbf w)=\sum_{i=1}^d (w_i-c_i)^2$, derive $\nabla f(\mathbf w)$. Then evaluate the gradient at $\mathbf w=\mathbf 0$.
+
+  \expect{A compact vector expression (e.g., $(\mathbf w+\mathbf c)$) and one evaluated vector.}
+  \mysolution{ }
+
+  \item[c.] \textbf{Matrix Multiplication Gradient} Consider two matrices $A$ (size $m \times n$) and $B$ (size $n \times p$) that are multiplied together to form $C = AB$, and then all entries of $C$ are summed to produce a scalar $s = \sum_{i,j} C_{i,j}$.
+
+  Let $A = \begin{pmatrix} 2 & 1 & 3 \\ 4 & 5 & 6 \end{pmatrix}$ and $B = \begin{pmatrix} 7 & 8 \\ 9 & 0 \\ 1 & 2 \end{pmatrix}$.
+
+  Compute $C = AB$ and $s = \sum_{i,j} C_{i,j}$. Then find the gradient $\frac{\partial s}{\partial A_{i,k}}$ for each entry of matrix $A$, and similarly find $\frac{\partial s}{\partial B_{k,j}}$ for each entry of matrix $B$.
+
+  \expect{The computed matrices $C$ and scalar $s$, plus the gradient matrices $\frac{\partial s}{\partial A}$ and $\frac{\partial s}{\partial B}$ with numerical values for each entry.}
+  \mysolution{ }
+
+\end{enumerate}
+
+\section*{Problem 3: Optimization}
+Optimization is central to AI. In this problem, you'll work with analytical optimization and relate it to numerical methods.
+
+\begin{enumerate}[label=\alph*.]
+  \item Let $x_1, \dots, x_n$ be real numbers and $w_1, \dots, w_n$ positive weights. Consider $f(\theta) = \sum_{i=1}^n w_i (\theta - x_i)^2$ (scalar $\theta$). What value of $\theta$ minimizes $f(\theta)$? Show it is a minimum. What issues arise if some $w_i$ are negative?
+
+  \expect{Closed-form minimizer, brief justification it's a minimum, and a note on negative weights.}
+  \mysolution{ }
+
+  % \item Let $f(\mathbf x) = \min_{s \in [-1,1]} \sum_{i=1}^d s x_i$ and $g(\mathbf x) = \sum_{i=1}^d \min_{s_i \in [-1,1]} s_i x_i$ for $\mathbf x \in \mathbb R^d$. Which of $f(\mathbf x) \le g(\mathbf x)$, $f(\mathbf x) = g(\mathbf x)$, or $f(\mathbf x) \ge g(\mathbf x)$ holds for all $\mathbf x$? Prove it.
+
+  % \expect{A concise (3--5 line) proof.}
+  % \mysolution{ }
+
+  \item \textbf{Learn about gradient descent with an AI tutor!} Use an AI chatbot to teach yourself gradient descent optimization techniques.
+
+  \expect{Provide a link to the chat session transcript with the AI tutor. The session should be ~15--20 minutes and interactive.}
+  \mysolution{Link: \\
+  }
+\end{enumerate}
+
+
+\section*{Problem 4: Ethics in AI}
+For this problem, write brief responses for four ethics scenarios. Please refer to the assignment page (index.html) for the full scenario text and detailed expectations.
+
+\begin{enumerate}[label=\alph*.]
+  \item Scenario 4a (refer to index.html for the description).
+
+  \mysolution{ }
+
+  \item Scenario 4b (refer to index.html for the description).
+
+  \mysolution{ }
+
+  \item Scenario 4c (refer to index.html for the description).
+
+  \mysolution{ }
+
+  \item Scenario 4d (refer to index.html for the description).
+
+  \mysolution{ }
+\end{enumerate}
+
+\section*{Submission}
+Submission is done on Gradescope. \\
+
+\textbf{Written:} When submitting the written parts, make sure to select \textbf{all} the pages that contain part of your answer for that problem, or else you will not get credit. To double check after submission, you can click on each problem link on the right side and it should show the pages that are selected for that problem. \\
+
+\textbf{Programming:} After you submit, the autograder will take a few minutes to run. Check back after it runs to make sure that your submission succeeded. If your autograder crashes, you will receive a 0 on the programming part of the assignment. Note: the only file to be submitted to Gradescope is \texttt{submission.py}.\\
+
+More details can be found in the Submission section on the course website.
+
+% \newpage
+% \begin{thebibliography}{9}
+% \bibitem{reference}
+% \href{https://doi.org/10.1126/science.aax2342}{Obermeyer et al. Dissecting racial bias in an algorithm used to manage the health of populations. 2019.}
+% \bibitem{reference}
+% \href{https://www.nap.edu/catalog/10260/unequal-treatment-confronting-racial-and-ethnic-disparities-in-health-care}{Institue of Medicine of the National Academies. Unequal Treatment: Confronting Racial and Ethnic Disparities in Health Care. 2003.}
+% \bibitem{reference}
+% \href{https://www.kaggle.com/c/loan-default-prediction/data}{Imperial College London. Loan Default Prediction Dataset. 2014.}
+% \bibitem{reference}
+% \href{https://dl.acm.org/doi/10.5555/2831143.2831160}{Caliskan-Islam et. al. De-anonymizing programmers via code stylometry. 2015.}
+% \bibitem{reference}
+% \href{https://www.robots.ox.ac.uk/~vgg/data/vgg_face/}{Parkhi et al. VGG Face Dataset. 2015.}
+% \bibitem{reference}
+% \href{https://www.inaturalist.org/blog/31806-a-new-vision-model}{iNaturalist. A new vision model. 2020.}
+% \end{thebibliography}
+
+\end{document}

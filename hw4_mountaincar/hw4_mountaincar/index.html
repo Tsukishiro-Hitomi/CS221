@@ -1,0 +1,489 @@
+<head>
+  <title>Controlling MountainCar</title>
+  <script src="plugins/main.js"></script>
+  <script src="grader_all.js"></script>
+</head>
+
+<body onload="onLoad('hw4_mountaincar', '<a href=mailto:harryge@stanford.edu>Harry Ge<a>', '10/13/2025', 'https://edstem.org/us/courses/77249/discussion/6522510')">
+
+
+
+<div id="assignmentHeader"></div>
+<p>
+  We've created a LaTeX template <a href="https://stanford-cs221.github.io/autumn2025/assignments/hw4_mountaincar/hw4_mountaincar_template.tex" target="_blank">here</a> for you to use that contains the prompts for each question.
+</p>
+
+<div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px;">
+
+   <h2>Installation Guide for Homework Environment</h2>
+
+    <h3>Using uv (Recommended Python Package Manager):</h3>
+    <p>Like previous assignments, we will use <code>uv</code> to setup the homework environment quickly.</p>
+
+    <h4>Installing uv:</h4>
+    <p>Please refer to the <a href="https://docs.astral.sh/uv/#installation" target="_blank">official uv installation documentation</a> for the most up-to-date installation instructions for your platform.</p>
+
+    <h3>Setting Up the Homework Environment with uv:</h3>
+    <p>Create and activate a virtual environment with the required dependencies:</p>
+
+    <h4>macOS/Linux:</h4>
+    <pre># Install uv once
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Optional: `uv` binary by default goes to `$HOME/.local/bin` on Linux/macOS,
+# so you may need to add it to your PATH (uv may have done this for you):
+export PATH="$HOME/.local/bin:$PATH"
+</pre>
+
+    <h4>Windows:</h4>
+    <pre># Install uv once
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+</pre>
+
+    <h4>All platforms:</h4>
+    <pre># Download the homework zip and unzip into a folder
+# In your hw directory
+uv init .                            # Initialize project (creates pyproject.toml)
+uv python pin 3.12                   # Pin Python version
+uv venv                              # Create default virtual environment
+uv pip install -r requirements.txt   # Add dependencies
+uv run grader.py                     # Run the local grader (using the default venv)
+
+# To use the `python` command inside this project,
+# activate the (default) virtual environment:
+source .venv/bin/activate
+
+</pre>
+    <h3>Running on Stanford FarmShare (Optional)</h3>
+    <p>If you cannot run the assignment on your laptop or need additional computing resources, Stanford provides FarmShare, a community computing environment for coursework and unsponsored research. Please follow the instructions at <a href="https://docs.farmshare.stanford.edu/" target="_blank">https://docs.farmshare.stanford.edu/</a> to get started with the computing environment.</p>
+  </div>
+  <br>
+
+
+ </div>
+ <br>
+ <p>
+  <img class="float-right" src="mountaincar.png" style="width:260px;margin-left:10px"/>
+  </p>
+
+<p>
+Markov decision processes (MDPs) can be used to model situations with uncertainty
+(which is most of the time in the real world).
+In this assignment, you will implement algorithms to find the optimal policy,
+both when you know the transitions and rewards (value iteration)
+and when you don't (reinforcement learning).
+You will use these algorithms on Mountain Car, a classic control environment
+where the goal is to control a car to go up a mountain.
+</p>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 1: Value Iteration</h2>
+
+<p>
+In this problem, you will perform value iteration updates manually on a basic game to build your intuitions about solving MDPs. In this MDP, we have that:
+<p>
+<li> The set of possible states in this game is $\text{States} = \{-2, -1, 0, +1, +2\}$.</li>
+<li> The set of possible actions is $\text{Actions}(s) = \{a_1, a_2\}$ for all states that are not end states.</li>
+<li> The starting state is $0$ and there are two end states, $-2$ and $+2$. </li>
+</p>
+  Recall that the transition function $T: \text{States} \times \text{Actions} \rightarrow \Delta\text{States}$ (distribution over states) encodes the probability of transitioning to a next state $s'$ after being in state $s$ and taking action $a$ as $T(s'|s,a)$.
+<p>
+<p>In this MDP, the transition dynamics are given as follows: $\forall i \in \{-1, 0, 1\} \subseteq \text{States}$,</p>
+<ul>
+         <li> $T(i-1 | i, a_1) = 0.8$ and $T(i+1 | i, a_1) = 0.2$
+         <li> $T(i-1 | i, a_2) = 0.7$ and $T(i+1 | i, a_2) = 0.3$
+</ul>
+Think of this MDP as a chain formed by states $\{-2, -1, 0, +1, +2\}$. In words, action $a_1$ has a 80% chance of moving the agent backwards in the chain and a 20% chance of moving the agent forward. Similarly, action $a_2$ has a 70% of sending the agent backwards and a 30% chance of moving the agent forward. We will use a discount factor $\gamma = 1$. <br>
+
+<p>The reward function for this MDP is:</p>
+$$\text{Reward}(s,a,s') = \begin{cases} 10 & \text{if } s' = -2, \\ 50 & \text{if } s' = +2, \\ -5 & \text{otherwise}. \end{cases}$$
+
+</p>
+
+<ol class="problem">
+
+<li class="writeup" id="1a">
+What is the value of $V^\star_i(s)$ for each $s \in \text{States}$ after each iteration $i = \{1, 2\}$ of value iteration?
+Recall that
+$\forall s \in \text{States}$, $V^\star_0(s) = 0$ and,
+for any $i$, end state $s_{\text{end}}$, we have $V^\star_i(s_\text{end}) = 0$.
+<div class="expected">
+    The $V^\star_i(s)$ of all 5 states after each iteration. In total, 10 values should be reported. Show your work briefly.
+</div>
+
+
+<li class="writeup" id="1b">
+Using $V^\star_2(\cdot)$, what is the corresponding optimal policy $\pi^\star$ for all non-end states?
+<div class = 'expected'>
+    Optimal policy $\pi^\star(s)$ for each non-end state. Show your work briefly.
+</div>
+
+
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 2: Transforming MDPs</h2>
+
+<p>
+In computer science, the idea of a reduction is very powerful:
+say you can solve problems of type A,
+and you want to solve problems of type B.
+If you can convert (reduce) any problem of type B to type A,
+then you automatically have a way of solving problems of type B
+potentially without doing much work!
+We saw an example of this for search problems when we reduce A* to UCS.
+Now let's do it for solving MDPs.
+</p>
+
+<ol class="problem">
+
+<li class="writeup" id="2a">
+Suppose we have an MDP with states $\text{States}$ and a discount factor $\gamma &lt; 1$,
+but we have an MDP solver that can only solve MDPs with discount factor of $1$.
+How can we leverage this restricted MDP solver to solve the original MDP?
+<p>
+Let us define a new MDP with states $\text{States}' = \text{States} \cup \{ o \}$,
+where $o$ is a new state.  Let's use the same actions ($\text{Actions}'(s) = \text{Actions}(s)$),
+but we need to keep the discount $\gamma' = 1$.
+Your job is to define transition probabilities $T'(s' | s, a)$ and rewards $\text{Reward}'(s, a, s')$
+for the new MDP in terms of the original MDP
+such that the optimal values $V_\text{opt}(s)$ for all $s \in \text{States}$
+are equal under the original MDP and the new MDP.</p>
+<i>Hint: What recurrence must the optimal values for each MDP satisfy? You can show that the optimal values for each MDP are the same if these recurrences are equivalent. Revisit the lectures to help you solve this problem.</i>
+
+<div class='expected'>
+  Transition probabilities ($T'$) and reward function ($\text{Reward}'$)
+  written in mathematical expressions,
+  followed by a short verification to show that the two optimal values are equal.
+  Use consistent notation from the question.
+  Show your work briefly.
+</div>
+
+</li>
+
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 3: Value Iteration on Mountain Car</h2>
+
+<p>
+  Now that we have gotten a bit of practice with general-purpose MDP algorithms, let's use them for some control problems.
+  Mountain Car is a classic example in robot control <a href="#fn-7">[7]</a> where you try to get a car to the goal located on the top of a steep hill by accelerating left or right.
+  We will use the implementation provided by The Farama Foundation's Gymnasium, formerly OpenAI Gym.
+</p>
+
+<p>
+  The state of the environment is provided as a pair (position, velocity).
+  The starting position is randomized within a small range at the
+  bottom of the hill. At each step, the actions are either to accelerate to the left, to the right, or do nothing, and the transitions are
+  determined directly from the physics of a frictionless car on a hill. Every step produces a reward based on the car's distance from the goal and velocity.
+</p>
+
+<p>
+  First, install all the dependencies needed to get Mountain Car running in your environment, following the instructions at the beginning of this page. <b>Note that we are using Python 3.12 for this assignment.</b>
+</p>
+<p>
+  Get the feel for the environment, test with an untrained agent which takes random action at each step and see how it performs.
+</p>
+<blockquote>
+  <code>uv run mountaincar.py --agent naive</code>
+</blockquote>
+<p>
+  You will see the agent struggling, not able to complete the task within the time limit.
+  In this assignment, you will train this agent with different reinforcement learning algorithms so that it can learn to climb the hill.
+  As the first step, we have designed two MDPs for this task. The first uses the car's continuous (position, velocity) state as is, and the second discretizes
+  the position and velocity into bins and uses indicator vectors.
+
+  Carefully examine <code>ContinuousGymMDP</code> and <code>DiscreteGymMDP</code> classes in <code>util.py</code> and make sure you understand.
+</p>
+<p>
+  If we want to apply value iteration to the <code>DiscreteGymMDP</code> (think about why we can't apply it to <code>ContinuousGymMDP</code>),
+  we require the transition probabilities $T(s, a, s')$ and rewards $R(s, a, s')$ to be known. But oftentimes in the real world, $T$ and $R$ are unknown,
+  and the gym environments are set up in this way as well, only interfacing through the <code>.step()</code> function. One method
+  to still determine the optimal policy is model-based value iteration, which runs Monte Carlo simulations to estimate $\hat{T}$ and $\hat{R}$, and then runs value iteration.
+  This is an example of model-based RL. Examine <code>RLAlgorithm</code> in <code>util.py</code> to understand the <code>get_action</code> and <code>incorporate_feedback</code> interface
+  and peek into the <code>simulate</code> function to see how they are called repeatedly when training over episodes.
+</p>
+
+<ol class="problem">
+
+<li class="code" id="3a">
+  As a warm up, we will start with implementing value iteration as you learned in lectures, and run it on the number line MDP from Problem 1.
+  Complete <code>value_iteration</code> in <code>submission.py</code>. The starter code passes in dense NumPy tensors for the transition probabilities and rewards (shape <code>(num_states, num_actions, num_states)</code>) along with optional masks describing which actions are available. Use vectorized NumPy operations to update the value function and return a NumPy array containing the optimal action identifier for each state (store <code>None</code> whenever no action is available).
+  <div class="expected">
+    An implementation of the <code>value_iteration</code> function in <code>submission.py</code>.
+
+</div>
+</li>
+
+<li class="code" id="3b">
+  Now in <code>submission.py</code>, implement <code>ModelBasedMonteCarlo</code> which runs <code>value_iteration</code>
+  every <code>calc_val_iter_every</code> steps that the RL agent operates. The learner should keep NumPy arrays of transition counts, accumulated rewards, and a boolean mask of visited actions. Helper functions from the MDP (e.g., <code>state_to_index</code>) are provided so you can map between raw states and contiguous indices when populating those arrays. The <code>get_action</code> method controls how we use the latest policy as determined by value iteration,
+  and the <code>incorporate_feedback</code> method updates the arrays, normalizes them into transition and reward tensors, and calls value iteration when needed.
+  Implement the <code>get_action</code> and <code>incorporate_feedback</code> methods for <code>ModelBasedMonteCarlo</code>.
+  <div class="expected">
+    An implementation of <code>ModelBasedMonteCarlo</code> in <code>submission.py</code>.
+
+</div>
+</li>
+<li class="writeup" id="3c">
+  Run <code>uv run train.py --agent value-iteration</code> to train the agent using model-based value iteration you implemented above and see the plots of reward per episode. The command will run the training for three separate trials, so you will get three different training curves.
+  Comment on the plots produced and discuss the performance. Also discuss what situations in general model-based value iteration could perform poorly.
+
+  You can also run <code>uv run mountaincar.py --agent value-iteration</code> to visually observe how the trained agent performs the task now. The weights from the last trial will be saved and used for the task.
+  <br>
+  <br>
+  <i>Hint: If you don't see the reward improving after about 500 iterations, double check your <code>value_iteration</code> or <code>incorporate_feedback</code> implementation. </i>
+<div class="expected">
+    Plots of rewards and 2-3 sentences describing the plot and discussion of when model-based value iteration may fail. Please include all relevant plots in your write-up!
+
+</div>
+
+
+</li>
+
+</ol>
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 4: Q-Learning Mountain Car</h2>
+
+<p>
+  In the previous question, we've seen how value iteration can take an MDP which describes the full dynamics of the game
+  and return an optimal policy, and we've also seen how model-based value iteration with Monte Carlo simulation can estimate MDP dynamics if unknown at first
+  and then learn the respective optimal policy. But suppose you are trying to control a complex system in the real world where trying to explicitly model
+  all possible transitions and rewards is intractable. We will see how model-free reinforcement learning can nevertheless find the optimal policy.
+</p>
+
+<ol class="problem">
+
+<li class="code" id="4a">
+  For a discretized MDP, we have a finite set of <code>(state, action)</code> pairs. We learn the Q-value for each of these pairs using
+  the Q-learning update learned in class. In the <code>TabularQLearning</code> class, the Q-table is stored as a NumPy array of shape <code>(num_states, num_actions)</code>. Implement the <code>get_action</code> method which selects
+  actions based on <code>exploration_prob</code>, and the <code>incorporate_feedback</code> method which updates the appropriate entry in that array using the provided indices (no Python dictionaries).
+  <div class="expected">
+    An implementation of the <code>get_action</code> and <code>incorporate_feedback</code> methods in <code>TabularQLearning</code>.
+
+</div>
+</li>
+
+<li class="code" id="4b">
+  For Q-learning in continuous states, we need to use function approximation. The first step of function approximation is extracting
+  features from the given state. Feature extractors of different complexities work well with different problems: linear and polynomial feature
+  extractors that work well with simpler problems may not be suitable for other problems. For the mountain car task, we are going to use
+  a Fourier feature extractor.
+  <br>
+  For the Fourier feature extractor, the goal is to approximate $Q$-value using a sum of sinusoidal components: for state $s = [s_1, s_2, \ldots, s_k]$ and maximum coefficient $m$, the feature extractor $\phi$ is:
+  $$\phi(s, m) = [\cos(0), \cos(\pi s_1), \ldots, \cos(\pi s_k), \cos(2\pi s_1), \cos(\pi(s_1+s_2)), \ldots, \cos(\pi(ms_1 + ms_2 + \ldots + ms_k))]$$
+  Note that $\phi(s, m) \in \mathbb{R}^{(m+1)^k}$.
+  For those interested, look up Fourier approximation and how effective Fourier features are in different settings.
+  <br>
+  <br>
+  In the code you implement, there is another variable $\texttt{scale}$ which is applied to different dimensions of the input state. We give you an example of how to compute this Fourier feature with $s = (s_1, s_2)$, $\texttt{scale} = [d_1, d_2]$ and $m = 2$.
+  We find all the entries by considering all the combinations of scaled entries of the state as below.
+  <style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    th:first-child, td:first-child {
+        width: 10%;
+        max-width: 150px; /* Adjust this value as needed */
+    }
+</style>
+  <table border="1">
+    <tr>
+        <th></th>
+        <th>0</th>
+        <th>$$d_1s_1$$</th>
+        <th>$$2d_1s_1$$</th>
+    </tr>
+    <tr>
+        <th>0</th>
+        <td>0</td>
+        <td>$d_1s_1$</td>
+        <td>$2d_1s_1$</td>
+    </tr>
+    <tr>
+        <th>$d_2s_2$</th>
+        <td>$d_2s_2$</td>
+        <td>$d_1s_1 + d_2s_2$</td>
+        <td>$2d_1s_1 + d_2s_2$</td>
+    </tr>
+    <tr>
+        <th>$2d_2s_2$</th>
+        <td>$2d_2s_2$</td>
+        <td>$d_1s_1 + 2d_2s_2$</td>
+        <td>$2d_1s_1 + 2d_2s_2$</td>
+    </tr>
+</table>
+<br>
+From this, our feature extractor will return a numpy array with 9 elements: $[\cos 0, \cos d_1s_1\pi, \cos 2d_1s_1\pi, \cos d_2s_2\pi, \cos (d_1s_1 + d_2s_2)\pi, \dots, \cos (2d_1s_1 + 2d_2s_2)\pi]$. If there is a third dimension $s_3$, we will repeat the "outer-sum" with the nine entries in the table and $(0, d_3s_3, 2d_3s_3)$, before multiplying by $\pi$ and applying cosine to the resulting 27 elements.
+Implement <code>fourier_feature_extractor</code> in <code>submission.py</code>. Looking at <code>util.polynomial_feature_extractor</code> may be useful
+for familiarizing oneself with numpy.
+
+<div class="expected">
+  An implementation of <code>fourier_feature_extractor</code> in <code>submission.py</code>.
+
+</div>
+</li>
+
+<li class="code" id="4c">
+  Now we can find the Q-value of each <code>(state, action)</code> by multiplying the extracted features from this pair with weights.
+  Unlike the tabular Q-learning in which Q-values are updated directly, with function approximation, we are updating weights associated
+  with each feature. Using <code>fourier_feature_extractor</code> from the previous part, complete the implementation of <code>FunctionApproxQLearning</code>.
+<div class="expected">
+  An implementation of <code>FunctionApproxQLearning</code> using <code>fourier_feature_extractor</code>.
+
+</div>
+</li>
+
+<li class="writeup" id="4d">
+  Run <code>uv run train.py --agent tabular</code> and <code>uv run train.py --agent function-approximation</code> to see the plots for how the <code>TabularQLearning</code> and <code>FunctionApproxQLearning</code> work respectively,
+  and comment on the plots. Similar to the previous part, the commands will run the training for three separate trials each. If none of your plots is converging to some values better than the initial reward, you should double check your implementation of <code>incorporate_feedback</code>. You should expect to see that tabular Q-learning performs better than function approximation Q-learning on this task. What might be some of the reasons?
+  You can also run <code>uv run mountaincar.py --agent tabular</code> and <code>uv run mountaincar.py --agent function-approximation</code> to visualize the agent trained with continuous and discrete MDP respectively. The weights from the last trial will be saved and used for the task.
+  <div class="expected">
+    Plots and 2-3 sentences comparing the performances of <code>TabularQLearning</code> and <code>FunctionApproxQLearning</code>,
+    discussing possible reasons as well. Please include all relevant plots in your write-up!
+  </div>
+</li>
+
+
+
+
+
+<li class="writeup" id="4e">
+  Despite a slightly worse performance on this problem, why could the function approximation Q-learning outperform the tabular Q-learning in some other environments? Consider the situations
+  where the exploration period is limited, where the state space is very high dimensional and difficult to explore, and/or you have space constraints.
+  <div class="expected">
+    2-3 sentences discussing why <code>FunctionApproxQLearning</code> can be better in various scenarios.
+  </div>
+
+</li>
+
+
+
+</ol>
+
+
+<!------------------------------------------------------------>
+<h2 class="problemTitle">Problem 5: Safe Exploration</h2>
+
+<p>
+  We learned about different state exploration policies for RL in order to get information about $(s, a)$.
+  The method implemented in our MDP code is epsilon-greedy exploration, which balances both exploitation (choosing the action $a$ that
+  maximizes $\hat{Q}_{\text{opt}}(s, a))$ and exploration (choosing the action $a$ randomly).
+  $$\pi_{\text{act}}(s) = \begin{cases} \arg\max_{a \in \text{Actions}}\hat{Q}_{\text{opt}}(s,a) & \text{probability } 1 - \epsilon \\
+  \text{random from Actions}(s) & \text{probability } \epsilon \end{cases}$$
+</p>
+
+<p>
+  In real-life scenarios when safety is a concern, there might be constraints that need to be set in the state exploration phase.
+  For example, robotic systems that interact with humans should not cause harm to humans during state exploration. Safe exploration in RL is thus a critical research question in the field of AI safety and human-AI interaction <a href="#fn-2">[2]</a>. You can learn more about safe exploration in the past iterations' <a href="https://drive.google.com/file/d/1MFyJ6kCIZwODt_GSHNwNsYPvyzjWwdGD/view">ethics contents</a>.
+</p>
+<p>
+Safe exploration can be achieved via constrained RL. Constrained RL is a subfield of RL that focuses on optimizing agents' policies while adhering to predefined constraints - in order to ensure that certain unsafe behaviors are avoided during training and execution.
+</p>
+<p>
+  Assume there are harmful consequences for the driver of the Mountain Car if the car exceeds a certain velocity.
+  One very simple approach of constrained RL is to restrict the set of potential actions that the agent can take at each step.
+  We want to apply this approach to restrict the states that the agent can explore in order to prevent reaching unsafe speeds.
+</p>
+
+<ol class="problem">
+
+<li class="writeup" id="5a">
+  The implementation of the Mountain Car MDP you built in the previous questions actually already has velocity constraints in the form of a <code>self.max_speed</code> parameter. Read through OpenAI Gym's <a href="https://github.com/openai/gym/blob/master/gym/envs/classic_control/mountain_car.py#L106"> Mountain Car implementation </a>and explain how <code>self.max_speed</code> is used.
+<div class="expected">
+One sentence on how <code>self.max_speed</code> parameter is used in <code>mountain_car.py</code>.
+</div>
+
+</li>
+
+<li class="writeup" id="5b">
+  Run Function Approximation Q-Learning without the <code>max_speed</code> constraint by running <code>uv run train.py --agent function-approximation --max_speed=100000</code>. We are changing <code>max_speed</code> from its original value of 0.07 to a very large float to approximate removing the constraint entirely. Ignoring the difference in the scale of the rewards accrued by the policy (because the rewards are designed to scale with <code>max_speed</code>), notice that running the MDP unconstrained doesn't really change the output behavior of the learned policy. Explain in 1-2 sentences why this might be the case.
+<div class="expected">
+1-2 sentences explaining why the Q-Learning result doesn't necessarily change. Only the written answer will be graded for this question.
+</div>
+</li>
+
+<li class="writeup" id="5c">
+  Consider a different way of setting the constraint where you limit the set of actions the agent can take in the action space.
+  In <code>ConstrainedQLearning</code>, implement constraints on the set of actions the agent can take each step such that <code>velocity_(t+1) &lt; velocity_threshold</code>.
+  Remember to handle the case where the set of valid actions is empty - your function should return <code>None</code>. Below is the equation that Mountain Car uses to calculate velocity at time step $t+1$ (the equation is also provided <a href="https://github.com/openai/gym/blob/master/gym/envs/classic_control/mountain_car.py#L61">here</a>).
+  $$\text{velocity}_{t+1} = \text{velocity}_t + (\text{action} - 1) * \text{force} - \cos(3 * \text{position}_t) * \text{gravity}$$
+  We've determined that in the mountain car environment, a velocity of 0.065 is considered unsafe. After implementing the velocity constraint, run grader test <code>5c-helper</code> to examine the optimal policy for two continuous MDPs running Q-Learning (one with <code>max_speed</code> of 0.065 and the other with a very large <code>max_speed</code> constraint). Provide 1-2 sentences explaining why the output policies are now different.
+<div class="expected">
+    Complete the implementation of <code>ConstrainedQLearning</code> in <code>submission.py</code>, then run <code>uv run grader.py 5c-helper</code>. Include 1-2 sentences explaining the difference in the two scenarios. Only the written answer will be graded for this question.
+</div>
+
+
+</li>
+
+</li>
+
+
+<li class="writeup" id="5d">
+
+
+
+
+
+Thus far, we have illustrated how to achieve safe exploration via constrained RL, such as limiting maximum velocity or restricting the action space in the Mountain Car environment. These ideas are also highly relevant in real-world contexts, where RL agents learn through trial and error, often in environments with real human consequences.
+
+
+<p>
+Imagine a company is developing autonomous vehicles using RL and wants to test them on public roads in residential neighborhoods. These environments include pedestrians, other vehicles, and traffic signals, and the car’s onboard sensors (e.g., cameras) can detect these features.
+</p>
+
+<p>
+Design two Markov Decision Processes (MDPs) MDP A and MDP B, and associated exploration strategies for each MDP, that capture the aforementioned scenario of autonomous vehicles (as the agent) learning to drive on public roads through reinforcement learning, with the following requirements.
+
+<ul>
+  <li> MDP A: Define an MDP and exploration policy for the MDP where the autonomous car could cause harm in the aforementioned context (e.g. the autonomous car endangers pedestrians, breaks traffic laws, etc.).
+  <li> MDP B: Modify your design of MDP A to reduce or avoid the harm identified in MDP A.
+</ul>
+For each MDP, include: $\text{States}$, $\text{Actions}$ (as a function of the current state $s$), and $\text{Reward}$ (as a function of the current state, action taken, and next state $(s, a, s')$), a state exploration policy, and a brief (1–2 sentence) ethical explanation of how the design could lead to or mitigate harm.
+ </p>
+
+<div class="expected">
+Definitions of two MDPs (specifically define $\text{States}$, $\text{Actions}(s)$, and $\text{Reward}(s, a, s')$), their corresponding state exploration policies, and 1-2 sentence explanations of how their design could cause or mitigate harm.
+</div>
+
+
+</li>
+
+</ol>
+
+<p id="fn-1"> [1]
+  <a href="https://people.cs.umass.edu/~pthomas/papers/Konidaris2011a.pdf">Konidaris et al. Value Function Approximation in Reinforcement Learning using the Fourier Basis. AAAI. 2011.</a>
+</p>
+
+<p id="fn-2"> [2]
+  <a href="https://cdn.openai.com/safexp-short.pdf">OpenAI. Benchmarking Safe Exploration in Deep Reinforcement Learning.</a>
+</p>
+
+<p id="fn-3"> [3]
+  <a href="https://www.cdc.gov/tuskegee/timeline.htm">The Centers for Disease Control and Prevention. The Untreated Syphilis Study at Tuskegee Timeline.</a>
+</p>
+
+<p id="fn-4"> [4]
+  <a href="https://www.hhs.gov/ohrp/regulations-and-policy/belmont-report/read-the-belmont-report/index.html#xbasic">The US Department of Health and Human Services. The Belmont Report. 1978.</a>
+</p>
+
+<p id="fn-5"> [5]
+  <a href="https://www.wma.net/what-we-do/medical-ethics/declaration-of-helsinki/">The World Medical Association. The Declaration of Helsinki. 1964.</a>
+</p>
+
+<p id="fn-6"> [6]
+  <a href="https://www.dhs.gov/sites/default/files/publications/CSD-MenloPrinciplesCORE-20120803_1.pdf">The US Department of Homeland Security. The Menlo Report. 2012.</a>
+</p>
+
+<p id="fn-7"> [7]
+  <a href="https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-209.pdf">Moore. Efficient Memory-based Learning for Robot Control. 1990.</a>
+</p>
+
+</body>

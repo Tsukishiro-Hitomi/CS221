@@ -1,0 +1,265 @@
+\documentclass{article}
+
+% Page format
+\usepackage{pdfpages}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+
+% Math packages and custom commands
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools,amsthm,mathrsfs}
+\usepackage{enumitem,amssymb}
+\usepackage{csquotes}
+\usepackage{multirow}
+\usepackage{listings}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\|#2\|_{#1}}
+
+\definecolor{shadecolor}{gray}{0.9}
+
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+
+\newcommand{\note}[1]{\noindent{[\textbf{NOTE:} #1]}}
+\newcommand{\hint}[1]{\noindent{\textit{HINT: #1}}}
+\newcommand{\recall}[1]{\noindent{\textit{RECALL: #1}}}
+\newcommand{\expect}[1]{\noindent{\fbox{\parbox{0.95 \textwidth}{\textbf{What we expect:} #1}}}}
+
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+
+\title{\textbf{CS 221: Artificial Intelligence:\\ Principles and Techniques} \\Homework 6: Bayesian Networks}
+
+\chead{Homework 6: Bayesian Networks}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS 221: Artificial Intelligence: Principles and Techniques --- Autumn 2025}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.} \\
+
+\fontsize{12pt}{16pt}\selectfont
+
+\textbf{Before you get started, please read the Assignments section on the course website thoroughly.}
+
+\bigskip
+
+\section*{Problem 1: Basic Bayes}
+
+Let's consider a simple scenario which we can model using a Bayesian network. You are walking to CS221 lecture and, on the way, you notice the grass on the Stanford Oval is wet. You reason that this could be because either it rained (rare in beautiful and sunny Palo Alto) or the sprinklers were on. Letting your mind wander from the lecture, you decide to sit down and figure out what happened here by applying your knowledge of Bayesian networks.
+
+\subsection*{1a \quad Bayesian Network Diagram}
+\expect{A graph showing the causal relationships between variables. Use the variables $\text{Rain}$, $\text{Sprinkler}$, and $\text{WetGrass}$.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\subsection*{1b \quad Joint Probability Expression}
+\expect{The simplified joint probability expression, in terms of the local conditional probabilities (not a numerical value).}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\subsection*{1c \quad Marginal Probability}
+\expect{The simplified marginal probability expression for $\mathbb{P}(\text{WetGrass})$ in terms of local conditional probabilities.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\subsection*{1d \quad Likelihood Calculation}
+Assume $p(\text{Rain}) = 0.2$, $p(\text{Sprinkler}) = 0.5$, and the following local conditional probability table for $p(\text{WetGrass} \mid \text{Rain}, \text{Sprinkler})$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+$\text{Rain}$ & $\text{Sprinkler}$ & $p(\text{WetGrass} \mid \text{Rain}, \text{Sprinkler})$ \\
+\hline
+True & True & 0.9 \\
+True & False & 0.8 \\
+False & True & 0.7 \\
+False & False & 0.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+What is $\mathbb{P}(\text{Rain} = \text{true}, \text{Sprinkler} = \text{true}, \text{WetGrass} = \text{false})$?
+
+\expect{A numerical answer with brief calculations shown.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\subsection*{1e \quad Independence Analysis}
+Mark the following claims as true (T) or false (F):
+\begin{enumerate}[label=(\alph*), leftmargin=2em]
+    \item $\text{Rain}$ and $\text{Sprinkler}$ are independent.
+    \item $\text{Rain}$ and $\text{Sprinkler}$ are conditionally independent given $\text{WetGrass}$.
+    \item $\mathbb{P}(\text{Rain} \mid \text{WetGrass}) > \mathbb{P}(\text{Rain} \mid \text{WetGrass}, \text{Sprinkler})$.
+\end{enumerate}
+
+\expect{Mark each statement T/F. No justification required.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\newpage
+\section*{Problem 2: Sampling}
+
+You get distracted while examining that luscious green grass in the Stanford Oval, and you somehow wander into the Gilbert Biological Sciences Building. As you realise where you are, you overhear some biologists discussing the genome of a new species they've discovered, provisionally named \emph{Kenius bayus}. You can help them by modelling a phylogenetic tree with Bayesian networks where nucleotides mutate independently with probability \texttt{mutation\_rate}.
+
+\subsection*{2d \quad Forward Sampling Table}
+Run \texttt{test\_forward\_sampling} with \texttt{mutation\_rate = 0.1} and \texttt{genome\_length = 10}. Record the sampled genomes.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Species} & \textbf{Genome} \\
+\hline
+Thomas bayus & \rule{7cm}{0pt} \\
+Humblus studentus & \rule{7cm}{0pt} \\
+Aryamus bayus & \rule{7cm}{0pt} \\
+Kenius bayus & \rule{7cm}{0pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\expect{A completed table containing the sampled genome for each species.}
+
+\subsection*{2g \quad Sampling Comparison}
+Using \texttt{test\_gibbs\_vs\_rejection}, estimate $\mathbb{P}(\text{ThomasBayus} = \text{AAAC} \mid \text{KeniusBayus} = \text{AAAA})$.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Steps / Iterations} & \textbf{Estimated Posterior} \\
+\hline
+Rejection sampling & 100 & \rule{3cm}{0pt} \\
+Rejection sampling & 10{,}000 & \rule{3cm}{0pt} \\
+Gibbs sampling & 100 & \rule{3cm}{0pt} \\
+Gibbs sampling & 10{,}000 & \rule{3cm}{0pt} \\
+Exact & --- & \rule{3cm}{0pt} \\
+\hline
+\end{tabular}
+\end{center}
+
+\expect{Populate the table with the posterior estimates for each method.}
+
+\newpage
+\section*{Problem 3: Learning}
+
+You are managing a team of annotators who label conversations as \textbf{good} or \textbf{bad}. For now, assume you have ground-truth labels.
+
+\subsection*{3a \quad Annotator Network Diagram}
+\expect{Draw the Bayesian network relating $\text{Sample}$, $\text{Annotator1}$, $\text{Annotator2}$, and $\text{Annotator3}$.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\subsection*{3b \quad Perfect Annotator CPT}
+\expect{Complete the CPT for a perfect annotator.}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+$\text{Sample}$ & $p(\text{Annotator1} = \text{good} \mid \text{Sample})$ & $p(\text{Annotator1} = \text{bad} \mid \text{Sample})$ \\
+\hline
+good & & \\
+bad & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{3c \quad Random Annotator CPT}
+\expect{Complete the CPT for an annotator who guesses uniformly at random.}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+$\text{Sample}$ & $p(\text{Annotator1} = \text{good} \mid \text{Sample})$ & $p(\text{Annotator1} = \text{bad} \mid \text{Sample})$ \\
+\hline
+good & & \\
+bad & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{3f \quad Annotator Analysis}
+After training with MLE, plot the annotator CPTs using \texttt{plot\_annotator\_cpts}. Which annotator appears least trustworthy, and why?
+
+\expect{Identify the least reliable annotator and justify using the plots.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\newpage
+\section*{Problem 4: Learning without Labels}
+
+Now assume you do \emph{not} have ground-truth labels. You will model both annotator noise and latent labels using the Expectation-Maximization algorithm.
+
+\subsection*{4d \quad EM Plots}
+Run \texttt{test\_em\_learn} for 100 iterations. Plot the annotator CPTs and the label prior using \texttt{plot\_annotator\_cpts} and \texttt{plot\_label\_cpt}. Include both plots below.
+
+\expect{Insert the two plots generated after EM training.}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\vspace{3cm}\centering Annotator CPT plots here\vspace{3cm}}}
+\end{center}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\vspace{3cm}\centering Label CPT plot here\vspace{3cm}}}
+\end{center}
+
+\subsection*{4e \quad EM Recovery Analysis}
+Based on the plots, did EM recover the true labels? Explain your reasoning.
+
+\expect{State yes/no and support your answer using evidence from the plots.}
+
+\begin{shaded}
+\textbf{Your Response:}
+\end{shaded}
+
+\end{document}
