@@ -76,7 +76,9 @@ Linear algebra forms the foundation of modern AI and machine learning. In this p
   \item \textbf{Linear Algebra Complexity.} Suppose you have two matrices $A \in \mathbb{R}^{m \times n}$ and $B \in \mathbb{R}^{n \times p}$. What is the time complexity of computing their product $AB$ using the standard matrix multiplication algorithm? Express your answer using big-O notation and briefly justify why.
 
   \expect{The time complexity in big-O notation and a 1--2 sentence explanation.}
-  \mysolution{ }
+  \mysolution{The time complexity is ${O}(mpn)$. \\
+  Explanation: The demension of result matrix is ${m * p}$, and computing each element of the result matrix requires ${n}$ multiplications and ${n-1}$ additions.
+  }
 
   \item \textbf{Learn basic einsum with an AI tutor!} Use an AI chatbot to teach yourself Einstein summation notation (einsum) in NumPy.
 
@@ -87,7 +89,14 @@ Linear algebra forms the foundation of modern AI and machine learning. In this p
   \item \textbf{Einstein Summation (Written).} Given $X \in \mathbb R^{n\times d}$ and $\mathbf w \in \mathbb R^d$: (i) write an \texttt{einsum} string for $X\mathbf w$; (ii) for the pairwise dot-product matrix $XX^\top$; (iii) for $\operatorname{diag}(X^\top X)$ (column-wise squared norms). Briefly justify each.
 
   \expect{Provide einsum strings (e.g., \texttt{n d, d m -> n m}).}
-  \mysolution{ }
+  \mysolution{\\
+  (i) $nd, d \to n$ \\
+  (ii) $nd, dn \to nn$ \\
+  (iii) $\begin{aligned}[t]
+          &dn, nd \to dd \\
+          &dd \to d
+  \end{aligned}$
+  }
 \end{enumerate}
 
 \section*{Problem 2: Calculus and Gradients}
@@ -97,7 +106,7 @@ Gradients are essential for training machine learning models through optimizatio
   \item[a.] \textbf{Gradient Warmup.} For $f(\mathbf w)=\sum_{i=1}^d (w_i-c_i)^2$, derive $\nabla f(\mathbf w)$. Then evaluate the gradient at $\mathbf w=\mathbf 0$.
 
   \expect{A compact vector expression (e.g., $(\mathbf w+\mathbf c)$) and one evaluated vector.}
-  \mysolution{ }
+  \mysolution{ $2(w - c)$\quad $-2c$}
 
   \item[c.] \textbf{Matrix Multiplication Gradient} Consider two matrices $A$ (size $m \times n$) and $B$ (size $n \times p$) that are multiplied together to form $C = AB$, and then all entries of $C$ are summed to produce a scalar $s = \sum_{i,j} C_{i,j}$.
 
@@ -106,7 +115,12 @@ Gradients are essential for training machine learning models through optimizatio
   Compute $C = AB$ and $s = \sum_{i,j} C_{i,j}$. Then find the gradient $\frac{\partial s}{\partial A_{i,k}}$ for each entry of matrix $A$, and similarly find $\frac{\partial s}{\partial B_{k,j}}$ for each entry of matrix $B$.
 
   \expect{The computed matrices $C$ and scalar $s$, plus the gradient matrices $\frac{\partial s}{\partial A}$ and $\frac{\partial s}{\partial B}$ with numerical values for each entry.}
-  \mysolution{ }
+  \mysolution{ \\ \\
+  $C= \begin{pmatrix}26 & 22\\ 79 & 44 \end{pmatrix}$ \\ \\
+  $s=171$\\ \\
+  $\frac{\partial{s}}{\partial{A}}=\begin{pmatrix}15 & 9 & 3 \\ 15 & 9 & 3\end{pmatrix}$ \\ \\
+  $\frac{\partial{s}}{\partial{B}}=\begin{pmatrix}6 & 6 \\ 6 & 6 \\ 9 & 9 \end{pmatrix}$
+  }
 
 \end{enumerate}
 

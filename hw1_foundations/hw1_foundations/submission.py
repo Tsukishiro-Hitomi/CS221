@@ -24,6 +24,9 @@ def linear_project(x: np.ndarray, W: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    out = einsum(x, W, 'b d_in, d_in d_out -> b d_out')
+    out = out + b
+    return out
     # END_YOUR_CODE
 
 
@@ -39,7 +42,9 @@ def split_last_dim_pattern() -> str:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    return 'b (g d) -> b g d'
     # END_YOUR_CODE
+
 
 
 def normalized_inner_products(A: np.ndarray, C: np.ndarray, normalize: bool = True) -> np.ndarray:
@@ -62,7 +67,13 @@ def normalized_inner_products(A: np.ndarray, C: np.ndarray, normalize: bool = Tr
     - Think about the Einstein notation pattern for batched dot products.
     """
     # BEGIN_YOUR_CODE
+    
     # TODO: Implement
+    D = A.shape[2]
+    out = einsum(A, C, 'b m d, b n d -> b m n')
+    if normalize is True:
+        out /= np.sqrt(D)
+    return out
     # END_YOUR_CODE
 
 
@@ -85,6 +96,11 @@ def mask_strictly_upper(scores: np.ndarray) -> np.ndarray:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    L = scores.shape[1]
+    rows, cols = np.indices((L, L))
+    mask_upper = cols > rows
+    out = np.where(mask_upper, -np.inf, scores)
+    return out
     # END_YOUR_CODE
 
 
@@ -106,6 +122,7 @@ def prob_weighted_sum_einsum() -> str:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    return 'b n, b n d -> b d'
     # END_YOUR_CODE
 
 
@@ -125,6 +142,7 @@ def gradient_warmup(w: np.ndarray, c: np.ndarray) -> np.ndarray:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    return 2 * (w - c)
     # END_YOUR_CODE
 
 
@@ -145,6 +163,14 @@ def matrix_grad(A: np.ndarray, B: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    B_sum = np.sum(B, axis = 1)
+    A_sum = np.sum(A, axis = 0)
+    grad_A = np.zeros_like(A)
+    grad_B = np.zeros_like(B)
+    grad_A += B_sum.reshape(1, -1)
+    grad_B += A_sum.reshape(-1, 1)
+
+    return (grad_A, grad_B)
     # END_YOUR_CODE
 
 
@@ -166,6 +192,7 @@ def lsq_grad(w: np.ndarray, A: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    return np.transpose(A).dot(A.dot(w) - b)
     # END_YOUR_CODE
 
 
@@ -192,6 +219,18 @@ def lsq_finite_diff_grad(w: np.ndarray,
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    d = w.shape[0]
+    w_eye = np.eye(d)
+    w_plus = w[:, None] + w_eye * epsilon
+    w_minus = w[:, None] - w_eye * epsilon
+
+    # w[:, None]: (d, )->(d, 1)
+    # b[:, None]: (n, )->(n, 1)
+    f_w_plus = 0.5 * np.sum(np.square((A.dot(w_plus) - b[:, None])), axis = 0) # (d,)
+    f_w_minus = 0.5 * np.sum(np.square((A.dot(w_minus) - b[:, None])), axis = 0) # (d,)
+    
+    grad_d = 0.5 * (f_w_plus - f_w_minus) / epsilon
+    return grad_d
     # END_YOUR_CODE
 
 
