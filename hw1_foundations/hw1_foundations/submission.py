@@ -257,4 +257,10 @@ def gradient_descent_quadratic(x: np.ndarray, w: np.ndarray, theta0: float, lr: 
     """
     # BEGIN_YOUR_CODE
     # TODO: Implement
+    theta = theta0
+    for i in range(num_steps):
+        d_theta = 2 * np.sum(w.dot(theta - x))
+        theta -= d_theta * lr
+    return theta
+
     # END_YOUR_CODE
