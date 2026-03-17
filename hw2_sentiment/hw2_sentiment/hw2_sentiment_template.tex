@@ -129,7 +129,7 @@ where $\mathbf{y}$ is the one-hot encoded true label vector.
 
 \expect{A feature vector corresponding to the vocabulary in alphabetical order: [about, amazing, angry, day, hate, love, of, scared, so, spiders, this, tomorrow, waiting, worried].}
 
-\mysolution{}
+\mysolution{$[1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 1].T$}
 
 \subsection*{Part 1b: Softmax Computation}
 
@@ -137,7 +137,7 @@ where $\mathbf{y}$ is the one-hot encoded true label vector.
 
 \expect{The softmax probability vector $[P(\text{Joy}), P(\text{Anger}), P(\text{Fear})]$ with values rounded to 3 decimal places.}
 
-\mysolution{}
+\mysolution{$[0.705, 0.259, 0.035].T$}
 
 \subsection*{Part 1c: Cross-entropy Loss}
 
@@ -150,7 +150,10 @@ where $\mathbf{y}$ is the one-hot encoded true label vector.
 \end{enumerate}
 }
 
-\mysolution{}
+\mysolution{
+    $Loss = 0.357$\\
+    When the probability of the correct class approaches 1, the total loss approaches 0.
+}
 
 \subsection*{Part 1d: Gradient Analysis}
 
@@ -164,7 +167,15 @@ where $\mathbf{y}$ is the one-hot encoded true label vector.
 \end{enumerate}
 }
 
-\mysolution{}
+\mysolution{
+\begin{align*}
+    \frac{\partial Loss_{CE}}{\partial z_k}
+    &= \frac{\partial}{\partial z_k} \left( -\sum_{m=1}^{3}y_m \log p_m \right) \\
+    &= -\sum_{m=1}^{3} y_m \frac{\partial \log p_m}{\partial z_k} \\
+    &= -\sum_{m=1}^{3} \frac{y_m}{p_m}\frac{\partial \frac{e^{z_k}}{\sum_{m=1}^{3}e^{z_m}}}{\partial z_k} \\
+    &= \sum_{m=1}^{3}y_k(p_k-1)
+\end{align*} 
+}
 
 \newpage
 \section*{Problem 2: Building Intuition for Embeddings and Multilayer Perceptron}
@@ -211,7 +222,12 @@ For simplicity, we will focus on \textbf{binary sentiment classification (positi
 \end{enumerate}
 }
 
-\mysolution{}
+\mysolution{
+    $[0.2, -0.4].T$\\
+    Benifit: easy to compute;\\
+    Limitation: easy to be influced by irrelavant words.
+
+}
 
 \subsection*{Part 2b: Forward Pass}
 
@@ -242,13 +258,13 @@ $$\mathbf{W}^{(2)} = \begin{bmatrix} 0.8 & -0.6 \end{bmatrix}, \quad b^{(2)} = 0
 \hline
 Node/Variable & Formula/Computation & Value \\
 \hline
-$\mathbf{x}$ & NA & \\
+$\mathbf{x}$ & NA & $\begin{bmatrix} -0.25 \\ -0.4 \end{bmatrix}$\\
 \hline
-$\mathbf{h}$ & & \\
+$\mathbf{h}$ & $\mathbf{h} = \text{ReLU}(\mathbf{W}^{(1)} \mathbf{x} + \mathbf{b}^{(1)})$ & $\begin{bmatrix}0.0\\0.0 \end{bmatrix}$\\
 \hline
-$z$ & & \\
+$z$ &$z = \mathbf{W}^{(2)} \mathbf{h} + b^{(2)}$ & $0.3$\\
 \hline
-$\hat{y}$ & & \\
+$\hat{y}$ & $\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$& $0.574$\\
 \hline
 \end{tabular}
 \end{table}
@@ -271,7 +287,7 @@ $$L = -[y_{\text{true}} \log(\hat{y}) + (1 - y_{\text{true}}) \log(1 - \hat{y})]
 \hline
 Variable & Formula/Computation & Value \\
 \hline
-$L$ & & \\
+$L$ &$L = -[y_{\text{true}} \log(\hat{y}) + (1 - y_{\text{true}}) \log(1 - \hat{y})]$ & $0.853$\\
 \hline
 \end{tabular}
 \end{table}
@@ -282,19 +298,28 @@ $L$ & & \\
 \hline
 Gradient & Formula (Chain Rule) & Evaluated Value \\
 \hline
-$\frac{\partial L}{\partial \hat{y}}$ & & \\
+$\frac{\partial L}{\partial \hat{y}}$ & $\frac{y_{true}-\hat{y}}{\hat{y}(\hat{y}-1)}$& $2.347$ \\
 \hline
-$\frac{\partial L}{\partial z}$ & & \\
+$\frac{\partial L}{\partial z}$ &$\frac{\partial L}{\partial y}\*\frac{\partial y}{\partial z}$ & $0.574$ \\
 \hline
-$\frac{\partial L}{\partial \mathbf{h}}$ & & \\
+$\frac{\partial L}{\partial \mathbf{h}}$ &$\frac{\partial L}{\partial y}\frac{\partial y}{\partial z}\frac{\partial z}{\partial \mathbf{h}}$ &$\begin{bmatrix}
+    0.459 \\ -0.344
+\end{bmatrix}$ \\
 \hline
-$\frac{\partial L}{\partial \mathbf{W}^{(2)}}$ & & \\
+$\frac{\partial L}{\partial \mathbf{W}^{(2)}}$ &$\frac{\partial L}{\partial y}\frac{\partial y}{\partial z}\frac{\partial z}{\partial \mathbf{W^{(2)}}}$ & $\begin{bmatrix}
+    0.000 \\ 0.000
+\end{bmatrix}$\\
 \hline
-$\frac{\partial L}{\partial b^{(2)}}$ & & \\
+$\frac{\partial L}{\partial b^{(2)}}$ &$\frac{\partial L}{\partial y}\frac{\partial y}{\partial z}\frac{\partial z}{\partial \mathbf{b^{(2)}}}$ &$0.574$ \\
 \hline
-$\frac{\partial L}{\partial \mathbf{W}^{(1)}}$ & & \\
+$\frac{\partial L}{\partial \mathbf{W}^{(1)}}$ & $\frac{\partial L}{\partial y}\frac{\partial y}{\partial z}\frac{\partial z}{\partial \mathbf{h}} \frac{\partial \mathbf{h}}{\partial \mathbf{W^{(1)}}}$& $\begin{bmatrix}
+0.000 & 0.000 \\
+0.000 & 0.000
+\end{bmatrix}$\\
 \hline
-$\frac{\partial L}{\partial \mathbf{b}^{(1)}}$ & & \\
+$\frac{\partial L}{\partial \mathbf{b}^{(1)}}$ & $\frac{\partial L}{\partial y}\frac{\partial y}{\partial z}\frac{\partial z}{\partial \mathbf{h}} \frac{\partial \mathbf{h}}{\partial \mathbf{b^{(1)}}}$ & $\begin{bmatrix}
+    0.000 \\ 0.000
+\end{bmatrix}$\\
 \hline
 \end{tabular}
 \end{table}
@@ -319,7 +344,8 @@ $\frac{\partial L}{\partial \mathbf{b}^{(1)}}$ & & \\
 \end{enumerate}
 }
 
-\mysolution{}
+\mysolution{\\1. Positive emotion words (e.g., amazing, love) cluster in the first quadrant (positive coordinates), negative emotion words (e.g., scared, hate, angry) cluster in the third quadrant (negative coordinates), and neutral function words (e.g., this, about, of) lie near the origin (coordinates close to zero), forming distinct semantic clusters in the 2D embedding space.
+\\2. Word embeddings encode semantic similarity via distance and direction in vector space: semantically similar words (e.g., amazing and love) are positioned close together, while opposites (e.g., love and hate) point in opposite directions. In contrast, the bag-of-words model only counts word frequencies and ignores semantic relationships, making embeddings far more meaningful for capturing the nuanced meaning of language.}
 
 \newpage
 \section*{Problem 3: Linear Classification}
