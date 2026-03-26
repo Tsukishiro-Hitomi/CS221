@@ -1,8 +1,10 @@
 # Fdb version 4
-["pdflatex"] 1773228750.28505 "d:/大二下资料/CS221/HWs/hw2_sentiment/hw2_sentiment/hw2_sentiment_template.tex" "hw2_sentiment_template.pdf" "hw2_sentiment_template" 1773228751.37732 0
+["pdflatex"] 1773827039.50537 "d:/大二下资料/CS221/HWs/hw2_sentiment/hw2_sentiment/hw2_sentiment_template.tex" "hw2_sentiment_template.pdf" "hw2_sentiment_template" 1773827040.71247 0
+  "d:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1766534910 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "d:/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1766535358 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/adobe/symbol/psyr.tfm" 1766537545 1408 5937f58aa508ea2cea4901c07d10f5fe ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1766538197 1528 7e12f4c0fcf5a072cebdcfbfc610f54c ""
+  "d:/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1766535132 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1766501306 916 f87d7c45f9c908e672703b83b72241a3 ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm" 1766501306 908 2921f8a10601f252058503cc6570e581 ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbsy10.tfm" 1766534901 1116 4e6ba9d7914baa6482fd69f67d126380 ""
@@ -26,6 +28,7 @@
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1766501306 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb" 1766501306 24252 1e4e051947e12dfb50fee0b7f4e26e3a ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1766501306 34694 870c211f62cb72718a00e353f14f254d ""
+  "d:/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb" 1766534910 136101 b18d10b3436f8cb0cd04046deb340fe7 ""
   "d:/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1766536384 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "d:/texlive/2025/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1766501340 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
   "d:/texlive/2025/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1766534777 40635 c40361e206be584d448876bba8a64a3b ""
@@ -172,10 +175,10 @@
   "d:/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1766538225 5420732 a831a9f105f77848e9ac925513c3bcbc ""
   "d:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1766538308 1980252 752a0bb63688ec87331f98e7eac7ce93 ""
   "d:/texlive/2025/texmf.cnf" 1766538208 713 e69b156964470283e0530f5060668171 ""
-  "d:/大二下资料/CS221/HWs/hw2_sentiment/hw2_sentiment/hw2_sentiment_template.tex" 1759532948 15217 f6be7382cb0273b617572a5954b348b5 ""
-  "hw2_sentiment_template.aux" 1773228751 162 8041607b76d73e3dcbdb7e912bad98fd "pdflatex"
-  "hw2_sentiment_template.out" 1773228751 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "hw2_sentiment_template.tex" 1759532948 15217 f6be7382cb0273b617572a5954b348b5 ""
+  "d:/大二下资料/CS221/HWs/hw2_sentiment/hw2_sentiment/hw2_sentiment_template.tex" 1773827037 19228 989b0c25cfe00911ec8e0543e7066b7f ""
+  "hw2_sentiment_template.aux" 1773827040 163 62caa2a276925a140dfb5a09f5283243 "pdflatex"
+  "hw2_sentiment_template.out" 1773827040 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "hw2_sentiment_template.tex" 1773827037 19228 989b0c25cfe00911ec8e0543e7066b7f ""
   (generated)
   "hw2_sentiment_template.aux"
   "hw2_sentiment_template.log"

@@ -39,6 +39,7 @@ class ShortestPathProblem(SearchProblem):
 
     def start_state(self) -> State:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
+        return State(self.start_location, None)
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
 
@@ -50,11 +51,17 @@ class ShortestPathProblem(SearchProblem):
         string represents a transition from the current location to that new location.
         """
         # BEGIN_YOUR_CODE (our solution is 7 lines of code, but don't worry if you deviate from this)
+        Steps = []
+        for new_location, cost in self.city_map.distances[state.location].items():
+            new_state = State(new_location, None)
+            Steps.append(Step(new_location, cost, new_state))
+        return Steps
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
 
     def is_end(self, state: State) -> bool:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
+        return self.end_tag in self.city_map.tags[state.location]
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
 
@@ -62,6 +69,8 @@ class ShortestPathProblem(SearchProblem):
 ########################################################################################
 # Problem 2b: Custom -- Plan a Route through Stanford
 
+# start_location: 5676645106
+# end_tag: bicycle
 
 def get_stanford_shortest_path_problem() -> ShortestPathProblem:
     """
@@ -78,7 +87,9 @@ def get_stanford_shortest_path_problem() -> ShortestPathProblem:
     city_map = create_stanford_map()
 
     # BEGIN_YOUR_CODE (our solution is 2 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    start_location = '5676645106'
+    end_tag = 'amenity=food'
+    return ShortestPathProblem(start_location, end_tag, city_map)
     # END_YOUR_CODE
     return ShortestPathProblem(start_location, end_tag, city_map)
 

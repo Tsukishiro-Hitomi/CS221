@@ -119,7 +119,13 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
 \textbf{Question:} What is the minimum cost of reaching location $(m,n)$ (note that $m,n \geq 0$) starting from location $(0,0)$ in the above city? Describe one possible path achieving the minimum cost.  Is it unique (i.e., are there multiple paths that achieve the minimum cost)?
 
 \expect{Provide an expression for the minimum cost and explain how you got it. In addition, please provide 1 - 2 sentences describing one possible minimum cost path and state whether it is unique.}
-\mysolution{}
+\mysolution{
+  The minimum cost is 
+  $n + \frac{m(m+1)}{2}$.
+  Note that the cost depends on the x-coordinate of the current state,
+  so we should move upward when x is 0, where the minimum cost lies. Since the path is
+  $(0, 0)\to(0, n)\to(m, n)$, it's unique.
+}
 
 \subsection*{Part 1b: UCS Behavior}
 
@@ -131,7 +137,11 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
  \end{enumerate}
 
   \expect{T/F for each subpart. No justification needed.}
-  \mysolution{}
+  \mysolution{\\
+    1.F\\
+    2.F\\
+    3.T
+  }
 
 \subsection*{Part 1c: UCS on an Arbitrary Graph}
 
@@ -142,7 +152,11 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
     \item If you increase the cost of each action by 1, the minimum cost path does not change (even though its cost does).
   \end{enumerate}
   \expect{T/F for each subpart. No justification needed.}
-  \mysolution{}
+  \mysolution{\\
+  1.T\\
+  2.F\\
+  3.F
+  }
 
 
 \newpage
@@ -179,10 +193,10 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
         \item A start location and end tag that produced new insight into traveling around campus.
         Describe whether the system was useful.
     \end{itemize}
-
-        A start location and end tag where the minimum cost path found isn't desirable.
+    \begin{itemize}
+      \item         A start location and end tag where the minimum cost path found isn't desirable.
         Is this due to incorrect modeling assumptions?   Explain.
-
+    \end{itemize}
     You should feel free to add new landmarks.  If you are not familiar with the Stanford campus, please feel free to use
     the \href{https://campus-map.stanford.edu/}{Campus Map website} to learn more about buildings, amenities, and paths around campus.
 
@@ -190,7 +204,13 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
     A screenshot of the visualization of your two solutions as well as i) one or more sentences describing something interesting you've learned
     about traveling around campus (or elsewhere) and ii) something incorrect about either the map or modeling assumptions (such as a landmark being out of place, etc.).
   }
-  \mysolution{}
+  \mysolution{
+     NOT FINISHED since I'm not a Stanford student. But the process of visualization is quite funny.
+     Below is an example:
+      \begin{center}
+      \includegraphics[width=0.8\textwidth]{problem-2b.png}
+      \end{center}
+  }
 
 \subsection*{Part 2c: Negative Externalities}
 
@@ -207,7 +227,14 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
   \expect{
     Provide 3-5 sentences describing (a) two externalities (one for users of the route-planning system and one for other people/non-users of the system), as well as (b) at least one potential solution to reduce the impact of these problems.
   }
-  \mysolution{}
+  \mysolution{\\
+   1) For system users: When a large number of users follow the same "shortest path" recommended by the system, 
+   the origin path may become congested;\\
+   2) Their origin preferred path may become worse(more congested or more dirty), which creates a negative
+   consumption since non-users bear the costs while not benifiting from the route-planning tool.
+   \\My suggestion: The route-planning tool should provide the funtion of visualizing the real-time congestion, which will 
+   avoid those users followingthe same "shortest path".
+  }
 
 \newpage
 

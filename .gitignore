@@ -1,0 +1,31 @@
+# ====================
+# LaTeX 自动生成文件
+# ====================
+*.aux
+*.log
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.thm
+*.nav
+*.snm
+*.idx
+*.ilg
+*.ind
+*.dvi
+*.xdv
+*.bak
+*.tmp
+*.swp
+
+# 编译产生的文件夹
+_auto/
+_build/
+_minted/

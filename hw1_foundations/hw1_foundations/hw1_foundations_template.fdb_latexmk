@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1773316429.35872 "d:/大二下资料/CS221/HWs/hw1_foundations/hw1_foundations/hw1_foundations_template.tex" "hw1_foundations_template.pdf" "hw1_foundations_template" 1773316430.23427 0
+["pdflatex"] 1773400679.36486 "d:/大二下资料/CS221/HWs/hw1_foundations/hw1_foundations/hw1_foundations_template.tex" "hw1_foundations_template.pdf" "hw1_foundations_template" 1773400680.24244 0
   "d:/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1766535358 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1766501306 1004 54797486969f23fa377b128694d548df ""
   "d:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1766501306 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -35,11 +35,14 @@
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1766501306 36281 c355509802a035cadc5f15869451dcee ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1766501306 35752 024fb6c41858982481f6968b5fc26508 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1766501306 32362 bc3f3eec7ab7d65fe700963d4017d32c ""
+  "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb" 1766501306 31809 8670ca339bf94e56da1fc21c80635e2a ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1766501306 32762 7fee39e011c23b3589931effd97b9702 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1766501306 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb" 1766501306 32915 7bf7720c61a5b3a7ff25b0964421c9b6 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1766501306 32716 08e384dc442464e7285e891af9f45947 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1766501306 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb" 1766501306 31099 342ef5a582aacbd3346f3cf4579679fa ""
+  "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb" 1766501306 30457 bc0868ebece724ed7c3d37e3d9bff7bd ""
   "d:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1766501306 34694 870c211f62cb72718a00e353f14f254d ""
   "d:/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1766536384 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "d:/texlive/2025/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1766501340 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
@@ -110,10 +113,10 @@
   "d:/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1766538225 5420732 a831a9f105f77848e9ac925513c3bcbc ""
   "d:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1766538308 1980252 752a0bb63688ec87331f98e7eac7ce93 ""
   "d:/texlive/2025/texmf.cnf" 1766538208 713 e69b156964470283e0530f5060668171 ""
-  "d:/大二下资料/CS221/HWs/hw1_foundations/hw1_foundations/hw1_foundations_template.tex" 1773316428 9822 1269ce992448e88c1573f2d9cdfca45d ""
-  "hw1_foundations_template.aux" 1773316430 162 59504cb8f8bee0a3f0488d753cb23a1e "pdflatex"
-  "hw1_foundations_template.out" 1773316429 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "hw1_foundations_template.tex" 1773316428 9822 1269ce992448e88c1573f2d9cdfca45d ""
+  "d:/大二下资料/CS221/HWs/hw1_foundations/hw1_foundations/hw1_foundations_template.tex" 1773400678 10102 486c4d2640ce85bf8def2d14413747a3 ""
+  "hw1_foundations_template.aux" 1773400680 162 59504cb8f8bee0a3f0488d753cb23a1e "pdflatex"
+  "hw1_foundations_template.out" 1773400679 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "hw1_foundations_template.tex" 1773400678 10102 486c4d2640ce85bf8def2d14413747a3 ""
   (generated)
   "hw1_foundations_template.aux"
   "hw1_foundations_template.log"
