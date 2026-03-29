@@ -264,7 +264,9 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
   \expect{
     A mathematical expression that depends on $n$ and $k$, with a brief explanation justifying it.
   }
-  \mysolution{}
+  \mysolution{
+    $n \cdot{2^k}$.\ For each location, there are $2^k$ different possible memories considering the waypoints they contain.
+  }
 
 
 \subsection*{Part 3c: Get Stanford Waypoints Shortest Path Problem}
@@ -279,7 +281,17 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
     one or more sentences describing unexpected or interesting features of the selected path.
     Does it match your expectations? What does this path fail to capture that might be important?
   }
-  \mysolution{}
+  \mysolution{
+  Waypoint tags:
+  \begin{itemize}
+    \item amenity=food
+    \item name=Li Ka Shing Center
+    \item name=Medical School Office Building
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{problem-3c.png}
+  \end{center}
+  }
 
 
 \subsection*{Part 3d: Ride Sharing}
@@ -301,7 +313,7 @@ Consider an infinite city consisting of locations $(x,y)$ where $x, y$ are integ
     (c) a potential negative use of the waypoints feature that a company could use to increase profits while
     harming the driver experience or driver health.
   }
-  \mysolution{}
+  \mysolution{I would include waypoints such as restrooms, safe parking lots, low-cost food, gas or charging stations, and quiet rest areas between drop-off and next pick-up so drivers can recover instead of driving continuously. To personalize these waypoints, the system would need driver-specific information such as shift length, fatigue level, medical needs, accessibility needs, and EV battery/fuel status. It may also need preference and safety data, such as preferred neighborhoods, language, and times when a driver wants to avoid high-risk zones. A harmful use would be to insert "profit waypoints" that keep drivers near surge areas while delaying real breaks, nudging them to stay online longer and increasing burnout. Collecting these data also has downsides: privacy invasion, potential discrimination in dispatch decisions, and pressure on drivers to share sensitive health or personal information to remain competitive.}
 
 \newpage
 
