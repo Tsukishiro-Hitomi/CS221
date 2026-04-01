@@ -125,6 +125,14 @@ $V^\star_0(s) = 0$ and, for any end state $s_\text{end}$, $V^\star_i(s_\text{end
   \begin{shaded}
   % your solution goes here %
 \textbf{Your Solution:}
+\begin{center}
+\begin{tabular}{c|l}
+\textbf{iter} & \textbf{state} (order: $-2, -1, 0, +1, +2$) \\
+\hline
+$1$ & $(0,\ 7,\ -5,\ 11.5,\ 0)$ \\
+$2$ & $(0,\ 6,\ 3.35,\ 8,\ 0)$
+\end{tabular}
+\end{center}
 
 \end{shaded}
 \end{figure}
@@ -138,6 +146,13 @@ $V^\star_0(s) = 0$ and, for any end state $s_\text{end}$, $V^\star_i(s_\text{end
 \begin{shaded}
 % your solution goes here %
 \textbf{Your Solution:}
+\begin{center}
+\begin{tabular}{c|ccc}
+\textbf{state} & $-1$ & $0$ & $+1$ \\
+\hline
+$\pi^\star(s)$ & $a_1$ & $a_2$ & $a_2$
+\end{tabular}
+\end{center}
 
 \end{shaded}
 \end{enumerate}
@@ -175,6 +190,30 @@ Now let's do it for solving MDPs.
     \begin{shaded}
 % your solution goes here %
     \textbf{Your Solution:}
+    
+    We define the new transition probabilities $T'$ and rewards $\text{Reward}'$ as follows:
+    \begin{itemize}
+        \item $T'(s' \mid s, a) = \gamma T(s' \mid s, a)$ for $s' \in \text{States}$
+        \item $T'(o \mid s, a) = 1 - \gamma$
+        \item $T'(o \mid o, a) = 1$ (i.e., state $o$ is an absorbing state)
+        \item $\text{Reward}'(s, a, s') = \frac{1}{\gamma} \text{Reward}(s, a, s')$ for $s' \in \text{States}$
+        \item $\text{Reward}'(s, a, o) = 0$
+        \item $\text{Reward}'(o, a, o) = 0$
+        \item $V_{\text{opt}}^{'}(o) = 0$
+    \end{itemize}
+
+    \textbf{Verification:}
+    The Bellman optimality equation for the new MDP with $\gamma' = 1$ is:
+    \begin{align*}
+    V'_{\text{opt}}(s) &= \max_{a \in \text{Actions}'(s)} \sum_{s' \in \text{States}'} T'(s'|s,a) \Big[ \text{Reward}'(s,a,s') + 1 \cdot V'_{\text{opt}}(s') \Big] \\
+    &= \max_{a} \left( \sum_{s' \in \text{States}} \gamma T(s'|s,a) \left[ \frac{\text{Reward}(s,a,s')}{\gamma} + V'_{\text{opt}}(s') \right] + (1-\gamma) \Big[ 0 + V'_{\text{opt}}(o) \Big] \right)
+    \end{align*}
+    Since $o$ is an absorbing state with $0$ reward everywhere, $V'_{\text{opt}}(o) = 0$. Substituting this in, we get:
+    \begin{align*}
+    V'_{\text{opt}}(s) &= \max_{a} \left( \sum_{s' \in \text{States}} T(s'|s,a) \text{Reward}(s,a,s') + \sum_{s' \in \text{States}} \gamma T(s'|s,a) V'_{\text{opt}}(s') \right) \\
+    &= \max_{a} \sum_{s' \in \text{States}} T(s'|s,a) \Big[ \text{Reward}(s,a,s') + \gamma V'_{\text{opt}}(s') \Big]
+    \end{align*}
+    This perfectly matches the Bellman optimality equation for the original MDP. Thus, the optimal values are equal: $V'_{\text{opt}}(s) = V_{\text{opt}}(s)$.
 
     \end{shaded}
 \end{enumerate}
