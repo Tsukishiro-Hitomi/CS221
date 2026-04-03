@@ -272,9 +272,17 @@ and peek into the \texttt{simulate} function to see how they are called repeated
   \begin{shaded}
   % your solution goes here %
   \textbf{Your Solution:}
-
+  \begin{center}
+      \includegraphics[width=0.32\textwidth]{mcvi_1.png}
+      \includegraphics[width=0.32\textwidth]{mcvi_2.png}
+      \includegraphics[width=0.32\textwidth]{mcvi_3.png}
+  \end{center}
+  \textbf{Explanation:}\\
+  As seen in the plots, the reward per episode consistently rises and quickly stabilizes, 
+  showing that the model successfully learns a policy to climb the mountain. 
+  Model-based value iteration could perform poorly in environments with excessively large state-action spaces, 
+  which makes explicitly maintaining transition counts and predicting rewards computationally intractable.
   \end{shaded}
-
 \end{enumerate}
 
 \newpage

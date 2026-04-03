@@ -51,6 +51,10 @@ def value_iteration(
         action_ids = np.array(list(action_ids), dtype=object)
 
     tie_breaker = (np.arange(num_actions, dtype=np.float64) * 1e-12)[np.newaxis, :]
+    
+    # if some state is unaccessible, it's corresponding transiton probability is zero.
+    transitions = transitions * valid_actions[..., np.newaxis]
+    expected_rewards = np.sum(transitions * rewards, axis=2)
 
     def compute_q(v: np.ndarray) -> np.ndarray:
         """
@@ -59,7 +63,9 @@ def value_iteration(
         - Returns: An np.ndarray of shape (num_states, num_actions) containing the Q-values.
         """
         # BEGIN_YOUR_CODE (our solution is 2 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # since expected_rewards stay the same during iteration, we should precalculate it to reduce unnecessary calculations.
+        q_values = discount * np.sum(transitions * v, axis=2) + expected_rewards
+        return q_values
         # END_YOUR_CODE
 
     def compute_policy(q: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -72,7 +78,9 @@ def value_iteration(
                    2. `best_values`: An array of shape (num_states,) with the Q-value corresponding to each best action.
         """
         # BEGIN_YOUR_CODE (our solution is 4 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        best_actions = np.argmax(q + tie_breaker, axis=1)
+        best_values = np.max(q, axis=1)
+        return (best_actions, best_values)
         # END_YOUR_CODE
 
     # Implement the value iteration algorithm.
@@ -87,7 +95,24 @@ def value_iteration(
 
     print('Running value iteration...')
     # BEGIN_YOUR_CODE (our solution is 18 line(s) of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    pre_values = np.zeros(num_states)
+    end_states = []
+    for i in range(num_states):
+        if np.sum(action_mask[i]) == 0:
+            end_states.append(i)
+
+    while True:
+        q_values = compute_q(pre_values)
+        actions, cur_values = compute_policy(q_values)
+        cur_values[end_states] = 0
+        diff = np.abs(pre_values - cur_values)
+        if np.max(diff) < epsilon:
+            break
+        pre_values = cur_values
+        
+    best_actions_id = action_ids[actions]
+    best_actions_id[end_states] = None
+    return best_actions_id
     # END_YOUR_CODE
 
 
@@ -186,7 +211,10 @@ class ModelBasedMonteCarlo(util.RLAlgorithm):
         policy_idx = self.pi_indices[state_idx]
 
         # BEGIN_YOUR_CODE (our solution is 5 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        if policy_idx == -1 or (explore and random.random() < exploration_prob):
+            return random.choice(self.actions)
+        return self.actions[policy_idx]
+
         # END_YOUR_CODE
 
     # We will call this function with (s, a, r, s'), which is used to update counts and rewards.
@@ -203,7 +231,20 @@ class ModelBasedMonteCarlo(util.RLAlgorithm):
 
         if self.num_iters > 0 and self.num_iters % self.calc_val_iter_every == 0:
             # BEGIN_YOUR_CODE (our solution is 21 line(s) of code, but don't worry if you deviate from this)
-            raise Exception("Not implemented yet")
+            num_transitions = np.sum(self.transition_counts, axis=2)
+            num_transitions_axis = num_transitions[..., np.newaxis]
+            transitions = np.ones_like(self.transition_counts)
+            transitions = np.divide(self.transition_counts, num_transitions_axis, \
+                                    out=np.zeros_like(self.transition_counts, dtype=float), \
+                                    where=num_transitions_axis != 0)
+            
+            rewards = np.divide(self.reward_sums, self.transition_counts, \
+                                out=np.zeros_like(self.reward_sums, dtype=float), \
+                                    where=self.transition_counts != 0)
+            
+            self.pi_actions = value_iteration(transitions=transitions, rewards=rewards, discount=self.discount, \
+                                              valid_actions=self.valid_actions, action_ids=self.actions_array) 
+            
             # END_YOUR_CODE
             self._sync_policy_indices()
 
