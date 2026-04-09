@@ -294,7 +294,11 @@ class TabularQLearning(util.RLAlgorithm):
             exploration_prob = exploration_prob / math.log(self.num_iters - 100000 + 1)
         state_idx = int(self.state_to_index(state))
         # BEGIN_YOUR_CODE (our solution is 4 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        if random.random() > exploration_prob or explore == False:
+            action_idx = np.argmax(self.q[state_idx])
+            return self.actions[action_idx]
+        else:
+            return random.choice(self.actions)
         # END_YOUR_CODE
 
     # Call this function to get the step size to update the weights.
@@ -308,7 +312,13 @@ class TabularQLearning(util.RLAlgorithm):
         matches = np.where(self.actions_array == action)[0]
         action_idx = int(matches[0])
         # BEGIN_YOUR_CODE (our solution is 9 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        step_size = self.get_step_size()
+        if terminal == True:
+            sprime_opt_value = 0 
+        else:
+            next_state_idx = int(self.state_to_index(next_state))
+            sprime_opt_value = np.max(self.q[next_state_idx])
+        self.q[state_idx][action_idx] = (1 - step_size) * self.q[state_idx][action_idx] + step_size * (reward + self.discount * sprime_opt_value)
         # END_YOUR_CODE
 
 ############################################################
@@ -336,9 +346,13 @@ def fourier_feature_extractor(
     # doing efficient arithmetic broadcasting in numpy.
 
     # BEGIN_YOUR_CODE (our solution is 7 line(s) of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    cur_poly_feat = state[0] * scale[0] * (np.arange(max_coeff + 1))
+    for i in range(1, len(state)):
+        new_poly_feat = state[i] * scale[i] * np.arange(max_coeff + 1)
+        next_poly_feat = np.add.outer(cur_poly_feat, new_poly_feat)
+        cur_poly_feat = next_poly_feat.flatten()
+    features = np.cos(np.pi * cur_poly_feat)
     # END_YOUR_CODE
-
     return features
 
 ############################################################
@@ -362,9 +376,13 @@ class FunctionApproxQLearning(util.RLAlgorithm):
         self.w = np.random.standard_normal(size=(feature_dim, len(actions)))
         self.num_iters = 0
 
+    # Attention: Use the index funtion to get the correct action_idx instead of action itself (though its type is int)
     def get_q(self, state: np.ndarray, action: int) -> float:
         # BEGIN_YOUR_CODE (our solution is 3 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        action_idx = self.actions.index(action)
+        weight = self.w[:, action_idx]
+        feature = self.feature_extractor(state)
+        return np.dot(weight, feature)
         # END_YOUR_CODE
 
     # This algorithm will produce an action given a state.
@@ -381,7 +399,11 @@ class FunctionApproxQLearning(util.RLAlgorithm):
             exploration_prob = exploration_prob / math.log(self.num_iters - 100000 + 1)
 
         # BEGIN_YOUR_CODE (our solution is 5 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        if explore == False or random.random() > exploration_prob:
+            feature = self.feature_extractor(state)
+            out = np.dot(self.w.T, feature)
+            return self.actions[np.argmax(out)]
+        return random.choice(self.actions)
         # END_YOUR_CODE
 
     # Call this function to get the step size to update the weights.
@@ -395,7 +417,15 @@ class FunctionApproxQLearning(util.RLAlgorithm):
     # step_size * (new_value - old_value) * features
     def incorporate_feedback(self, state: np.ndarray, action: int, reward: float, next_state: np.ndarray, terminal: bool) -> None:
         # BEGIN_YOUR_CODE (our solution is 10 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        feature = self.feature_extractor(state)
+        next_state_feature = self.feature_extractor(next_state)
+        sprime_opt_value = np.max(self.w.T.dot(next_state_feature)) if terminal == False else 0.0
+        target = self.discount * sprime_opt_value + reward
+        prediction = self.get_q(state, action)
+        step_size = self.get_step_size()
+        # Attention: Use the index funtion to get the correct action_idx instead of action itself (though its type is int)
+        action_idx = self.actions.index(action)
+        self.w[:, action_idx] -= step_size * (prediction - target) * feature
         # END_YOUR_CODE
 
 ############################################################
@@ -416,6 +446,7 @@ class ConstrainedQLearning(FunctionApproxQLearning):
     # Here we use the epsilon-greedy algorithm: with probability |exploration_prob|, take a random action.
     # The input boolean |explore| indicates whether the RL algorithm is in train or test time. If it is false (test), we
     # should always choose the maximum Q-value action that is valid.
+
     def get_action(self, state: np.ndarray, explore: bool = True) -> int:
         if explore:
             self.num_iters += 1
@@ -425,8 +456,32 @@ class ConstrainedQLearning(FunctionApproxQLearning):
         elif self.num_iters > 1e5: # Lower the exploration probability by a logarithmic factor.
             exploration_prob = exploration_prob / math.log(self.num_iters - 100000 + 1)
 
+        def compute_next_velocity(state: np.ndarray, action: int) ->float:
+            cur_position = state[0]
+            cur_velocity = state[1]
+            diff = (action - 1) * self.force - np.cos(3 * cur_position) * self.gravity
+            return cur_velocity + diff
+
         # BEGIN_YOUR_CODE (our solution is 18 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        valid_actions = []
+        for action in self.actions:
+            next_velocity = compute_next_velocity(state, action)
+            if abs(next_velocity) < self.max_speed:
+                valid_actions.append(action)
+
+        if len(valid_actions) == 0:
+            return None
+
+        if explore == False or random.random() > exploration_prob:
+            feature = self.feature_extractor(state)
+            out = np.dot(self.w.T, feature)
+            valid_out = []
+            for action in valid_actions:
+                action_index = self.actions.index(action)
+                valid_out.append(out[action_index])
+            return valid_actions[np.argmax(valid_out)]
+        else:
+            return random.choice(valid_actions)
         # END_YOUR_CODE
 
 ############################################################

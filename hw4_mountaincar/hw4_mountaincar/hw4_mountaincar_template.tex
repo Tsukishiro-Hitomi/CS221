@@ -327,7 +327,21 @@ all possible transitions and rewards is intractable. We will see how model-free 
     \begin{shaded}
     % your solution goes here %
     \textbf{Your Solution:}
-
+    \begin{center}
+        \includegraphics[width=0.32\textwidth]{tabular_1.png}
+        \includegraphics[width=0.32\textwidth]{tabular_2.png}
+        \includegraphics[width=0.32\textwidth]{tabular_3.png} \\
+        \vspace{0.2cm}
+        \includegraphics[width=0.32\textwidth]{fapprox_1.png}
+        \includegraphics[width=0.32\textwidth]{fapprox_2.png}
+        \includegraphics[width=0.32\textwidth]{fapprox_3.png}
+    \end{center}
+    \textbf{Explanation:}\\
+    From the plots, \texttt{TabularQLearning} (top row) consistently converges to higher rewards and learns a better, 
+    more stable policy than \texttt{FunctionApproxQLearning} (bottom row) in this particular task. 
+    A primary reason is that linear function approximation (like Fourier features) can suffer from "catastrophic interference" and aliasing: because the learned weights are shared globally,
+    updating the Q-value based on an experience from one state can unintentionally ruin the Q-values of other states. In contrast, \texttt{TabularQLearning} completely isolates the Q-values of each discretized state, 
+    allowing updates to remain strictly local, which is highly effective and stable for a low-dimensional environment like Mountain Car.
     \end{shaded}
 
     \item [e.]
@@ -337,8 +351,11 @@ all possible transitions and rewards is intractable. We will see how model-free 
 
     \begin{shaded}
     % your solution goes here %
-    \textbf{Your Solution:}
-
+    \textbf{Your Solution:}\\
+    In environments with very high-dimensional state spaces, Tabular Q-learning suffers from the "curse of dimensionality," 
+    requiring intractable amounts of memory and making it impossible to explore every distinct state. Function approximation solves this space constraint by parameterizing 
+    the state space using far fewer weights, which limits memory usage significantly. Additionally, it generalizes experiences from visited states 
+    to unvisited but similar states, allowing the agent to learn robust policies even under limited exploration.
     \end{shaded}
 
 \end{enumerate}
@@ -367,8 +384,9 @@ One simple approach is to restrict the set of potential actions at each step to 
   \expect{One sentence on how \texttt{self.max\_speed} is used in \texttt{mountain\_car.py}.}
   \begin{shaded}
   % your solution goes here %
-  \textbf{Your Solution:}
-
+  \textbf{Your Solution:}\\
+  \texttt{velocity = np.clip(velocity, -self.max\_speed, self.max\_speed)}
+  \text{we constrain the velocity between $-self.max\_speed$ and $self.max\_speed$}
   \end{shaded}
 
   \item [b.]
@@ -380,8 +398,10 @@ One simple approach is to restrict the set of potential actions at each step to 
 
   \begin{shaded}
   % your solution goes here %
-  \textbf{Your Solution:}
-
+  \textbf{Your Solution:}\\
+  Because the environment's natural physical dynamics (such as gravity and the limited engine force) restrict how fast the car can accelerate,
+  the vehicle rarely attains extremely high velocities within an episode. 
+  Therefore, removing the artificial speed limit has little to no practical effect on the optimal policy.
   \end{shaded}
 
   \item [c.]
@@ -397,7 +417,20 @@ One simple approach is to restrict the set of potential actions at each step to 
   \begin{shaded}
   % your solution goes here %
   \textbf{Your Solution:}
+  \begin{verbatim}
+RL with MDP -> start state:[-0.4290933  0.       ], max_speed:10000
+  *  total accelerate left actions: 117, total no acceleration actions: 149, 
+     total accelerate right actions: 190
 
+RL with MDP -> start state:[-0.4290933  0.       ], max_speed:0.065
+  *  total accelerate left actions: 266, total no acceleration actions: 225, 
+     total accelerate right actions: 237
+  \end{verbatim}
+  \textbf{Explanation:}\\
+  When constrained by a tight \texttt{max\_speed} of $0.065$, 
+  the agent isn't allowed to build up a large momentum sequentially. 
+  Instead, it is forced to cautiously take many more actions to gradually swing back and forth 
+  without violating the strict velocity condition, which is why the total action counts are much higher.
   \end{shaded}
 
   \item [d.]
@@ -415,8 +448,28 @@ One simple approach is to restrict the set of potential actions at each step to 
   \expect{Definitions of two MDPs (states, actions, rewards), their exploration policies, and 1--2 sentence explanations of how their design could cause or mitigate harm.}
 
   \begin{shaded}
-    % your solution goes here %
-  \textbf{Your Solution:}
+  % your solution goes here %
+  \textbf{Your Solution:}\\
+  \textbf{MDP A (unsafe):} 
+  \begin{itemize}
+      \item \textbf{States:} The vehicle's current position, velocity, and the relative locations of nearby pedestrians and vehicles.
+      \item \textbf{Actions($s$):} Any engine acceleration/braking force and steering angle.
+      \item \textbf{Reward($s,a,s'$):} Large positive reward for reaching the destination, and a small negative reward for each time step taken to encourage speed.
+      \item \textbf{Exploration Policy:} Standard $\epsilon$-greedy exploration across all physically possible actions.
+      \item \textbf{Ethical Explanation:} This design is unsafe because the unconstrained exploration might randomly test high-acceleration actions near crosswalks, prioritizing speed and learning over human safety, potentially endangering pedestrians during training.
+  \end{itemize}
+  \vspace{0.2cm}
+  \textbf{MDP B (safer):}
+  \begin{itemize}
+      \item \textbf{States:} Same as MDP A.
+      \item \textbf{Actions($s$):} A constrained set of actions that dynamically strictly excludes velocities above the residential speed limit 
+      and disables acceleration if pedestrians are in the forward trajectory.
+      \item \textbf{Reward($s,a,s'$):} Same as MDP A, but with an enormous negative penalty for violating traffic laws 
+      or entering a critical safety buffer zone around pedestrians.
+      \item \textbf{Exploration Policy:} Constrained $\epsilon$-greedy exploration that only takes random actions from the safe, restricted action subset.
+      \item \textbf{Ethical Explanation:} By explicitly restricting the action space based on context and adding severe penalties for unsafe proximity, 
+      this design significantly mitigates harm by preventing the vehicle from ever exploring perilous behaviors around residents.
+  \end{itemize}
   \end{shaded}
 
 \end{enumerate}
