@@ -179,7 +179,46 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
 
         # BEGIN_YOUR_CODE (our solution is 22 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        def value_minimax_helper(cur_game_state: GameState, cur_depth: int, cur_agent_index: int) -> float:
+            if cur_game_state.is_win() or cur_game_state.is_lose() or len(cur_game_state.get_legal_actions(cur_agent_index)) == 0:
+                return cur_game_state.get_score()
+            if cur_depth == 0:
+                return self.evaluation_function(cur_game_state)
+            
+            n = cur_game_state.get_num_agents()
+            next_depth = cur_depth if cur_agent_index < n - 1 else cur_depth - 1
+            next_agent_index = (cur_agent_index + 1) % n
+            all_values = []
+            for action in cur_game_state.get_legal_actions(cur_agent_index):
+                next_game_state = cur_game_state.generate_successor(cur_agent_index, action)
+                next_value = value_minimax_helper(next_game_state, next_depth, next_agent_index)
+                all_values.append(next_value)
+
+            if cur_agent_index == 0:
+                return max(all_values)
+            else:
+                return min(all_values)
+        
+        if len(game_state.get_legal_actions(self.index)) == 0:
+            return None
+        
+        action_list = []
+        value_list = []
+        n = game_state.get_num_agents()
+        for action in game_state.get_legal_actions(self.index):
+            next_game_state = game_state.generate_successor(self.index, action)
+            next_agent_index = (self.index + 1) % n
+            next_value = value_minimax_helper(next_game_state, self.depth, next_agent_index)
+            action_list.append(action)
+            value_list.append(next_value)
+
+        # the initial value should be 9, 8, 7, -412 for depth = 1, 2, 3, 4
+        print(f"checkpoint: initial value = {max(value_list)}")
+
+        max_value_index = value_list.index(max(value_list))
+        next_action = action_list[max_value_index]
+
+        return next_action
         # END_YOUR_CODE
 
 ######################################################################################
@@ -199,7 +238,60 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
 
         # BEGIN_YOUR_CODE (our solution is 43 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        def value_minimax_helper(cur_game_state: GameState, cur_depth: int, cur_agent_index: int, alpha: float, beta: float) -> float:
+            if cur_game_state.is_win() or cur_game_state.is_lose() or len(cur_game_state.get_legal_actions(cur_agent_index)) == 0:
+                return cur_game_state.get_score()
+            if cur_depth == 0:
+                return self.evaluation_function(cur_game_state)
+            
+            n = cur_game_state.get_num_agents()
+            next_depth = cur_depth if cur_agent_index < n - 1 else cur_depth - 1
+            next_agent_index = (cur_agent_index + 1) % n
+
+            if cur_agent_index == 0:
+                v = -float('inf')
+                for action in cur_game_state.get_legal_actions(cur_agent_index):
+                    next_game_state = cur_game_state.generate_successor(cur_agent_index, action)
+                    next_value = value_minimax_helper(next_game_state, next_depth, next_agent_index, alpha, beta)
+                    v = max(v, next_value)
+                    if v > beta:
+                        return v
+                    alpha = max(alpha, v)
+                return alpha
+            else:
+                v = float('inf')
+                for action in cur_game_state.get_legal_actions(cur_agent_index):
+                    next_game_state = cur_game_state.generate_successor(cur_agent_index, action)
+                    next_value = value_minimax_helper(next_game_state, next_depth, next_agent_index, alpha, beta)
+                    v = min(v, next_value)
+                    if v < alpha:
+                        return v
+                    beta = min(beta, v)
+                return beta
+
+        if len(game_state.get_legal_actions(self.index)) == 0:
+            return None
+        
+        action_list = []
+        value_list = []
+        n = game_state.get_num_agents()
+        alpha = -float('inf')
+        beta = float('inf')
+
+        for action in game_state.get_legal_actions(self.index):
+            next_game_state = game_state.generate_successor(self.index, action)
+            next_agent_index = (self.index + 1) % n
+            next_value = value_minimax_helper(next_game_state, self.depth, next_agent_index, alpha, beta)
+            action_list.append(action)
+            value_list.append(next_value)
+
+        # the initial value should be 9, 8, 7, -412 for depth = 1, 2, 3, 4
+        print(f"checkpoint: initial value = {max(value_list)}")
+
+        max_value_index = value_list.index(max(value_list))
+        next_action = action_list[max_value_index]
+
+        return next_action
         # END_YOUR_CODE
 
 ######################################################################################

@@ -145,6 +145,16 @@ expectimax search. \\
 
     % your solution goes here %
     \mysolution{
+        $$
+        V_{\text{minmax}}(s, d)=
+        \begin{cases}
+            \text{Utility}(s) & \text{if } \text{IsEnd}(s) \\
+            \text{Eval}(s) & \text{if } d=0 \\
+            \max\limits_{a \in \text{Actions}(s)} V_{\text{minmax}}(\text{Succ}(s, a), d) & \text{if } \text{Player}(s) = a_0 \\
+            \min\limits_{a \in \text{Actions}(s)} V_{\text{minmax}}(\text{Succ}(s, a), d) & \text{if } \text{Player}(s) \in \{a_1, \dots, a_{n-1}\} \\
+            \min\limits_{a \in \text{Actions}(s)} V_{\text{minmax}}(\text{Succ}(s, a), d-1) & \text{if } \text{Player}(s) = a_n
+        \end{cases}
+        $$
     }
     \item[b.]
     [10 points] Now fill out the \texttt{MinimaxAgent} class in \texttt{submission.py} using the above recurrence. Remember that your minimax agent (Pac-Man) should work with any number of ghosts, and your minimax tree should have multiple min layers (one for each ghost) for every max layer. \\
