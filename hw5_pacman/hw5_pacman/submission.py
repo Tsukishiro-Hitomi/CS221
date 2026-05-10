@@ -212,12 +212,32 @@ class MinimaxAgent(MultiAgentSearchAgent):
             action_list.append(action)
             value_list.append(next_value)
 
-        # the initial value should be 9, 8, 7, -412 for depth = 1, 2, 3, 4
-        print(f"checkpoint: initial value = {max(value_list)}")
+        # debug checker for problem 1b
+        # print(f"checkpoint: value = {max(value_list)}, action = {next_action}")
 
         max_value_index = value_list.index(max(value_list))
         next_action = action_list[max_value_index]
 
+        # check helper1 for problem 5a
+        # west: value = -502; east: value = -501
+        # for i in range(len(action_list)):
+            # print(f"check agent: action = {action_list[i]}, value = {value_list[i]}")
+
+        # check helper2 for problem 5a
+        """
+        for idx in range(1, n):
+            action_list = []
+            value_list = []
+            for action in game_state.get_legal_actions(idx):
+                next_game_state = game_state.generate_successor(idx, action)
+                next_agent_index = (idx + 1) % n
+                next_value = value_minimax_helper(next_game_state, self.depth, next_agent_index)
+                action_list.append(action)
+                value_list.append(next_value)
+
+            for i in range(len(action_list)):
+                print(f"check ghost{idx}: action = {action_list[i]}, value = {value_list[i]}")
+        """
         return next_action
         # END_YOUR_CODE
 
@@ -312,7 +332,52 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         """
 
         # BEGIN_YOUR_CODE (our solution is 22 line(s) of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        def value_minimax_helper(cur_game_state: GameState, cur_depth: int, cur_agent_index: int) -> float:
+            if cur_game_state.is_win() or cur_game_state.is_lose() or len(cur_game_state.get_legal_actions(cur_agent_index)) == 0:
+                return cur_game_state.get_score()
+            if cur_depth == 0:
+                return self.evaluation_function(cur_game_state)
+            
+            n = cur_game_state.get_num_agents()
+            next_depth = cur_depth if cur_agent_index < n - 1 else cur_depth - 1
+            next_agent_index = (cur_agent_index + 1) % n
+            all_values = []
+            for action in cur_game_state.get_legal_actions(cur_agent_index):
+                next_game_state = cur_game_state.generate_successor(cur_agent_index, action)
+                next_value = value_minimax_helper(next_game_state, next_depth, next_agent_index)
+                all_values.append(next_value)
+
+            if cur_agent_index == 0:
+                return max(all_values)
+            else:
+                if len(all_values) == 0:
+                    return 0
+                return float(sum(all_values) / len(all_values))
+        
+        if len(game_state.get_legal_actions(self.index)) == 0:
+            return None
+        
+        action_list = []
+        value_list = []
+        n = game_state.get_num_agents()
+        for action in game_state.get_legal_actions(self.index):
+            next_game_state = game_state.generate_successor(self.index, action)
+            next_agent_index = (self.index + 1) % n
+            next_value = value_minimax_helper(next_game_state, self.depth, next_agent_index)
+            action_list.append(action)
+            value_list.append(next_value)
+
+        # the initial value should be 9, 8, 7, -412 for depth = 1, 2, 3, 4
+        # print(f"checkpoint: initial value = {max(value_list)}")
+
+        max_value_index = value_list.index(max(value_list))
+        next_action = action_list[max_value_index]
+
+        # check helper for problem 5a:
+        for i in range(len(action_list)):
+            print(f"check pacman: value = {value_list[i]}, action = {action_list[i]}")
+
+        return next_action
         # END_YOUR_CODE
 
 ######################################################################################

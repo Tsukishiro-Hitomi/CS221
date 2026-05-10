@@ -185,7 +185,16 @@ expectimax search. \\
 
     % your solution goes here %
     \mysolution{
-
+        $$
+        V_{\text{expectimax}}(s, d)=
+        \begin{cases}
+            \text{Utility}(s) & \text{if } \text{IsEnd}(s) \\
+            \text{Eval}(s) & \text{if } d=0 \\
+            \max\limits_{a \in \text{Actions}(s)} V_{\text{expectimax}}(\text{Succ}(s, a), d) & \text{if } \text{Player}(s) = a_0 \\
+            \frac{1}{|\text{Actions}(s)|} \sum\limits_{a \in \text{Actions}(s)} V_{\text{expectimax}}(\text{Succ}(s, a), d) & \text{if } \text{Player}(s) \in \{a_1, \dots, a_{n-1}\} \\
+            \frac{1}{|\text{Actions}(s)|} \sum\limits_{a \in \text{Actions}(s)} V_{\text{expectimax}}(\text{Succ}(s, a), d-1) & \text{if } \text{Player}(s) = a_n
+        \end{cases}
+        $$
 
 }
 
@@ -256,17 +265,17 @@ python pacman.py -p ExpectimaxAgent -l trapped_classic -a depth=3
 
     % your solution goes here %
     \mysolution{
-
+        The minimax agent assumes that the ghosts will play optimally to minimize Pac-Man's score, so realizing that death is inevitable and each step taken incurs a -1 penalty, it chooses to rush the closest ghost to maximize its score by dying as quickly as possible. In contrast, the expectimax agent assumes that the ghosts move uniformly at random, meaning there is a non-zero probability that the ghosts will make mistakes, so it may attempt to survive or collect more pellets to maximize its expected score.
     }
     \item[b.]
     [1 point] We might say that the Minimax agent suffers from an \textbf{alignment} problem: the agent optimizes an objective that we have designed (our state evaluation function), but in some scenarios leads to suboptimal or unintended behavior (e.g.\ dying instantly). Often the burden is on the designer/programmer to design an objective that more accurately captures the behavior we want from the agent across scenarios. Suggest one potential change to the default state evaluation function $\text{Eval}(s)$ (i.e.\ \texttt{scoreEvaluationFunction}) and/or the default utility function $\text{Utility}(s)$ (i.e. the final game score) that would prevent the minimax agent from dying instantly in the \texttt{trapped_classic} environment, and behave more closely to that of the expectimax agent.
 
-    \expect{1-2 sentences describing a change in the state evaluation/utility function(s) and why it would work. No need to code anything up, verify that the suggested change is actually accessible in the \texttt{GameState} object, or give concrete numbers; just describe the hypothetical change in the evaluation function. An answer which suggests changes to how the game score is computed itself (which both $\text{Eval}(s)$ and $\text{Utility}(s)$ depend upon) will also be accepted.}
+    \expect{1-2 sentences describing a change in the state evaluation/utility fu
+    nction(s) and why it would work. No need to code anything up, verify that the suggested change is actually accessible in the \texttt{GameState} object, or give concrete numbers; just describe the hypothetical change in the evaluation function. An answer which suggests changes to how the game score is computed itself (which both $\text{Eval}(s)$ and $\text{Utility}(s)$ depend upon) will also be accepted.}
 
     % your solution goes here %
     \mysolution{
-
-
+        We could modify the underlying game score calculation (and thus $\text{Utility}(s)$) by assigning a positive reward for each step survived instead of a -1 penalty. This would incentivize the minimax agent to prolong the game, staying alive and avoiding the ghosts as long as possible even if death is ultimately inevitable, making its behavior closer to the expectimax agent.
     }
 
     \item[c.]
@@ -289,8 +298,8 @@ python pacman.py -p ExpectimaxAgent -l trapped_classic -a depth=3
     instance of reward hacking or negative side effects (or both) along with a brief justification to receive full credit.}
 
     % your solution goes here %
-    \mysolution {
-
+    \mysolution{
+        Consider an autonomous driving system where the objective function heavily penalizes colliding with obstacles. To avoid an obstacle at all costs, the vehicle might perform extreme evasive maneuvers, such as abrupt braking or sharp swerving, which could lead to a rollover or severe passenger casualties. This is a clear instance of \textbf{negative side effects}. While the agent successfully optimizes its specified objective (avoiding the obstacle), it causes disastrous unintended harm that conflicts with the broader human value of overall safety.In reality, it might be a better choice to collide with obstacles under some particular circumstances.
     }
 
 \end{enumerate}
