@@ -89,7 +89,8 @@ Let's consider a simple scenario which we can model using a Bayesian network. Yo
 \expect{A graph showing the causal relationships between variables. Use the variables $\text{Rain}$, $\text{Sprinkler}$, and $\text{WetGrass}$.}
 
 \begin{shaded}
-\textbf{Your Response:}
+\textbf{Your Response: }
+\text{\text{Rain}$\rightarrow$\text{WetGrass}, \text{Sprinkler}$\rightarrow$\text{WetGrass}}
 \end{shaded}
 
 \subsection*{1b \quad Joint Probability Expression}
@@ -97,6 +98,7 @@ Let's consider a simple scenario which we can model using a Bayesian network. Yo
 
 \begin{shaded}
 \textbf{Your Response:}
+\text{$\mathbb{P}(\text{Rain}, \text{Sprinkler}, \text{WetGrass}) = \mathbb{P}(\text{Rain}) \cdot \mathbb{P}(\text{Sprinkler}) \cdot \mathbb{P}(\text{WetGrass}\ | \ \text{Rain}, \text{Sprinkler})$}
 \end{shaded}
 
 \subsection*{1c \quad Marginal Probability}
@@ -104,6 +106,7 @@ Let's consider a simple scenario which we can model using a Bayesian network. Yo
 
 \begin{shaded}
 \textbf{Your Response:}
+\text{$\mathbb{P}(\text{WetGrass})=\sum_{\text{Rain}, \text{Sprinkler}}\mathbb{P}(\text{Rain}, \text{Sprinkler}, \text{WetGrass})$}
 \end{shaded}
 
 \subsection*{1d \quad Likelihood Calculation}
@@ -128,6 +131,13 @@ What is $\mathbb{P}(\text{Rain} = \text{true}, \text{Sprinkler} = \text{true}, \
 
 \begin{shaded}
 \textbf{Your Response:}
+\begin{align*}
+    \mathbb{P}(\text{Rain} = \text{true}, \text{Sprinkler} = \text{true}, \text{WetGrass} = \text{false}) 
+    &= \mathbb{P}(\text{Rain} = \text{true}) \cdot \mathbb{P}(\text{Sprinkler} = \text{true}) \\
+    &\quad \cdot \mathbb{P}(\text{WetGrass} = \text{false} \mid \text{Rain} = \text{true}, \text{Sprinkler} = \text{true}) \\
+    &= 0.2 \cdot 0.5 \cdot (1 - 0.9) \\
+    &= 0.01
+\end{align*}
 \end{shaded}
 
 \subsection*{1e \quad Independence Analysis}
@@ -142,6 +152,11 @@ Mark the following claims as true (T) or false (F):
 
 \begin{shaded}
 \textbf{Your Response:}
+\begin{enumerate}
+    \item \text{T}
+    \item \text{F}
+    \item \text{T}
+\end{enumerate}
 \end{shaded}
 
 \newpage
@@ -157,16 +172,16 @@ Run \texttt{test\_forward\_sampling} with \texttt{mutation\_rate = 0.1} and \tex
 \hline
 \textbf{Species} & \textbf{Genome} \\
 \hline
-Thomas bayus & \rule{7cm}{0pt} \\
-Humblus studentus & \rule{7cm}{0pt} \\
-Aryamus bayus & \rule{7cm}{0pt} \\
-Kenius bayus & \rule{7cm}{0pt} \\
+Thomas bayus & \text{T} \\
+Humblus studentus & \text{T} \\
+Aryamus bayus & \text{T} \\
+Kenius bayus & \text{T} \\
 \hline
 \end{tabular}
 \end{center}
-
 \expect{A completed table containing the sampled genome for each species.}
-
+\\ \\
+\text{The joint distribution probability is \textbf{$18.2250000000\%$}}
 \subsection*{2g \quad Sampling Comparison}
 Using \texttt{test\_gibbs\_vs\_rejection}, estimate $\mathbb{P}(\text{ThomasBayus} = \text{AAAC} \mid \text{KeniusBayus} = \text{AAAA})$.
 
@@ -175,11 +190,11 @@ Using \texttt{test\_gibbs\_vs\_rejection}, estimate $\mathbb{P}(\text{ThomasBayu
 \hline
 \textbf{Method} & \textbf{Steps / Iterations} & \textbf{Estimated Posterior} \\
 \hline
-Rejection sampling & 100 & \rule{3cm}{0pt} \\
-Rejection sampling & 10{,}000 & \rule{3cm}{0pt} \\
-Gibbs sampling & 100 & \rule{3cm}{0pt} \\
-Gibbs sampling & 10{,}000 & \rule{3cm}{0pt} \\
-Exact & --- & \rule{3cm}{0pt} \\
+Rejection sampling & 100 & 0.0000 \\
+Rejection sampling & 10{,}000 & 0.0667 \\
+Gibbs sampling & 100 & 0.0000 \\
+Gibbs sampling & 10{,}000 & 0.0043 \\
+Exact & --- & 0.0335 \\
 \hline
 \end{tabular}
 \end{center}
@@ -196,6 +211,7 @@ You are managing a team of annotators who label conversations as \textbf{good} o
 
 \begin{shaded}
 \textbf{Your Response:}
+\text{\text{Y $\rightarrow$ $A_1$}, \text{Y $\rightarrow$ $A_2$}, \text{Y $\rightarrow$ $A_3$}}
 \end{shaded}
 
 \subsection*{3b \quad Perfect Annotator CPT}
@@ -206,8 +222,8 @@ You are managing a team of annotators who label conversations as \textbf{good} o
 \hline
 $\text{Sample}$ & $p(\text{Annotator1} = \text{good} \mid \text{Sample})$ & $p(\text{Annotator1} = \text{bad} \mid \text{Sample})$ \\
 \hline
-good & & \\
-bad & & \\
+good & 1.0 & 0.0\\
+bad & 0.0 & 1.0 \\
 \hline
 \end{tabular}
 \end{center}
@@ -220,8 +236,8 @@ bad & & \\
 \hline
 $\text{Sample}$ & $p(\text{Annotator1} = \text{good} \mid \text{Sample})$ & $p(\text{Annotator1} = \text{bad} \mid \text{Sample})$ \\
 \hline
-good & & \\
-bad & & \\
+good & 0.5 & 0.5 \\
+bad & 0.5 & 0.5 \\
 \hline
 \end{tabular}
 \end{center}
@@ -233,6 +249,10 @@ After training with MLE, plot the annotator CPTs using \texttt{plot\_annotator\_
 
 \begin{shaded}
 \textbf{Your Response:}
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{plots/annotators.png}
+\end{center}
+\text{It's easy to find that $A_2$ is the least trustworthy.}
 \end{shaded}
 
 \newpage

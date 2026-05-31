@@ -427,6 +427,7 @@ def test_3e_0():
     submission.accumulate_assignment(counts, network, assignment)
 
     labels_counts = counts['Y'][0]
+    print(f"debug: {labels_counts[0]}, {labels_counts[1]}")
     grader.require_is_true(labels_counts[0] > labels_counts[1])
 
     annot0_counts = counts['A_0'][0]
