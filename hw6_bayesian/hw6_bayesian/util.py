@@ -139,18 +139,19 @@ class BayesianNode:
         value_idx = self.domain.index(value)
         
         if not self.parents:
-            # No parents, just return marginal probability
-            # Must be batched
-            return self.conditional_prob_table[:, value_idx]
+            if self.conditional_prob_table.ndim == 1:
+                return float(self.conditional_prob_table[value_idx])
+            else:
+                return float(self.conditional_prob_table.flatten()[value_idx])
 
         if parent_values is None:
             raise ValueError(f"Missing parent assignments for node '{self.name}'")
 
-        # Build indices for parent values using helper
         parent_indices = self.parent_assignment_indices(parent_values)
 
-        # Index into CPT
-        return self.conditional_prob_table[tuple(parent_indices + (value_idx,))]
+        prob = self.conditional_prob_table[tuple(parent_indices + (value_idx,))]
+
+        return float(prob)
 
     def __repr__(self) -> str:
         """String representation for debugging."""
