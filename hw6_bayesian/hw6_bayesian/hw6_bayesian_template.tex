@@ -266,11 +266,11 @@ Run \texttt{test\_em\_learn} for 100 iterations. Plot the annotator CPTs and the
 \expect{Insert the two plots generated after EM training.}
 
 \begin{center}
-\fbox{\parbox{0.9\textwidth}{\vspace{3cm}\centering Annotator CPT plots here\vspace{3cm}}}
+    \includegraphics[width=0.7\textwidth]{plots/annotators_em.png}
 \end{center}
 
 \begin{center}
-\fbox{\parbox{0.9\textwidth}{\vspace{3cm}\centering Label CPT plot here\vspace{3cm}}}
+    \includegraphics[width=0.7\textwidth]{plots/labels_em.png}
 \end{center}
 
 \subsection*{4e \quad EM Recovery Analysis}
@@ -280,6 +280,7 @@ Based on the plots, did EM recover the true labels? Explain your reasoning.
 
 \begin{shaded}
 \textbf{Your Response:}
+Yes, EM successfully recovered the latent labels. Although the ground truth labels were hidden, the final distribution of estimated $P(good)$ shows a clear separation between the samples that were actually "good" (clustering around 0.6-0.7) and those that were actually "bad" (clustering around 0.3-0.4). The fact that the annotator CPTs converged to values reflecting different levels of accuracy (similar to the MLE results with labels) further indicates that the model has learned which annotators are more reliable and adjusted the latent label estimates accordingly.
 \end{shaded}
 
 \end{document}

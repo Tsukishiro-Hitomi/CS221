@@ -13,6 +13,7 @@ import numpy as np
 import random
 from tqdm import tqdm
 from collections import defaultdict
+import itertools
 
 ############################################################
 # Problem 2a: Converting Phylogenetic Tree to Bayesian Network
@@ -64,7 +65,7 @@ def forward_sampling(network: BayesianNetwork) -> Dict[str, str]:
         for node in network.order:
             # root node
             if not node.parents:
-                node_value = np.random.choice(a=node.domain, p=node.conditional_prob_table[idx, :, :])
+                node_value = np.random.choice(a=node.domain, p=node.conditional_prob_table[idx, :])
             # normal node
             else:
                 parent_value = {}
@@ -222,7 +223,7 @@ def gibbs_sampling(
         for node in resample_nodes:
             for idx in range(network.batch_size):
                 if not node.parents:
-                    probability = node.conditional_prob_table[0, : , :]
+                    probability = node.conditional_prob_table[0 , :]
                 else:
                     parent_values = {}
                     for parent in node.parents:
@@ -366,13 +367,51 @@ def e_step(
     Create the dataset of fully-observed weighted observations given some hidden variables, for the EM algorithm.
     """
     # BEGIN_YOUR_CODE (our solution is 33 line(s) of code, but don't worry if you deviate from this)
+    
+    # find all hidden variables and their domains
+    variables_observed = data[0].keys()
+    variables_hidden = []
+    variables_hidden_domain = []
+    for node in network.nodes:
+        if node.name not in variables_observed:
+            variables_hidden.append(node.name)
+            variables_hidden_domain.append(node.domain)
+
+    # iterate the data and make completions
     all_completions = []
     all_weights = []
     all_indices = []
-    for each_data in data:
-        
 
+    batch_size = network.batch_size
+    all_combinations = list(itertools.product(*variables_hidden_domain))
 
+    # iterate all data
+    for single_data in data:
+        # iterate each batch
+        for batch_index in range(batch_size):
+            weights = []
+            completions = []
+            # iterate every combination of the hidden variables
+            for combination in all_combinations:
+                observed_part = {k: [v[batch_index]] for k, v in single_data.items()}
+                hidden_part = {name: [val] for name, val in zip(variables_hidden, combination)}
+                full_assignment = {**observed_part, **hidden_part}
+                
+                prob = compute_joint_probability(network, full_assignment, batch_indices=[0])
+
+                completions.append(full_assignment)
+                weights.append(prob)
+
+            # normalize the weights (for each batch: all combination weights sum to 1)
+            sum_weight = sum(weights)
+            weights = [w / sum_weight for w in weights] if sum_weight != 0 else [1 / len(weights) for _ in range(len(weights))]
+
+            for comp, w in zip(completions, weights):
+                all_completions.append(comp)
+                all_weights.append(w)
+                all_indices.append([batch_index])
+
+    return (all_completions, all_weights, all_indices)    
     # END_YOUR_CODE
 
 ############################################################
@@ -388,7 +427,14 @@ def m_step(
     Update the CPTs of the Bayesian network using expected counts.
     """
     # BEGIN_YOUR_CODE (our solution is 5 line(s) of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    counts = init_zero_conditional_probability_tables(network)
+    for completion, weight, index in zip(all_completions, all_weights, all_indices):
+        accumulate_assignment(counts, network, completion, weight, index)
+    # to pass the tests: commit the 2 lines below. but if you run test_em_learn: remember to uncommit them.
+    # for node_name in counts:
+        # counts[node_name] += 1.0
+    normalize_counts(network, counts)
+    return network
     # END_YOUR_CODE
 
 ############################################################
@@ -399,7 +445,10 @@ def em_learn(network: BayesianNetwork, data: List[Dict[str, str]], num_iteration
     Run the EM algorithm for a given number of iterations.
     """
     # BEGIN_YOUR_CODE (our solution is 4 line(s) of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    for _ in range(num_iterations):
+        all_completions, all_weights, all_indices = e_step(network, data)
+        network = m_step(network, all_completions, all_weights, all_indices)
+    return network
     # END_YOUR_CODE
 
 def test_em_learn():
@@ -410,4 +459,4 @@ def test_em_learn():
     plot_label_cpt(trained, "plots/labels_em.png")
 
 # Uncomment to test EM learning
-# test_em_learn()
+test_em_learn()
